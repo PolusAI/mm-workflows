@@ -1,0 +1,3 @@
+[submodule "biobb"]
+	path = biobb
+	url = https://github.com/jfennick/biobb_adapters
