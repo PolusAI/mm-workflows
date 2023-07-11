@@ -8,16 +8,27 @@ jobs:
   ci_send:
     runs-on: ubuntu-latest
     steps:
+      - name: Create environment variables
+        run: |
+          echo "run_name=${{ github.event.head_commit.message }} - ${{ github.repository }} - ${{ github.ref_name }}" >> $GITHUB_ENV
+
       - name: Dispatch initiating repository event
         # NOTE: Rather than using "$GITHUB_*", use equivalent "${{ github.* }}".
         # https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
         # https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
         # Example: https://docs.github.com/en/enterprise-cloud@latest/actions/using-workflows/using-github-cli-in-workflows
+        # NOTE: Use (()) to compare numbers in a bash arithmetic context. http://mywiki.wooledge.org/ArithmeticExpression
         if: github.event.action != 'ci_status'
         run: |
-          curl -X POST https://api.github.com/repos/${{ github.repository_owner }}/workflow-inference-compiler/dispatches \
-          -H 'Accept: application/vnd.github.everest-preview+json' \
-          -u ${{ secrets.ACCESS_TOKEN }} \
-          --data '{"event_type": "${{ github.event.head_commit.message }} - ${{ github.repository }} - ${{ github.ref_name }}", "client_payload": { "repository": "'"${{ github.repository }}"'", "owner": "'"${{ github.repository_owner }}"'", "ref_name": "'"${{ github.ref_name }}"'", "commit_message": "'"${{ github.event.head_commit.message }}"'" }}'
+          if (( $(echo "${{ env.run_name }}" | wc --chars) < 100));
+          then
+            echo "Sending repository_dispatch to repo ${{ github.repository_owner }}/workflow-inference-compiler" && \
+            curl -X POST https://api.github.com/repos/${{ github.repository_owner }}/workflow-inference-compiler/dispatches \
+            -H 'Accept: application/vnd.github+json' \
+            -u ${{ secrets.ACCESS_TOKEN }} \
+            --data '{"event_type": "${{ env.run_name }}", "client_payload": { "repository": "'"${{ github.repository }}"'", "owner": "'"${{ github.repository_owner }}"'", "ref_name": "'"${{ github.ref_name }}"'", "commit_message": "'"${{ github.event.head_commit.message }}"'" }}'
+          else
+            echo "Error! 'event_type' must be < 100 characters: '${{ env.run_name }}'" && false
+          fi
         # 1. All repos should have the same 'ref' branch names for the same feature, i.e. synchronized breaking changes.
         # 2. NOTE: 'event_type' is required; it is used for the run-name in the receiving workflow.
