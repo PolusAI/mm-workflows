@@ -1,0 +1,16 @@
+name: Receive CI response
+
+on:
+  repository_dispatch:
+
+run-name:  "${{ github.event.client_payload.run_name }}"
+
+jobs:
+  ci_receive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Receive CI status from remote repository
+        if: github.event.action == 'ci_status'
+        run: |
+          echo "CI status received from '${{ github.event.client_payload.repository }}'" && \
+          ${{ github.event.client_payload.success }}

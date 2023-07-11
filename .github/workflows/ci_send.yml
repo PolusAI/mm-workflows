@@ -1,12 +1,11 @@
-name: Run WIC CI
+name: Send CI request
 
 on:
   push:
   pull_request:
-  repository_dispatch:
 
 jobs:
-  dispatch_wic_ci:
+  ci_send:
     runs-on: ubuntu-latest
     steps:
       - name: Dispatch initiating repository event
@@ -19,13 +18,6 @@ jobs:
           curl -X POST https://api.github.com/repos/${{ github.repository_owner }}/workflow-inference-compiler/dispatches \
           -H 'Accept: application/vnd.github.everest-preview+json' \
           -u ${{ secrets.ACCESS_TOKEN }} \
-          --data '{"event_type": "mm-workflows_dispatch", "client_payload": { "repository": "'"${{ github.repository }}"'", "owner": "'"${{ github.repository_owner }}"'", "ref_name": "'"${{ github.ref_name }}"'" }}'
+          --data '{"event_type": "${{ github.event.head_commit.message }} - ${{ github.repository }} - ${{ github.ref_name }}", "client_payload": { "repository": "'"${{ github.repository }}"'", "owner": "'"${{ github.repository_owner }}"'", "ref_name": "'"${{ github.ref_name }}"'", "commit_message": "'"${{ github.event.head_commit.message }}"'" }}'
         # 1. All repos should have the same 'ref' branch names for the same feature, i.e. synchronized breaking changes.
-        # 2. NOTE: 'event_type' is required in this workflow even if it is not used in receiving workflow. Otherwise: 
-        # "message": "Invalid request.\n\n\"event_type\" wasn't supplied."
-
-      - name: Receive CI status from remote repository
-        if: github.event.action == 'ci_status'
-        run: |
-          echo "CI status received from '${{ github.event.client_payload.repository }}'" && \
-          ${{ github.event.client_payload.success }}
+        # 2. NOTE: 'event_type' is required; it is used for the run-name in the receiving workflow.
