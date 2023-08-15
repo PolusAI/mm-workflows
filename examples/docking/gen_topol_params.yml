@@ -60,7 +60,7 @@ steps:
       # https://open-babel.readthedocs.io/en/latest/FileFormats/GRO_format.html#
       # For example if you use the gro format and have a BR (Bromine) atom "1  MOL   BR   53  -1.479  -3.282   2.052"
       # it will be converted to Boron (B) in the output xyz file "B        -14.79000      -32.82000       20.52000"
-      output_xyz_path: '&pose_ligand.xyz'
+      output_xyz_path: 'pose_ligand.xyz&pose_ligand.xyz'
 - append_ligand:
     in:
 #      input_itp_path: '*ligand_GMX.itp'
