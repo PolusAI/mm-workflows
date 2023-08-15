@@ -1,0 +1,34 @@
+# See https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action
+name: 'Branch dispatch'
+description: 'Check for the existence of a given fork & branch'
+inputs:
+  repository:
+    description: 'The name of the repository only (without owner)'
+    type: string
+    required: true
+  owner:
+    description: 'The account name of the repository owner'
+    type: string
+    required: true
+  ref:
+    description: 'The name of the branch / ref'
+    type: string
+    required: true
+  commit_message:
+    description: 'The commit message'
+    type: string
+    required: true
+  target_repository:
+    description: 'The name of the target repository sending dispatch to (without owner)'
+    type: string
+    required: true
+  access_token:
+    description: 'The token used for authentication'
+    type: string
+    required: true
+outputs:
+  response:
+    description: 'The response text'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
