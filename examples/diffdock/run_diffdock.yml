@@ -1,0 +1,48 @@
+steps:
+
+  - extract_pdbbind_refined:
+      in:
+        # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.query.html
+        # "The query() method uses a slightly modified Python syntax by default.
+        # For example, the & and | (bitwise) operators have the precedence of their boolean cousins, and and or.
+        # This is syntactically valid Python, however the semantics are different."
+        query: '(Kd_Ki == "Kd") and (value < 0.001)'
+        max_row: 1 #25 # Use 1 for CI
+        convert_Kd_dG: 'True'
+        output_pdb_paths: '&pdbbind_pdbs'
+        output_sdf_paths: '&pdbbind_sdfs'
+
+  - fix_side_chain:
+      scatter: [input_pdb_path]
+      in:
+        input_pdb_path: '*pdbbind_pdbs'
+        output_pdb_path: '&pdbbind_pdbs.pdb'
+
+  - diffdock:
+      scatter: [protein_path, ligand_path]
+      scatterMethod: dotproduct
+      in:
+        protein_path: "*pdbbind_pdbs.pdb"
+        ligand_path: "*pdbbind_sdfs"
+        samples_per_complex: 20 # figure 3 left in DiffDock paper
+        inference_steps: 20 # figure S11 in DiffDock paper
+        batch_size: 16 # section D.3 in DiffDock paper
+
+wic:
+  graphviz:
+    label: DiffDock
+
+  steps:
+    (1, extract_pdbbind_refined):
+      wic:
+        graphviz:
+          label: Extract PDBbind Data
+    (2, fix_side_chain):
+      wic:
+        graphviz:
+          label: Fix Side Chains
+    (3, diffdock):
+      wic:
+        namespace: gpu
+        graphviz:
+          label: Executing DiffDock

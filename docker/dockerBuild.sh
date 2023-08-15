@@ -36,3 +36,8 @@ sudo docker build --no-cache --pull -f Dockerfile_smina -t cyangnyu/smina .
 
 sudo docker build --no-cache --pull -f Dockerfile_pdbbind_refined -t pdbbind_refined_v2020 .  # NOTE: no username
 cd ../..
+
+cd examples/diffdock/
+sudo docker build --no-cache --pull -f Dockerfile_diffdock_cpu -t mrbrandonwalker/diffdock_cpu .
+sudo docker build --no-cache --pull -f Dockerfile_diffdock_gpu -t mrbrandonwalker/diffdock_gpu .
+cd ../..
