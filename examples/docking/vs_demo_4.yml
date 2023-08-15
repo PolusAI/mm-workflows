@@ -12,7 +12,7 @@ steps:
       query: '(Kd_Ki == "Kd") & (value < 0.000002)'
       max_row: 1 #25 # Use 1 for CI
       convert_Kd_dG: 'True'
-      output_txt_path: '&binding_data.txt'
+      output_txt_path: '&binding_data.txt'  # binding_data.txt
       output_pdb_paths: '&pdbbind_pdbs'
       output_sdf_paths: '&pdbbind_sdfs'
       experimental_dGs: '&exp_dGs'
@@ -67,8 +67,8 @@ steps:
 - setup_pdb.yml:
     in:
       input_pdb_path: '*receptor_filter.pdb'
-      pdb_path: '&pdb.pdbqt'
-      box_path: '&box.pdb'
+      pdb_path: 'pdb.pdbqt&pdb.pdbqt'
+      box_path: 'box.pdb&box.pdb'
       box_buffer: 20 # Angstroms
       water_type: spce
       forcefield: amber99sb-ildn

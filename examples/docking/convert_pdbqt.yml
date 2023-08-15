@@ -21,7 +21,7 @@ steps:
 - pdb4amber_run:
     in:
       input_pdb_path: ~input_pdb_path
-      output_pdb_path: '&pdbbind_pdb4amber.pdb'
+      output_pdb_path: 'pdbbind_pdb4amber.pdb&pdbbind_pdb4amber.pdb'
       config:
         remove_waters: True
         remove_hydrogens: True

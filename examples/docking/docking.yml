@@ -79,7 +79,7 @@ steps:
   - babel_convert:
       in:
         input_path: '*pose_ligand.pdbqt'
-        output_path: '&pose_ligand.pdb'
+        output_path: 'pose_ligand.pdb&pose_ligand.pdb'
 
 # Molecular Dynamics combine receptor & ligand
   - append_ligand:

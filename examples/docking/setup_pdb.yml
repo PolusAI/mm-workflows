@@ -33,7 +33,7 @@ steps:
   - pdb4amber_run: # NOTE: See comments below w.r.t. pdb2gmx
       in:
         input_pdb_path: ~input_pdb_path
-        output_pdb_path: '&receptor_pdb4amber.pdb'
+        output_pdb_path: 'receptor_pdb4amber.pdb&receptor_pdb4amber.pdb'
   - str_check_add_hydrogens:
       in: # charges = True outputs in pdbqt format; mode = auto, list, ph (must use ph mode to set ph!)
         input_structure_path: '*receptor_pdb4amber.pdb'
@@ -48,7 +48,7 @@ steps:
       in: # charges = True outputs in pdbqt format; mode = auto, list, ph (must use ph mode to set ph!)
         input_structure_path: '*receptor_pdb4amber.pdb'
         config: {"charges": True, "mode": "auto", "ph": 7.4, "list": "", "keep_canonical_resnames": False}
-        #output_structure_path: '&pdb.pdbqt'
+        #output_structure_path: 'pdb.pdbqt&pdb.pdbqt'
         output_structure_path: ~pdb_path
   - convert_pdbqt:
       in:
@@ -68,7 +68,7 @@ steps:
   - box:
       in:
         input_pdb_path: '*receptor_pdb4amber.pdb' # pdb, not pdbqt
-        #output_pdb_path: '&box.pdb'
+        #output_pdb_path: 'box.pdb&box.pdb'
         output_pdb_path: ~box_path
         config: '*config_tag_box'
         #config: '{"offset": "20"}' # Default of 2 Angstroms can cause autodock to not find any solutions.
@@ -95,7 +95,7 @@ steps:
   - pdb2gmx:
       in:
         input_pdb_path: '*receptor_hydrogens.pdb'
-        output_crd_path: '&receptor.gro' # See comment below!
+        output_crd_path: 'receptor.gro&receptor.gro' # See comment below!
         # Also note that using .g96 format does NOT sort the atoms (within each
         # residue) in the crd file, but atoms in the top file are always sorted.
         # Thus, grompp will warn you that the atom names do not match:
@@ -105,7 +105,7 @@ steps:
   - babel_convert:
       in:
         input_path: '*receptor.gro'
-        output_path: '&receptor_gro.pdb'
+        output_path: 'receptor_gro.pdb&receptor_gro.pdb'
 
 wic:
    graphviz:

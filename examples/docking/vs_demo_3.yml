@@ -10,8 +10,8 @@ steps:
 - setup_pdb.yml:
     in:
       input_pdb_path: '*protein.pdb'
-      pdb_path: '&pdb.pdbqt'
-      box_path: '&box.pdb'
+      pdb_path: 'pdb.pdbqt&pdb.pdbqt'
+      box_path: 'box.pdb&box.pdb'
       box_buffer: 20 # Angstroms
       water_type: spce
       forcefield: amber99sb-ildn
@@ -28,7 +28,7 @@ steps:
       smiles_column: SMILES
       binding_data_column: Standard Value
       convert_Kd_dG: 'True'
-      output_txt_path: '&binding_data.txt'
+      output_txt_path: 'binding_data.txt&binding_data.txt'
 
 - ligand_modeling_docking.yml:
     scatter: [sdf_path]
