@@ -12,21 +12,21 @@ steps:
       script: ../scripts/atomselect.py
       dockerPull: jakefennick/atomselect
       selection_string: protein # Extract the protein from the last timestep
-      input_pdb_path: ~input_pdb_path # '*prod.pdb'
+      input_pdb_path: ~input_pdb_path # !* prod.pdb
 # Assign partial charges (protein)
 # NOTE: Although we only start off with one protein, the final coordinates
 # after doing MD with different ligands will be different; hence scatter
 - convert_mol2:
 - convert_pdbqt:
     in:
-      output_pdb_path: '&protein_prod.pdbqt'
+      output_pdb_path: !& {protein_prod.pdbqt:}
       arg1: -xr # Receptor needs to be rigid
 - python_script:
     in:
       script: ../scripts/atomselect.py
       dockerPull: jakefennick/atomselect
       selection_string: resname MOL # Extract the ligand from the last timestep
-      input_pdb_path: ~input_pdb_path # '*prod.pdb'
+      input_pdb_path: ~input_pdb_path # !* prod.pdb
       # output_pdb_path: '&ligand_temp.pdbqt'
 
 # It utilizes a helper PDB file to overwrite the atom element
@@ -44,15 +44,15 @@ steps:
 - convert_mol2:
 - convert_pdbqt:
     in:
-      output_pdb_path: '&ligand_prod.pdbqt'
+      output_pdb_path: !& {ligand_prod.pdbqt:}
 - autodock_vina_rescore:
     in:
-      input_ligand_pdbqt_path: '*ligand_prod.pdbqt'
-      input_receptor_pdbqt_path: '*protein_prod.pdbqt'
+      input_ligand_pdbqt_path: !* ligand_prod.pdbqt
+      input_receptor_pdbqt_path: !* protein_prod.pdbqt
       score_only: True
       #local_only: True
-      output_log_path: '&vina_rescore.log'
-      docking_score: '&docking_rescores' # NOTE: Not a filename, just an explicit edge
+      output_log_path: !& {vina_rescore.log:}
+      docking_score: !& {docking_rescores:} # NOTE: Not a filename, just an explicit edge
 
 wic:
   graphviz:

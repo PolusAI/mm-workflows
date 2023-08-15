@@ -15,7 +15,7 @@ steps:
 
 - convert_pdbqt:
     in:
-      output_pdb_path: '&mol_prod.pdbqt'
+      output_pdb_path: !& {mol_prod.pdbqt:}
 
 - convert_mol2:
     in:
@@ -23,7 +23,7 @@ steps:
 
 - convert_pdbqt:
     in:
-      output_pdb_path: '&receptor_prod.pdbqt'
+      output_pdb_path: !& {receptor_prod.pdbqt:}
       arg1: -xr # Receptor needs to be rigid
 wic:
   graphviz:

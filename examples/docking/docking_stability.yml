@@ -14,8 +14,8 @@ steps:
     in:
       # NOTE: crd_path and top_zip_path are currently only necessary
       # due to a limitation of the inlineing implementation.
-      crd_path: '*complex_vac.pdb'
-      top_zip_path: '*complex_vac.zip'
+      crd_path: !* complex_vac.pdb
+      top_zip_path: !* complex_vac.zip
       nsteps: 100000
       dt: 0.002
       temperature: 298.0
