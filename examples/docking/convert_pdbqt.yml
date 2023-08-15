@@ -15,24 +15,24 @@ steps:
 
 - convert_pdbqt:
     in:
-      output_pdb_path: '&mol_prod.pdbqt'
+      output_pdb_path: !& {mol_prod.pdbqt:}
 
 # remove waters, then assigns partial charges to the protein
 - pdb4amber_run:
     in:
       input_pdb_path: ~input_pdb_path
-      output_pdb_path: '&pdbbind_pdb4amber.pdb'
+      output_pdb_path: !& {pdbbind_pdb4amber.pdb: pdbbind_pdb4amber.pdb}
       config:
         remove_waters: True
         remove_hydrogens: True
 
 - convert_mol2:
     in:
-      input_path: '*pdbbind_pdb4amber.pdb'
+      input_path: !* pdbbind_pdb4amber.pdb
 
 - convert_pdbqt:
     in:
-      output_pdb_path: '&receptor_prod.pdbqt'
+      output_pdb_path: !& {receptor_prod.pdbqt:}
       arg1: -xr # Receptor needs to be rigid
 wic:
   graphviz:

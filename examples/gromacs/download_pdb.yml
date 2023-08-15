@@ -9,11 +9,11 @@ steps:
     in:
       pdb_id: ~pdb_id
       #filter: "False" # False = do not 'clean' the pdb file.
-      output_config_string: '&pdb_id_str'
+      output_config_string: !& {pdb_id_str:}
 - pdb:
     in:
       output_pdb_path: protein_models.pdb
-      config: '*pdb_id_str'
+      config: !* pdb_id_str
       #config: {pdb_code: 1aki} # from tutorial
       #config: {pdb_code: 1enh} # "Structural Studies of the Engrailed Homeodomain" https://pubs.acs.org/doi/10.1021/acs.jpcb.8b02144
 
@@ -39,13 +39,13 @@ steps:
     in:
       config:
         models: [1]
-      #output_structure_path: '&protein.pdb'
+      #output_structure_path: !& {protein.pdb:}
 - python_script:
     in:
       script: ../../atomselect_demo.py
       # Remove any unknown residues that weren't already 'cleaned' in the `pdb` step above.
       selection_string: not resname UNK
-      output_pdb_path: '&protein.pdb'
+      output_pdb_path: !& {protein.pdb:}
 
 wic:
   graphviz:

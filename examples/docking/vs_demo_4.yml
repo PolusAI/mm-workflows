@@ -12,16 +12,16 @@ steps:
       query: '(Kd_Ki == "Kd") & (value < 0.000002)'
       max_row: 1 #25 # Use 1 for CI
       convert_Kd_dG: 'True'
-      output_txt_path: '&binding_data.txt'
-      output_pdb_paths: '&pdbbind_pdbs'
-      output_sdf_paths: '&pdbbind_sdfs'
-      experimental_dGs: '&exp_dGs'
+      output_txt_path: !& {binding_data.txt:}  # binding_data.txt
+      output_pdb_paths: !& {pdbbind_pdbs:}
+      output_sdf_paths: !& {pdbbind_sdfs:}
+      experimental_dGs: !& {exp_dGs:}
 
 - fix_side_chain:
     scatter: [input_pdb_path]
     in:
-      input_pdb_path: '*pdbbind_pdbs'
-      output_pdb_path: '&pdbbind_pdbs.pdb' # Need .pdb, otherwise:
+      input_pdb_path: !* pdbbind_pdbs
+      output_pdb_path: !& {pdbbind_pdbs.pdb:} # Need .pdb, otherwise:
 
 # assign partial charges (ligand)
 - convert_pdbqt.yml:
@@ -31,44 +31,44 @@ steps:
 # rescore protein ligand complexes
 - autodock_vina_rescore:
     in:
-      input_ligand_pdbqt_path: '*mol_prod.pdbqt'
-      input_receptor_pdbqt_path: '*receptor_prod.pdbqt'
+      input_ligand_pdbqt_path: !* mol_prod.pdbqt
+      input_receptor_pdbqt_path: !* receptor_prod.pdbqt
       score_only: True
       #local_only: True
-      output_log_path: '&vina_rescore_pdbind.log'
-      docking_score: '&rescoring_scores' # NOTE: Not a filename, just an explicit edge
-      output_ligand_pdbqt_path: '&ligand_rescore.pdbqt'
+      output_log_path: !& {vina_rescore_pdbind.log:}
+      docking_score: !& {rescoring_scores:} # NOTE: Not a filename, just an explicit edge
+      output_ligand_pdbqt_path: !& {ligand_rescore.pdbqt:}
     scatter: [input_ligand_pdbqt_path, input_receptor_pdbqt_path]
     scatterMethod: dotproduct
 
 - duplicate:
     in:
-      input_pdbqt_singleton_path: '*pdbbind_pdb4amber.pdb'
-      input_pdbqt_array_path: '*ligand_rescore.pdbqt'
-      output_pdbqt_path: '&receptor_dup_2D.pdb'
+      input_pdbqt_singleton_path: !* pdbbind_pdb4amber.pdb
+      input_pdbqt_array_path: !* ligand_rescore.pdbqt
+      output_pdbqt_path: !& {receptor_dup_2D.pdb:}
     scatter: [input_pdbqt_singleton_path, input_pdbqt_array_path]
     scatterMethod: dotproduct
 
 - autodock_vina_filter:
     in:
-      input_log_paths: '*vina_rescore_pdbind.log'
-      input_txt_path: '*binding_data.txt'
+      input_log_paths: !* vina_rescore_pdbind.log
+      input_txt_path: !* binding_data.txt
       docking_score_cutoff: -1.0
       max_num_poses_per_ligand: 1
       max_num_poses_total: 1 #25 # Use 1 for CI same as max_row
       rescore: 'True'
-      input_ligand_pdbqt_path: '*ligand_rescore.pdbqt'
-      output_ligand_pdbqt_path: '&ligand_filter.pdbqt'
-      input_receptor_pdbqt_path: '*receptor_dup_2D.pdb'
-      output_receptor_pdbqt_path: '&receptor_filter.pdb'
-      docking_scores: '&docking_scores' # NOTE: Not a filename, just an explicit edge
-      experimental_dGs: '&dGs' # NOTE: Not a filename, just an explicit edge
+      input_ligand_pdbqt_path: !* ligand_rescore.pdbqt
+      output_ligand_pdbqt_path: !& {ligand_filter.pdbqt:}
+      input_receptor_pdbqt_path: !* receptor_dup_2D.pdb
+      output_receptor_pdbqt_path: !& {receptor_filter.pdb:}
+      docking_scores: !& {docking_scores:} # NOTE: Not a filename, just an explicit edge
+      experimental_dGs: !& {dGs:} # NOTE: Not a filename, just an explicit edge
 
 - setup_pdb.yml:
     in:
-      input_pdb_path: '*receptor_filter.pdb'
-      pdb_path: '&pdb.pdbqt'
-      box_path: '&box.pdb'
+      input_pdb_path: !* receptor_filter.pdb
+      pdb_path: !& {pdb.pdbqt: pdb.pdbqt}
+      box_path: !& {box.pdb: box.pdb}
       box_buffer: 20 # Angstroms
       water_type: spce
       forcefield: amber99sb-ildn
@@ -76,9 +76,9 @@ steps:
 
 - gen_topol_params.yml:
     in:
-      input_ligand_pdbqt_path: '*ligand_filter.pdbqt'
-      input_top_zip_path: '*receptor.zip'
-      input_receptor_pdb_path: '*receptor_gro.pdb'
+      input_ligand_pdbqt_path: !* ligand_filter.pdbqt
+      input_top_zip_path: !* receptor.zip
+      input_receptor_pdb_path: !* receptor_gro.pdb
     scatter: [input_ligand_pdbqt_path, input_top_zip_path, input_receptor_pdb_path]
     scatterMethod: dotproduct
 
@@ -96,9 +96,9 @@ steps:
 
 - scatter_plot:
     in:
-      xs: '*dGs'
-      ys: '*docking_scores'
-      ys2: '*docking_rescores'
+      xs: !* dGs
+      ys: !* docking_scores
+      ys2: !* docking_rescores
 
 wic:
   graphviz:
@@ -147,7 +147,7 @@ wic:
               steps:
                 (4, genion):
                   in:
-                    output_top_zip_path: '&genion_complex.zip'
+                    output_top_zip_path: !& {genion_complex.zip:}
           (2, basic.yml):
             wic:
               steps:
@@ -156,10 +156,10 @@ wic:
                     steps:
                       (2, grompp):
                         in:
-                          input_top_zip_path: '*genion_complex.zip'
+                          input_top_zip_path: !* genion_complex.zip
                       (3, mdrun):
                         in:
-                          output_crd_path: '&prod_complex.gro'
+                          output_crd_path: !& {prod_complex.gro:}
                       (4, cwl_watcher_analysis.yml):
                         wic:
                           backend: complex

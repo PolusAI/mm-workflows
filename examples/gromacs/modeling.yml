@@ -39,8 +39,8 @@ steps:
 #      output_summary_path: structure_check_protein_hydrogens.json
 - pdb2gmx:
     in:
-      output_crd_path: '&complex_vac.pdb'
-      output_top_zip_path: '&complex_vac.zip'
+      output_crd_path: !& {complex_vac.pdb:}
+      output_top_zip_path: !& {complex_vac.zip:}
       config:
         water_type: spce
         force_field: amber99sb-ildn

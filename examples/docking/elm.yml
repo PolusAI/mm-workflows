@@ -6,9 +6,9 @@ steps:
       pdb_id: 1uao # chignolin (for speed)
 - setup_pdb.yml:
     in:
-      input_pdb_path: '*protein.pdb'
-      pdb_path: '&pdb.pdbqt'
-      box_path: '&box.pdb'
+      input_pdb_path: !* protein.pdb
+      pdb_path: !& {pdb.pdbqt: pdb.pdbqt}
+      box_path: !& {box.pdb: box.pdb}
       box_buffer: 20 # Angstroms
       water_type: spce
       forcefield: amber99sb-ildn
@@ -17,19 +17,19 @@ steps:
       database: /NCIOpen.sdf
 - extract_molecules_sdf:
     in:
-#      output_sdf_path: '&ligands.sdf'
+#      output_sdf_path: !& {ligands.sdf:}
       first_molecule: 1
       last_molecule: 1
 # NOTE: We need to extract the models first, before splitting them into separate files.
 # If we try to do both simultaneously, obabel ignores -f and -l and outputs ALL models.
 - split_sdf:
 #    in:
-#      input_path: '*ligands.sdf'
-#      output_sdf_path: '&ligand.sdf' # Array type
+#      input_path: !* ligands.sdf
+#      output_sdf_path: !& {ligand.sdf:} # Array type
 - dsb.yml:
     scatter: [sdf_path]
 #    in:
-#      sdf_path: '*ligand.sdf'
+#      sdf_path: !* ligand.sdf
 # NOTE: Do not add scattering arguments here, add them to the wic: metadata annotations.
 # (We want this information at the call site, not inserted within the subworkflow.)
 

@@ -36,7 +36,7 @@ wic:
               steps:
                 (4, genion):
                   in:
-                    output_top_zip_path: '&genion_complex.zip'
+                    output_top_zip_path: !& {genion_complex.zip:}
           (2, basic.yml):
             wic:
               steps:
@@ -45,10 +45,10 @@ wic:
                     steps:
                       (2, grompp):
                         in:
-                          input_top_zip_path: '*genion_complex.zip'
+                          input_top_zip_path: !* genion_complex.zip
                       (3, mdrun):
                         in:
-                          output_crd_path: '&prod_complex.gro'
+                          output_crd_path: !& {prod_complex.gro:}
                       (4, cwl_watcher_analysis.yml):
                         wic:
                           backend: complex
@@ -64,8 +64,8 @@ wic:
     (3, stability.yml):
       # TODO: Figure out how to make these inlineing-invariant
       in:
-        crd_path: '*ligand_GMX.gro'
-        top_zip_path: '*ligand_GMX.zip'
+        crd_path: !* ligand_GMX.gro
+        top_zip_path: !* ligand_GMX.zip
       wic:
         inlineable: False # Due to yml wic tag inlineing issue and ~ inputs
         environment:
@@ -77,7 +77,7 @@ wic:
               steps:
                 (4, genion):
                   in:
-                    output_top_zip_path: '&genion_ligand.zip'
+                    output_top_zip_path: !& {genion_ligand.zip:}
           (2, basic.yml):
             wic:
               steps:
@@ -86,10 +86,10 @@ wic:
                     steps:
                       (2, grompp):
                         in:
-                          input_top_zip_path: '*genion_ligand.zip'
+                          input_top_zip_path: !* genion_ligand.zip
                       (3, mdrun):
                         in:
-                          output_crd_path: '&prod_ligand.gro'
+                          output_crd_path: !& {prod_ligand.gro:}
                       (4, cwl_watcher_analysis.yml):
                         wic:
                           backend: ligand
