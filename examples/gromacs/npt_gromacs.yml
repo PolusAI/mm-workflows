@@ -15,7 +15,7 @@ steps:
             constraints: h-bonds
             nstxout: 100
             nstenergy: 10
-            pcoupl: Berendsen
+            pcoupl: C-rescale
             tau-p: 1
             ref-p: 1
             compressibility: 4.5e-5
