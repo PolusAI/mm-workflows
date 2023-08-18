@@ -35,7 +35,7 @@ jobs:
           access_token: ${{ steps.generate_token.outputs.token }}
 
       - name: Create environment variables
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request_target'
         env:
           COMMIT_MESSAGE: ''
         run: |
@@ -45,18 +45,18 @@ jobs:
       # the commit message directly via the github API.
       # See https://github.com/orgs/community/discussions/28474
       - name: Checkout commit sha (Pull Request only)
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request_target'
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Get commit message (Pull Request only)
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request_target'
         run: |
           echo "commit_message=$(git show -s --format=%s)" >> $GITHUB_ENV
 
       - name: Initiating repository dispatch event
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request_target'
         id: initiate_repo_dispatch_pr
         uses: ./.github/my_actions/repository_dispatch/
         with:
