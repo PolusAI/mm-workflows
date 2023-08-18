@@ -2,6 +2,10 @@
 name: 'Branch dispatch'
 description: 'Check for the existence of a given fork & branch'
 inputs:
+  event_name:
+    description: 'The name of the event'
+    type: string
+    required: true
   repository:
     description: 'The name of the repository only (without owner)'
     type: string

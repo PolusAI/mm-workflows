@@ -27,6 +27,7 @@ jobs:
         id: initiate_repo_dispatch_push
         uses: ./.github/my_actions/repository_dispatch/
         with:
+          event_name: ${{ github.event_name }}
           repository: ${{ github.repository }}
           owner: ${{ github.repository_owner }}
           ref_name: ${{ github.ref_name }}
@@ -60,9 +61,10 @@ jobs:
         id: initiate_repo_dispatch_pr
         uses: ./.github/my_actions/repository_dispatch/
         with:
-          repository: ${{ github.event.pull_request.base.repo.full_name }}
-          owner: ${{ github.event.pull_request.base.repo.owner.login }}
-          ref_name: ${{ github.event.pull_request.base.ref }}
+          event_name: ${{ github.event_name }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          owner: ${{ github.event.pull_request.head.repo.owner.login }}
+          ref_name: ${{ github.event.pull_request.head.ref }}
           commit_message: ${{ env.commit_message }}
           target_repository: workflow-inference-compiler
           access_token: ${{ steps.generate_token.outputs.token }}
