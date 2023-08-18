@@ -18,6 +18,7 @@ const github = __nccwpck_require__(2227);
 
 
 try {
+  const event_name = core.getInput('event_name');
   const repository = core.getInput('repository');
   const owner = core.getInput('owner');
   const ref_name = core.getInput('ref_name');
@@ -34,8 +35,9 @@ try {
     console.log(`Error! 'event_type' must be < 100 characters: '${run_name}'`)
   }
 
-  const url_dispatches = `https://api.github.com/repos/${owner}/${target_repository}/dispatches`;
-  console.log(`Sending repository_dispatch to repo: ${owner}/${target_repository}`);
+  const repo_owner = event_name == "pull_request_target" ? github.context.payload.repository.owner.login : owner;
+  const url_dispatches = `https://api.github.com/repos/${repo_owner}/${target_repository}/dispatches`;
+  console.log(`Sending repository_dispatch to repo: ${repo_owner}/${target_repository}`);
   console.log(`url_dispatches: ${url_dispatches}`);
 
   const response = await (0,node_fetch__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .ZP)(url_dispatches, {
