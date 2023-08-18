@@ -20,7 +20,7 @@ const github = __nccwpck_require__(2227);
 try {
   const repository = core.getInput('repository');
   const owner = core.getInput('owner');
-  const ref = core.getInput('ref');
+  const ref_name = core.getInput('ref_name');
   const commit_message = core.getInput('commit_message');
   const target_repository = core.getInput('target_repository');
   const access_token = core.getInput('access_token');
@@ -29,7 +29,7 @@ try {
     console.log("Error! Authentication token is not defined! (or expired)");
   }
 
-  const run_name = `${commit_message} - ${repository} - ${ref}`;
+  const run_name = `${commit_message} - ${repository} - ${ref_name}`;
   if (run_name.length >= 100) {
     console.log(`Error! 'event_type' must be < 100 characters: '${run_name}'`)
   }
@@ -46,7 +46,7 @@ try {
       client_payload: {
         'repository': repository,
         'owner': owner,
-        'ref': ref,
+        'ref_name': ref_name,
         'commit_message': commit_message,
         'run_name': run_name
       },

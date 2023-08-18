@@ -23,12 +23,46 @@ jobs:
         uses: actions/checkout@v3
     
       - name: Initiating repository dispatch event
-        id: initiate_repo_dispatch
+        if: github.event_name == 'push'
+        id: initiate_repo_dispatch_push
         uses: ./.github/my_actions/repository_dispatch/
         with:
           repository: ${{ github.repository }}
           owner: ${{ github.repository_owner }}
-          ref: ${{ github.ref_name }}
+          ref_name: ${{ github.ref_name }}
           commit_message: ${{ github.event.head_commit.message }}
+          target_repository: workflow-inference-compiler
+          access_token: ${{ steps.generate_token.outputs.token }}
+
+      - name: Create environment variables
+        if: github.event_name == 'pull_request'
+        env:
+          COMMIT_MESSAGE: ''
+        run: |
+          echo "commit_message=$COMMIT_MESSAGE" >> $GITHUB_ENV
+
+      # Unbelievably, for pull requests only, there is apparently no way to get
+      # the commit message directly via the github API.
+      # See https://github.com/orgs/community/discussions/28474
+      - name: Checkout commit sha (Pull Request only)
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Get commit message (Pull Request only)
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "commit_message=$(git show -s --format=%s)" >> $GITHUB_ENV
+
+      - name: Initiating repository dispatch event
+        if: github.event_name == 'pull_request'
+        id: initiate_repo_dispatch_pr
+        uses: ./.github/my_actions/repository_dispatch/
+        with:
+          repository: ${{ github.event.pull_request.base.repo.full_name }}
+          owner: ${{ github.event.pull_request.base.repo.owner.login }}
+          ref_name: ${{ github.event.pull_request.base.ref }}
+          commit_message: ${{ env.commit_message }}
           target_repository: workflow-inference-compiler
           access_token: ${{ steps.generate_token.outputs.token }}
