@@ -1,0 +1,18 @@
+steps:        
+  - load_trained_molgan_model:
+      in:
+        input_data_path: /MolGAN/data/data.pkl
+        input_NP_Score_path: /MolGAN/data/NP_score.pkl.gz
+        input_SA_Score_path: /MolGAN/data/SA_score.pkl.gz
+        input_model_dir: /MolGAN/trained_models
+        output_sdf_path: generated_mols.sdf
+        output_log_path: test_log
+
+wic:
+  graphviz:
+    label: MolGAN 
+  steps:
+    (1, run_trained_molgan_model):
+      wic:
+        graphviz:
+          label: Generate Molecules with the Trained Model

@@ -30,6 +30,7 @@ sudo docker build --no-cache --pull -f Dockerfile_openbabel -t jakefennick/openb
 sudo docker build --no-cache --pull -f Dockerfile_remove_terminal_residue_name_prefixes -t jakefennick/remove_terminal_residue_name_prefixes .
 sudo docker build --no-cache --pull -f Dockerfile_rename_residues_mol -t jakefennick/rename_residues_mol .
 sudo docker build --no-cache --pull -f Dockerfile_combine_pdb -t ndonyapour/combine_pdb .
+sudo docker build --no-cache --pull -f Dockerfile_molgan -t ndonyapour/molgan .
 
 sudo docker build --no-cache --pull -f Dockerfile_pdbbind_refined -t pdbbind_refined_v2020 .  # NOTE: no username
 cd ../..
