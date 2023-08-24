@@ -1,0 +1,69 @@
+name: Send CI request
+
+on:
+  pull_request_target:
+
+jobs:
+  ci_send:
+    runs-on: ubuntu-latest
+    steps:
+      # See comments in token.md
+      - name: Generate a token
+        if: always()
+        id: generate_token
+        uses: tibdex/github-app-token@b62528385c34dbc9f38e5f4225ac829252d1ea92
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      # !!!!!! CRITICAL: PLEASE READ !!!!!!
+      # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions- settings-for-a-repository#controlling-changes-from-forks-to-workflows-in-public-repositories
+      # "Note: Workflows triggered by pull_request_target events are run in the context of the base
+      # branch. Since the base branch is considered trusted, workflows triggered by these events will always run,
+      # REGARDLESS OF APPROVAL SETTINGS."
+      # Therefore, membership must be checked to authorize PRs to run workflows.
+      #
+      # Note: 1. To use this repository's private action, you must check out the repository
+      # 2. PRs from external accounts could alter behaviors of the custom actions and execute
+      # the altered actions if the head of PR is checked out to use custom actions. Therefore,
+      # always checkout the base branch of the PR to use trustful actions before the identity
+      # could be verified.
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+            ref: ${{ github.event.pull_request.base.sha }} # Check out the base to use trustworthy actions
+
+      - name: Check Membership
+        uses: ./.github/my_actions/check_membership/ # Must start with ./
+        with:
+            account_name: ${{ github.event.pull_request.head.repo.owner.login }}
+            access_token: ${{ steps.generate_token.outputs.token }}
+
+      - name: Create environment variables
+        env:
+          COMMIT_MESSAGE: ''
+        run: |
+          echo "commit_message=$COMMIT_MESSAGE" >> $GITHUB_ENV
+
+      # Unbelievably, for pull requests only, there is apparently no way to get
+      # the commit message directly via the github API.
+      # See https://github.com/orgs/community/discussions/28474
+      - name: Checkout commit sha (Pull Request only)
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Get commit message (Pull Request only)
+        run: |
+          echo "commit_message=$(git show -s --format=%s)" >> $GITHUB_ENV
+
+      - name: Initiating repository dispatch event
+        uses: ./.github/my_actions/repository_dispatch/
+        with:
+          event_name: ${{ github.event_name }}
+          sender_repo: ${{ github.event.pull_request.head.repo.full_name }}
+          sender_repo_owner: ${{ github.event.pull_request.head.repo.owner.login }}
+          sender_repo_ref: ${{ github.event.pull_request.head.ref }}
+          commit_message: ${{ env.commit_message }}
+          target_repository: workflow-inference-compiler
+          access_token: ${{ steps.generate_token.outputs.token }}
