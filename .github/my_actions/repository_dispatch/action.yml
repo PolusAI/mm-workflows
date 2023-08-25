@@ -6,15 +6,15 @@ inputs:
     description: 'The name of the event'
     type: string
     required: true
-  repository:
-    description: 'The name of the repository only (without owner)'
+  sender_repo:
+    description: 'The name of the repository'
     type: string
     required: true
-  owner:
+  sender_repo_owner:
     description: 'The account name of the repository owner'
     type: string
     required: true
-  ref_name:
+  sender_repo_ref:
     description: 'The name of the branch / ref'
     type: string
     required: true

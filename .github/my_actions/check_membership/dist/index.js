@@ -12,59 +12,88 @@ __nccwpck_require__.r(__webpack_exports__);
 // NOTE: Every time you modify this file, you need to run
 // `ncc build index.js && git add -f dist/index.js index.js package.json package-lock.json`
 // You do NOT need to git add node_modules/*
+//
+// !!!!!! CRITICAL: PLEASE READ !!!!!!
+// https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions- settings-for-a-repository#controlling-changes-from-forks-to-workflows-in-public-repositories
+// "Note: Workflows triggered by pull_request_target events are run in the context of the base
+// branch. Since the base branch is considered trusted, workflows triggered by these events will always run,
+// REGARDLESS OF APPROVAL SETTINGS."
 
 const core = __nccwpck_require__(2136);
 const github = __nccwpck_require__(2227);
 
 
 try {
-  const event_name = core.getInput('event_name');
-  const sender_repo = core.getInput('sender_repo');
-  const sender_repo_owner = core.getInput('sender_repo_owner');
-  const sender_repo_ref = core.getInput('sender_repo_ref');
-  const commit_message = core.getInput('commit_message');
-  const target_repository = core.getInput('target_repository');
+  const account_name = core.getInput('account_name');
   const access_token = core.getInput('access_token');
 
   if (!access_token) {
-    console.log("Error! Authentication token is not defined! (or expired)");
+    console.log("Error! access_token is not defined! (or expired)");
   }
 
-  const run_name = `${commit_message} - ${sender_repo} - ${sender_repo_ref}`;
-  if (run_name.length >= 100) {
-    console.log(`Error! 'event_type' must be < 100 characters: '${run_name}'`)
+  let verified = false;
+  if (!verified) {
+    // Step 1: Check whether the account to check is the owner of the repository
+    verified = account_name === github.context.repo.owner;
   }
 
-  const url_dispatches = `https://api.github.com/repos/${github.context.repo.owner}/${target_repository}/dispatches`;
-  console.log(`Sending repository_dispatch to repo: ${github.context.repo.owner}/${target_repository}`);
-  console.log(`url_dispatches: ${url_dispatches}`);
+  if (!verified) {
+    // Step 2: Check whether the account is an external collaborator of the repository
 
-  const response = await (0,node_fetch__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .ZP)(url_dispatches, {
-    method: "POST",
-    body: JSON.stringify({
-      // Value of "event_type" is passed into "github.event.action" in the receiving workflow.
-      event_type: "repository_dispatch_mm-workflows",
-      client_payload: {
-        'repository': sender_repo,
-        'owner': sender_repo_owner,
-        'ref_name': sender_repo_ref,
-        'commit_message': commit_message,
-        'run_name': run_name
-      },
-    }),
-    headers: {
-//      "Accept": "application/vnd.github+json",
-//      "X-GitHub-Api-Version": "2022-11-28",
-      'Authorization': `Bearer ${access_token}`
+    // GitHub API doc: https://docs.github.com/en/rest/collaborators/collaborators?apiVersion=2022-11-28#check-if-a-user-is-a-repository-collaborator
+    // Note: the user is only checked against the collaborator list of the current repository.
+    // So for cross repo CIs, the sender should be added as a collaborator to all repos.
+    const url = `https://api.github.com/repos/${github.context.repo.owner}/${github.context.repo.repo}/collaborators/${account_name}`
+    const response = await (0,node_fetch__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .ZP)(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${access_token}`
+      }
+    });
+    verified = response.status === 204;
+    if (!verified) {
+        console.log(`Collaborator check failed with status: ${response.status}`)
+        console.log(`url: ${url}`);
+        console.log(`response.json(): ${JSON.stringify(await response.json(), undefined, 2)}`);
     }
-  });
-  const response_str = await response.text();
-  console.log(`response: ${response_str}`);
-  core.setOutput("response", response_str);
+  }
+
+  if (!verified && github.context.repo.owner === 'PolusAI') {
+    // Step 3: Check whether the account is a member of the PolusAI.
+    // This step will only be run when the workflow is currently running on PolusAI, which is an
+    // org account. The above endpoint repos/{owner}/{repo}/collaborators/{account} can also checks
+    // membership but only when the member is a direct collaborator of the org-owned repo, or has
+    // access through team memberships or default org permissions. To be safe, use the explicit
+    // membership-check endpoint.
+
+    // GitHub API doc: https://docs.github.com/en/rest/orgs/members?apiVersion=2022-11-28#check-organization-membership-for-a-user
+    const url = `https://api.github.com/orgs/PolusAI/members/${account_name}`
+    const response = await (0,node_fetch__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .ZP)(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${access_token}`
+      }
+    });
+    verified = response.status === 204;
+    if (!verified) {
+        console.log(`Membership check failed with status: ${response.status}`)
+        console.log(`url: ${url}`);
+        console.log(`response.json(): ${JSON.stringify(await response.json(), undefined, 2)}`);
+    }
+  }
+
+  // GitHub is not very clear about type declaration in JS actions and payloads in API calls.
+  // See the discussion: https://github.com/actions/runner/issues/1483#issuecomment-969295757
+  // To avoid ambiguity, use string for output and string comparison in workflow steps.
+  core.setOutput('verified', verified.toString());
 
   // Get the JSON webhook payload for the event that triggered the workflow
   const payload = JSON.stringify(github.context.payload, undefined, 2)
   console.log(`The event payload: ${payload}`);
+
+  if (!verified) {
+    throw new Error(`Account ${account_name} is not authorized to run workflows.`);
+  }
 } catch (error) {
   core.setFailed(error.message);
 }

@@ -9,9 +9,9 @@ import fetch from "node-fetch";
 
 try {
   const event_name = core.getInput('event_name');
-  const repository = core.getInput('repository');
-  const owner = core.getInput('owner');
-  const ref_name = core.getInput('ref_name');
+  const sender_repo = core.getInput('sender_repo');
+  const sender_repo_owner = core.getInput('sender_repo_owner');
+  const sender_repo_ref = core.getInput('sender_repo_ref');
   const commit_message = core.getInput('commit_message');
   const target_repository = core.getInput('target_repository');
   const access_token = core.getInput('access_token');
@@ -20,14 +20,13 @@ try {
     console.log("Error! Authentication token is not defined! (or expired)");
   }
 
-  const run_name = `${commit_message} - ${repository} - ${ref_name}`;
+  const run_name = `${commit_message} - ${sender_repo} - ${sender_repo_ref}`;
   if (run_name.length >= 100) {
     console.log(`Error! 'event_type' must be < 100 characters: '${run_name}'`)
   }
 
-  const repo_owner = event_name == "pull_request_target" ? github.context.payload.repository.owner.login : owner;
-  const url_dispatches = `https://api.github.com/repos/${repo_owner}/${target_repository}/dispatches`;
-  console.log(`Sending repository_dispatch to repo: ${repo_owner}/${target_repository}`);
+  const url_dispatches = `https://api.github.com/repos/${github.context.repo.owner}/${target_repository}/dispatches`;
+  console.log(`Sending repository_dispatch to repo: ${github.context.repo.owner}/${target_repository}`);
   console.log(`url_dispatches: ${url_dispatches}`);
 
   const response = await fetch(url_dispatches, {
@@ -36,9 +35,9 @@ try {
       // Value of "event_type" is passed into "github.event.action" in the receiving workflow.
       event_type: "repository_dispatch_mm-workflows",
       client_payload: {
-        'repository': repository,
-        'owner': owner,
-        'ref_name': ref_name,
+        'repository': sender_repo,
+        'owner': sender_repo_owner,
+        'ref_name': sender_repo_ref,
         'commit_message': commit_message,
         'run_name': run_name
       },

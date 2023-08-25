@@ -1,0 +1,33 @@
+name: Send CI request
+
+on:
+  push:
+
+jobs:
+  ci_send:
+    runs-on: ubuntu-latest
+    steps:
+      # See comments in token.md
+      - name: Generate a token
+        if: always()
+        id: generate_token
+        uses: tibdex/github-app-token@b62528385c34dbc9f38e5f4225ac829252d1ea92
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      # To use this repository's private action,
+      # you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v3
+    
+      - name: Initiating repository dispatch event
+        uses: ./.github/my_actions/repository_dispatch/
+        with:
+          event_name: ${{ github.event_name }}
+          sender_repo: ${{ github.repository }}
+          sender_repo_owner: ${{ github.repository_owner }}
+          sender_repo_ref: ${{ github.ref_name }}
+          commit_message: ${{ github.event.head_commit.message }}
+          target_repository: workflow-inference-compiler
+          access_token: ${{ steps.generate_token.outputs.token }}
