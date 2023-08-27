@@ -1,4 +1,4 @@
-
+# pylint: skip-file
 # This file helps to compute a version number in source trees obtained from
 # git-archive tarball (such as those provided by githubs download-from-tag
 # feature). Distribution tarballs (built by setup.py sdist) and build
@@ -416,7 +416,7 @@ def render_pep440(pieces: Dict[str, Any]) -> str:
                                           pieces["short"])
         if pieces["dirty"]:
             rendered += ".dirty"
-    return rendered
+    return str(rendered)
 
 
 def render_pep440_branch(pieces: Dict[str, Any]) -> str:
@@ -446,7 +446,7 @@ def render_pep440_branch(pieces: Dict[str, Any]) -> str:
                                           pieces["short"])
         if pieces["dirty"]:
             rendered += ".dirty"
-    return rendered
+    return str(rendered)
 
 
 def pep440_split_post(ver: str) -> Tuple[str, Optional[int]]:
@@ -480,7 +480,7 @@ def render_pep440_pre(pieces: Dict[str, Any]) -> str:
     else:
         # exception #1
         rendered = "0.post0.dev%d" % pieces["distance"]
-    return rendered
+    return str(rendered)
 
 
 def render_pep440_post(pieces: Dict[str, Any]) -> str:
@@ -507,7 +507,7 @@ def render_pep440_post(pieces: Dict[str, Any]) -> str:
         if pieces["dirty"]:
             rendered += ".dev0"
         rendered += "+g%s" % pieces["short"]
-    return rendered
+    return str(rendered)
 
 
 def render_pep440_post_branch(pieces: Dict[str, Any]) -> str:
@@ -536,7 +536,7 @@ def render_pep440_post_branch(pieces: Dict[str, Any]) -> str:
         rendered += "+g%s" % pieces["short"]
         if pieces["dirty"]:
             rendered += ".dirty"
-    return rendered
+    return str(rendered)
 
 
 def render_pep440_old(pieces: Dict[str, Any]) -> str:
@@ -558,7 +558,7 @@ def render_pep440_old(pieces: Dict[str, Any]) -> str:
         rendered = "0.post%d" % pieces["distance"]
         if pieces["dirty"]:
             rendered += ".dev0"
-    return rendered
+    return str(rendered)
 
 
 def render_git_describe(pieces: Dict[str, Any]) -> str:
@@ -578,7 +578,7 @@ def render_git_describe(pieces: Dict[str, Any]) -> str:
         rendered = pieces["short"]
     if pieces["dirty"]:
         rendered += "-dirty"
-    return rendered
+    return str(rendered)
 
 
 def render_git_describe_long(pieces: Dict[str, Any]) -> str:
@@ -598,7 +598,7 @@ def render_git_describe_long(pieces: Dict[str, Any]) -> str:
         rendered = pieces["short"]
     if pieces["dirty"]:
         rendered += "-dirty"
-    return rendered
+    return str(rendered)
 
 
 def render(pieces: Dict[str, Any], style: str) -> Dict[str, Any]:
@@ -648,7 +648,7 @@ def get_versions() -> Dict[str, Any]:
     verbose = cfg.verbose
 
     try:
-        return git_versions_from_keywords(get_keywords(), cfg.tag_prefix,
+        return git_versions_from_keywords(get_keywords(), cfg.tag_prefix,  # type: ignore
                                           verbose)
     except NotThisMethod:
         pass

@@ -11,7 +11,7 @@ ENV PATH /mambaforge/bin:$PATH
 
 # Note that the version of python needs to be compatible with pymol-bundle
 # See https://anaconda.org/schrodinger/pymol/files
-RUN mamba install "python<3.10"
+RUN mamba install "python<3.11"
 
 # NOTE: gromacs tends to use bleeding edge dependencies and pymol tends to lag behind.
 # They currently cannot be installed simultaneously due to dependency conflicts.

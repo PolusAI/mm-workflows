@@ -1,0 +1,29 @@
+channels:
+  - conda-forge
+  - defaults
+  - openbiosim  # biosimspace
+  - schrodinger  # pymol
+
+dependencies:
+# NOTE: Do not install pypy. openbabel, pymol, and rdkit require cpython
+  - shellcheck
+#  - wget  # Does not exist on windows
+#  - zip  # Does not exist on windows
+  - libarchive  # for bsdtar
+# Workflow dependencies
+  - numpy
+  - scipy
+  - rdkit
+  - openpyxl
+  - xorg-libxrender
+  - mdtraj
+  - pymol-open-source
+# Alternatively, can use pymol-bundle from the schrodinger channel.
+#  - pymol-bundle
+  - openbabel
+#  - gromacs  # Does not exist on windows
+# vina version 1.2.3 has several known bugs.
+# See https://github.com/ccsb-scripps/AutoDock-Vina/pull/81
+# and https://github.com/ccsb-scripps/AutoDock-Vina/pull/138
+#  - vina  # conda only has version 1.2.3
+#  - biosimspace  # Comment out, simply because it has a dependency on cudatoolkit which is 900MB.

@@ -377,10 +377,10 @@ def cpptraj_fields() -> List[Dict[str, str]]:
     Returns:
          List[Dict[str, str]]: A list of dicts
     """
-    range = '[1~100000|1]'
-    start = {'type': 'number', f'description': '(1) {range} Starting frame for slicing'}
-    end = {'type': 'number', f'description': '(-1) {range} Ending frame for slicing'}
-    steps = {'type': 'number', f'description': '(1) {range} Step for slicing'}
+    range_str = '[1~100000|1]'
+    start = {'type': 'number', 'description': f'(1) {range_str} Starting frame for slicing'}
+    end = {'type': 'number', 'description': f'(-1) {range_str} Ending frame for slicing'}
+    steps = {'type': 'number', 'description': f'(1) {range_str} Step for slicing'}
 
     return [start, end, steps]
 

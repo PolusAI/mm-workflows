@@ -14,6 +14,9 @@ arguments: [$(inputs.script), '--output_top_format', 'GroTop', '--output_crd_for
 hints:
   DockerRequirement:
     dockerPull: jakefennick/biosimspace
+    # dockerPull: openbiosim/biosimspace
+    # python -c 'import biosimspace'
+    # ModuleNotFoundError: No module named 'biosimspace'
 
 inputs:
   script:
