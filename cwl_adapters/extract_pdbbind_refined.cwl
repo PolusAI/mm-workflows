@@ -12,7 +12,7 @@ baseCommand: python3
 
 hints:
   DockerRequirement:
-    dockerPull: pdbbind_refined_v2020
+    dockerPull: pdbbind_refined_v2020  # NOTE: no username
 
 requirements:
   InlineJavascriptRequirement: {}

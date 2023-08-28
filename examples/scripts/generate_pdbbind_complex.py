@@ -84,9 +84,9 @@ def read_index_file(index_file_path: str) -> pd.DataFrame:
             # Kd conversion to micro molar
             unit = re.split(r"=[-+]?(?:\d*\.\d+|\d+)", words[4])[1]
             standard_type = re.split(r"=[-+]?(?:\d*\.\d+|\d+)", words[4])[0]
-            kd = float(re.findall(r"[-+]?(?:\d*\.\d+|\d+)", words[4])[0])
+            Kd = float(re.findall(r"[-+]?(?:\d*\.\d+|\d+)", words[4])[0])
             data['Kd_Ki'].append(standard_type)
-            data['value'].append(kd * unit_conv[unit])
+            data['value'].append(Kd * unit_conv[unit])
             data['ligand_name'].append(re.findall(r'\((.*?)\)', words[7])[0])
 
     return pd.DataFrame.from_dict(data)
@@ -144,13 +144,13 @@ def load_data(index_file_name: str, base_dir: str, query: str, output_txt_path: 
                                    pdbcode,
                                    f'{pdbcode}_protein.pdb')
         dist_pdb_path = f'{pdbcode}_protein.pdb'
-        subprocess.run(["cp", f"{source_pdb_path}", f"{dist_pdb_path}"])
+        subprocess.run(["cp", f"{source_pdb_path}", f"{dist_pdb_path}"], check=True)
         source_sdf_path = osp.join(base_dir,
                                    pdbcode,
                                    f'{pdbcode}_ligand.sdf')
 
         dist_sdf_path = f'{pdbcode}_ligand.sdf'
-        subprocess.run(["cp", f"{source_sdf_path}", f"{dist_sdf_path}"])
+        subprocess.run(["cp", f"{source_sdf_path}", f"{dist_sdf_path}"], check=True)
 
 
 def main() -> None:
