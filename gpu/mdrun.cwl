@@ -15,7 +15,8 @@ hints:
   cwltool:CUDARequirement:
     cudaVersionMin: "11.4"
     cudaComputeCapability: "3.0"
-    cudaDeviceCountMin: 0
+    cudaDeviceCountMin: 1
+    cudaDeviceCountMax: 1
   DockerRequirement:
     dockerPull: gromacs/gromacs:2021.4 # uses CUDA 10.1 which is compatible with our EC2 instances.
     # NOTE: None of the nvcr.io/hpc/gromacs images seem to work
