@@ -1,10 +1,11 @@
 // See https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action
 // NOTE: Every time you modify this file, you need to run
 // `ncc build index.js && git add -f dist/index.js index.js package.json package-lock.json`
+// Install ncc using `npm install -g @vercel/ncc`
 // You do NOT need to git add node_modules/*
 //
 // !!!!!! CRITICAL: PLEASE READ !!!!!!
-// https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions- settings-for-a-repository#controlling-changes-from-forks-to-workflows-in-public-repositories
+// https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#controlling-changes-from-forks-to-workflows-in-public-repositories
 // "Note: Workflows triggered by pull_request_target events are run in the context of the base
 // branch. Since the base branch is considered trusted, workflows triggered by these events will always run,
 // REGARDLESS OF APPROVAL SETTINGS."
