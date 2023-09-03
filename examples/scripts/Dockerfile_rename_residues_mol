@@ -1,0 +1,5 @@
+FROM python
+# No dependencies; only python std lib
+
+ADD rename_residues_mol.py .
+ADD Dockerfile_rename_residues_mol .

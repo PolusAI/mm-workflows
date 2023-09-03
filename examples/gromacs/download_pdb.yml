@@ -42,7 +42,8 @@ steps:
       #output_structure_path: '&protein.pdb'
 - python_script:
     in:
-      script: ../../atomselect_demo.py
+      script: ../scripts/atomselect.py
+      dockerPull: jakefennick/atomselect
       # Remove any unknown residues that weren't already 'cleaned' in the `pdb` step above.
       selection_string: not resname UNK
       output_pdb_path: '&protein.pdb'

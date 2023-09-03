@@ -1,0 +1,10 @@
+FROM condaforge/mambaforge
+# NOT mambaforge-pypy3 (mdanalysis & pymol are incompatible with pypy)
+
+RUN mamba install -c conda-forge mdanalysis
+RUN mamba install -c conda-forge pymol-open-source
+# Alternatively, can use pymol-bundle from the schrodinger channel.
+# RUN mamba install -c schrodinger pymol-bundle
+
+ADD align_protein_ca_pymol.py .
+ADD Dockerfile_align_protein_ca_pymol .

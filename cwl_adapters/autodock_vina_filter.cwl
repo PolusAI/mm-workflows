@@ -13,7 +13,7 @@ baseCommand: python3
 
 hints:
   DockerRequirement:
-    dockerPull: jakefennick/scripts
+    dockerPull: jakefennick/autodock_vina_filter
 
 requirements:
   InlineJavascriptRequirement: {}

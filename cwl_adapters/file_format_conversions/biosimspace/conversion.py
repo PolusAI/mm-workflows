@@ -32,7 +32,7 @@ def main() -> None:
 
     input_filenames = [args.input_top_path, args.input_crd_path]
     # This path is w.r.t. the Docker image jakefennick/biosimspace
-    properties = {'GROMACS_PATH': '/miniconda/share/gromacs/top/'}
+    properties = {'GROMACS_PATH': '/mambaforge/share/gromacs/top/'}
     system = BSS.IO.readMolecules(input_filenames, properties)
 
     output_file_formats = [args.output_top_format, args.output_crd_format]

@@ -10,12 +10,12 @@ steps:
           '(2, gmx_rms)': {in: {input_structure_path: prod.tpr, input_traj_path: prod.trr}}
           '(3, gmx_rms)': {in: {input_structure_path: prod.tpr, input_traj_path: prod.trr}}
           '(4, gmx_rms)': {in: {input_structure_path: min.tpr, input_traj_path: prod.trr}}
-          '(5, python3_align_protein_CA)': {in: {
+          '(5, python3_align_protein_ca)': {in: {
                             input_gro_path: npt.gro,
                             input_trr_path: prod.trr,
-                            output_trr_path: prod_align_protein_CA.trr}}
+                            output_trr_path: prod_align_protein_ac.trr}}
           '(6, gmx_rms_nofit)': {in: {input_structure_path: npt.gro,
-                                      input_traj_path: prod_align_protein_CA.trr}}
+                                      input_traj_path: prod_align_protein_ca.trr}}
           #'(5, pymol)': {in: {
           #                 input_1_path: receptor_gro.pdb,
           #                 input_2_path: pose_ligand_1.pdb,

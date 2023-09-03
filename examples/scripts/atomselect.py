@@ -1,9 +1,10 @@
+# type: ignore
 from workflow_types import *
 # NOTE: No other top-level imports supported
 
 
-def main(selection_string, input_pdb_path, output_pdb_path):   # type: ignore[no-untyped-def]
-    import mdtraj
+def main(selection_string, input_pdb_path, output_pdb_path):
+    import mdtraj  # pylint:disable=import-error
     traj = mdtraj.load(input_pdb_path)
     print(traj)
     selection_indices = traj.topology.select(selection_string)

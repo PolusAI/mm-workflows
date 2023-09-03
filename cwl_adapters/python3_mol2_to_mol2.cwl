@@ -12,7 +12,7 @@ baseCommand: python3
 
 hints:
   DockerRequirement:
-    dockerPull: jakefennick/scripts
+    dockerPull: jakefennick/rename_residues_mol
 
 inputs:
   script:

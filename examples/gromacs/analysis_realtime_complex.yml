@@ -33,22 +33,22 @@ steps:
           selection: MainChain
         output_xvg_path: '&rmsd_xray_mainchain.xvg'
 # Align the trajectory with MDAnalysis.
-  - python3_align_protein_CA:
+  - python3_align_protein_ca:
       in:
-        script: /align_protein_CA_mda.py # NOTE: Initial / required
+        script: /align_protein_ca_mda.py # NOTE: Initial / required
         input_gro_path: '*npt.gro'
         input_trr_path: '*prod.trr'
-        output_trr_path: '&prod_align_protein_CA.trr'
+        output_trr_path: '&prod_align_protein_ca.trr'
   - gmx_rms_nofit:
       in:
         input_structure_path: '*npt.gro' # '*prod.tpr' ?
-        input_traj_path: '*prod_align_protein_CA.trr'
+        input_traj_path: '*prod_align_protein_ca.trr'
         input_index_path: '*MOL.ndx'
         output_xvg_path: '&rmsd_equil_ligand_no_fit.xvg'
 # We can also align the trajectory with pymol, but it currently has an O(N^2) performance issue.
 # However, pymol's alignment algorithm rejects outliers, which may be useful for
 # flexible protein targets with floppy tails.
-#  - align_protein_CA_pymol.yml:
+#  - align_protein_ca_pymol.yml:
 
 wic:
   graphviz:
@@ -75,7 +75,7 @@ wic:
       wic:
         graphviz:
           label: Mainchain RMSD\nw.r.t. X-ray Coords
-    (5, python3_align_protein_CA):
+    (5, python3_align_protein_ca):
       wic:
         graphviz:
           label: Align Trajectory\nw.r.t. Protein CA
