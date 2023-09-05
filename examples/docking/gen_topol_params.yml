@@ -62,7 +62,7 @@ steps:
 #      input_itp_path: '*ligand_GMX.itp'
       input_top_zip_path: ~input_top_zip_path #'*receptor.zip'
       output_top_zip_path: '&complex_vac.zip'
-- cat_pdb:
+- combine_pdb:
     in:
       input_structure1: ~input_receptor_pdb_path # '*receptor_hydrogens.pdb'
       input_structure2: '*pose_ligand.pdb'
@@ -100,7 +100,7 @@ wic:
       wic:
         graphviz:
           label: Combine Receptor\nLigand Topologies
-    (8, cat_pdb):
+    (8, combine_pdb):
       wic:
         graphviz:
           label: Combine Receptor\nLigand Coordinates
