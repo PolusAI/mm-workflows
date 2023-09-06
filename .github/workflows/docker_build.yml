@@ -18,7 +18,14 @@ jobs:
       fail-fast: false
       matrix:
         # NOTE: Use a matrix (instead of dockerBuild.sh) for parallelism
-        dockerfile: [vina, scripts, biosimspace, PDBBind_refined]  # skip data/
+        dockerfile: [align_protein_ca_mda, align_protein_ca_pymol, atomselect,
+                     autodock_vina, autodock_vina_filter, bash_scripts,
+                     calculate_net_charge, generate_conformers,
+                     mol2_to_pdbqt, nmr4md, openbabel,
+                     remove_terminal_residue_name_prefixes,
+                     rename_residues_mol,
+                     pdbbind_refined]  # No username for pdbind_refined
+        # skip data/ and cwl_adapters/file_format_conversions/biosimspace/
     runs-on: [ubuntu-latest]
 
     steps:

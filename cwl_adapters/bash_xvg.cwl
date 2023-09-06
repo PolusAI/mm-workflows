@@ -12,7 +12,7 @@ baseCommand: bash
 
 hints:
   DockerRequirement:
-    dockerPull: jakefennick/scripts
+    dockerPull: jakefennick/bash_scripts
 
 inputs:
   script:

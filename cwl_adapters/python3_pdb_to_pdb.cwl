@@ -12,7 +12,7 @@ baseCommand: python3
 
 hints:
   DockerRequirement:
-    dockerPull: jakefennick/scripts
+    dockerPull: jakefennick/remove_terminal_residue_name_prefixes
 
 inputs:
   script:

@@ -1,0 +1,11 @@
+FROM condaforge/mambaforge
+# NOT mambaforge-pypy3 (mdanalysis is incompatible with pypy)
+
+RUN mamba install -c conda-forge mdanalysis matplotlib pip
+RUN pip install nmrformd
+
+ADD nmr4md.py .
+ADD python_cwl_driver.py .
+ADD workflow_types.py .
+
+ADD Dockerfile_nmr4md .

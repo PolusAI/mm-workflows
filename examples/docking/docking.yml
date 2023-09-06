@@ -24,7 +24,7 @@ steps:
 # "ERROR: more than one residue detected '{'UNL', 'MOL'}'"
   - python3_mol2_to_mol2:
       in:
-        script: /rename_residues_MOL.py # NOTE: Initial / required
+        script: /rename_residues_mol.py # NOTE: Initial / required
         input_mol2_path: '*ligand_min.mol2'
         output_mol2_path: '&conformer.mol2'
 

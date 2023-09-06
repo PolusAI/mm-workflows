@@ -1,0 +1,7 @@
+FROM condaforge/mambaforge
+# NOT mambaforge-pypy3 (mdanalysis is incompatible with pypy)
+
+RUN mamba install -c conda-forge mdanalysis
+
+ADD align_protein_ca_mda.py .
+ADD Dockerfile_align_protein_ca_mda .

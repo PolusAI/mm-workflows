@@ -1,0 +1,10 @@
+FROM condaforge/mambaforge
+# NOT mambaforge-pypy3 (mdtraj is incompatible with pypy)
+
+RUN mamba install -c conda-forge mdtraj
+
+ADD atomselect.py .
+ADD python_cwl_driver.py .
+ADD workflow_types.py .
+
+ADD Dockerfile_atomselect .

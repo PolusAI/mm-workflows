@@ -1,0 +1,5 @@
+FROM python
+# No dependencies; only python std lib
+
+ADD remove_terminal_residue_name_prefixes.py .
+ADD Dockerfile_remove_terminal_residue_name_prefixes .

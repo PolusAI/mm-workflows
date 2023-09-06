@@ -12,7 +12,7 @@ baseCommand: python3
 
 hints:
   DockerRequirement:
-    dockerPull: jakefennick/scripts
+    dockerPull: jakefennick/align_protein_ca_mda
 
 inputs:
   script:

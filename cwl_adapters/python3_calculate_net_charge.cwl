@@ -9,11 +9,10 @@ doc: |-
   Calculate the total charge of a given ligand
 
 baseCommand: python3
-#arguments: ["../scripts/examples/calculate_net_charge.py"]
 
-# hints:
-#   DockerRequirement:
-#     dockerPull: jakefennick/scripts
+hints:
+  DockerRequirement:
+    dockerPull: jakefennick/calculate_net_charge
 requirements:
   InlineJavascriptRequirement: {}
 
@@ -24,7 +23,7 @@ inputs:
     - edam:format_2330
     inputBinding:
       position: 1
-      #default: ../scripts/examples/calculate_net_charge.py
+    default: /calculate_net_charge.py
   input_path:
     label: Path to the input file
     doc: |-

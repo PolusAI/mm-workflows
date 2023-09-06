@@ -1,0 +1,5 @@
+FROM bash
+
+# TODO: exclude obminimize.sh
+ADD *.sh .
+ADD Dockerfile_bash_scripts .

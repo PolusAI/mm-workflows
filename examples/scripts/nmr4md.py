@@ -7,10 +7,11 @@ def main(input_tpr_path, input_trr_path, output_png_path):  # type: ignore[no-un
     from matplotlib import pyplot as plt
 
     # The following code comes directly from the nmr4md tutorial at
-    # https://github.com/simongravelle/nmrformd/blob/main/docs/source/tutorials/tutorial01.ipynb
+    # https://github.com/simongravelle/nmrformd/blob/main/docs/source/tutorials/bulk-water.rst
 
     u = mda.Universe(input_tpr_path, input_trr_path)
-    nmr_result = nmrformd.NMR(u, ["type H", "type H"])
+    group_H = u.select_atoms("type H*")
+    nmr_result = nmrformd.NMR(u, group_H)
 
     fontsize = 20
     font = {'color':  'black', 'weight': 'normal', 'size': fontsize}

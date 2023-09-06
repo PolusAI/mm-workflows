@@ -1,0 +1,7 @@
+FROM condaforge/mambaforge
+# NOT mambaforge-pypy3 (rdkit is incompatible with pypy)
+
+RUN mamba install -c conda-forge rdkit
+
+ADD calculate_net_charge.py .
+ADD Dockerfile_calculate_net_charge .

@@ -1,0 +1,11 @@
+FROM condaforge/mambaforge-pypy3
+
+RUN apt-get update && apt-get install -y wget
+# Download the bdbbind dataset
+RUN wget --no-clobber http://www.pdbbind.org.cn/download/PDBbind_v2020_refined.tar.gz
+RUN tar -xvf PDBbind_v2020_refined.tar.gz
+
+RUN mamba install -c conda-forge pandas
+
+ADD generate_pdbbind_complex.py .
+ADD Dockerfile_pdbbind_refined .

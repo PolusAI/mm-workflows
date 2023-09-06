@@ -15,14 +15,14 @@ arguments: ["-rcQ", $(inputs.script), "--", $(inputs.input_1_path), $(inputs.inp
 
 hints:
   DockerRequirement:
-    dockerPull: jakefennick/scripts
+    dockerPull: jakefennick/align_protein_ca_pymol
 
 inputs:
   script:
     type: string
     inputBinding:
       position: 1
-    default: /align_protein_CA_pymol.py # NOTE: Initial / required
+    default: /align_protein_ca_pymol.py # NOTE: Initial / required
 
   input_1_path:
     type: File

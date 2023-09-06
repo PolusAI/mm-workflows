@@ -27,6 +27,7 @@ steps:
 - python_script:
     in:
       script: ../scripts/generate_conformers.py
+      dockerPull: jakefennick/generate_conformers
       #input_excel_path: # inferred
       # query syntax: `column name` 'column value'
       query: ~query #"`Standard Type` == 'Kd' and `duplicate-type-classifier` == 'unique'"
