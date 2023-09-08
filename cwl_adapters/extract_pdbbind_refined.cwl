@@ -12,7 +12,9 @@ baseCommand: python3
 
 hints:
   DockerRequirement:
-    dockerPull: pdbbind_refined_v2020  # NOTE: no username
+    dockerImageId: pdbbind_refined_v2020  # NOTE: no username
+    dockerFile:
+        $include: ../examples/scripts/Dockerfile_pdbbind_refined
 
 requirements:
   InlineJavascriptRequirement: {}
@@ -135,14 +137,6 @@ inputs:
     doc: |-
       Experimental Free Energies of Binding
     type: string?
-    format:
-    - edam:format_2330
-
-  previous_stdout:
-    label: NOTE, This input is to enforce a fake / dummy dependency between steps. Do NOT explicitly supply a value here!
-    doc: |-
-      NOTE, This input is to enforce a fake / dummy dependency between steps. Do NOT explicitly supply a value here!
-    type: File
     format:
     - edam:format_2330
 

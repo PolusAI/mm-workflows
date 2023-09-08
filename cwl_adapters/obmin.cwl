@@ -12,7 +12,7 @@ baseCommand: bash
 
 hints:
   DockerRequirement:
-    dockerPull: jakefennick/bash_scripts
+    dockerPull: jakefennick/openbabel
 
 inputs:
   script:

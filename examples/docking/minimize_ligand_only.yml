@@ -12,7 +12,7 @@ steps:
         output_mol2_path: '&ligand.mol2'
         arg1: -h # add hydrogens
         # arg1: -p 7.4
-  - bash_mol2:
+  - obmin:
       in:
         # Perform an initial minimization (only), i.e. do not search for conformers.
         script: /obminimize.sh # NOTE: Initial / required

@@ -1,0 +1,36 @@
+FROM condaforge/mambaforge
+# NOT mambaforge-pypy3 (pandas & rdkit & mdtraj are incompatible with pypy)
+
+# Install requirements
+RUN apt-get update && apt-get install -y wget git
+
+# Create environment
+# Since python 3.10 is already installed in the base image condaforge/mambaforge, 
+# if not specify the python version requirement, python version will has conflict with the openbabel <3.0.
+#0 23.40 Pinned packages:
+#0 23.40   - python 3.10.*
+#0 23.40 The following packages are incompatible
+#0 23.40 └─ openbabel <3.0  is installable with the potential options
+#0 23.40    ├─ openbabel 2.4.1 would require
+#0 23.40    │  └─ python >=2.7,<2.8.0a0 , which can be installed;
+#0 23.40    ├─ openbabel 2.4.1 would require
+#0 23.40    │  └─ python >=3.6,<3.7.0a0 , which can be installed;
+#0 23.40    └─ openbabel 2.4.1 would require
+#0 23.40       └─ python >=3.7,<3.8.0a0 , which can be installed.
+# So, explicitly downgrade to python=3.7.*
+RUN mamba install -c conda-forge "python=3.7.*" "openbabel<3.0" numpy pandas mdtraj biopandas -y
+RUN pip install -U scikit-learn rdkit-pypi
+
+# cleanup
+RUN apt-get clean
+RUN mamba clean --all --yes
+RUN pip cache purge
+
+# Install OnionNet-SFCT
+RUN git clone https://github.com/cyangNYU/OnionNet-SFCT.git
+WORKDIR /OnionNet-SFCT
+
+# Download models
+RUN mkdir -p data && cd data && wget https://huggingface.co/cyangNYU/OnionNet-SFCT-final-model/resolve/main/sfct_std_final.model
+
+ADD Dockerfile_onionnet-sfct .
