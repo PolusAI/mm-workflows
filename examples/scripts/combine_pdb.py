@@ -9,6 +9,7 @@ from rdkit import Chem
 import mdtraj as mdj
 import parmed as pmd
 
+
 def parse_arguments() -> argparse.Namespace:
     """ This function parses the arguments.
 
@@ -22,6 +23,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument('--method', required=False, default='mdtraj')
     args = parser.parse_args()
     return args
+
 
 def read_pdb_rdkit(input_structure_path: str) -> Optional[Chem.rdchem.Mol]:
     """ Read a PDB file using RDKit 
@@ -41,6 +43,7 @@ def read_pdb_rdkit(input_structure_path: str) -> Optional[Chem.rdchem.Mol]:
 
     return pdb
 
+
 def combine_pdb_rdkit(input_structure1_path: str, input_structure2_path: str, output_structure_path: str) -> None:
     """ Combine two PDB structures into a single PDB file using RDKit
 
@@ -57,6 +60,7 @@ def combine_pdb_rdkit(input_structure1_path: str, input_structure2_path: str, ou
 
     with Chem.PDBWriter(output_structure_path) as writer:
         writer.write(combo)
+
 
 def combine_pdb_mdtraj(input_structure1_path: str, input_structure2_path: str, output_structure_path: str) -> None:
     """ Combine two PDB structures into a single PDB file using MDtraj
@@ -78,6 +82,7 @@ def combine_pdb_mdtraj(input_structure1_path: str, input_structure2_path: str, o
 
     combined_pdb = mdj.Trajectory(xyz=xyz1_2, topology=top1_2)
     combined_pdb.save_pdb(output_structure_path)
+
 
 def combine_pdb_parmed(input_structure1_path: str, input_structure2_path: str, output_structure_path: str) -> None:
     """ Combine two PDB structures into a single PDB file using Parmed
@@ -104,6 +109,7 @@ def combine_pdb_parmed(input_structure1_path: str, input_structure2_path: str, o
 
     combined.save(output_structure_path, format='pdb', overwrite=True)
 
+
 def main() -> None:
     """ Reads the command line arguments and combine two PDB structures into a single PDB file
     """
@@ -125,6 +131,7 @@ def main() -> None:
         combine_pdb_parmed(args.input_structure1, args.input_structure2, args.output_structure_path)
     else:
         print('The method must be one of the following: mdtraj, rdkit, or parmed.')
+
 
 if __name__ == '__main__':
     main()
