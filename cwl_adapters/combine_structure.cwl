@@ -12,7 +12,7 @@ baseCommand: ['python', '/combine_structure.py']
 
 hints:
   DockerRequirement:
-    dockerPull: ndonyapour/combine_structure
+    dockerPull: ndonyapour/combine_structure_zip
 
 inputs:
   input_structure1:
@@ -40,6 +40,20 @@ inputs:
     - edam:format_3877 
     inputBinding:
       prefix: --input_structure2
+  
+  input_top_zip_path:
+    label: Input zip file
+    doc: |-
+      Input zip file
+      Type: string
+      File type: input
+      Accepted formats: zip
+      Example file: https://github.com/bioexcel/biobb_md/blob/master/biobb_md/test/data/gromacs/genion.zip
+    type: File
+    format:
+    - edam:format_3987
+    inputBinding:
+      prefix: --input_top_zip_path
 
   output_structure_path:
     label: Output combined PDB file path

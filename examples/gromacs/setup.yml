@@ -10,13 +10,6 @@ inputs:
     - edam:format_3987
 
 steps:
-# - editconf:
-#     in:
-#       input_crd_path: ~crd_path
-#       #input_crd_path: '*complex_vac.pdb'
-#       config:
-#         box_type: cubic
-#         distance_to_molecule: 1.2
 - gmx_editconf:
     in:
       input_crd_path: ~crd_path

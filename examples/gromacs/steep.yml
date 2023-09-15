@@ -1,3 +1,9 @@
+inputs:
+  top_zip_path:
+    type: File
+    format:
+    - edam:format_3987
+
 # On my machine, 10 iterations of steepest descent is sufficient to prevent
 # conjugate gradient from crashing. (i.e. pytest works for me!)
 # But using only 10 iterations is causing the tests on github actions to fail!
@@ -5,6 +11,7 @@
 steps:
   - grompp:
       in:
+        input_top_zip_path: ~top_zip_path
         config:
           mdp:
             integrator: steep

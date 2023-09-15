@@ -18,12 +18,13 @@ inputs:
     - edam:format_3987
 
 steps:
-  - setup.yml:
+  - setup_vac_min.yml:
       in:
         crd_path: ~crd_path
         top_zip_path: ~top_zip_path
   - basic.yml:
       in:
+        top_zip_path: '*genion.zip'
         nsteps: ~nsteps
         dt: ~dt
         ref-t: ~temperature
