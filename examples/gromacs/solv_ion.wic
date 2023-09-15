@@ -1,39 +1,46 @@
+inputs:
+  top_zip_path:
+    type: File
+    format:
+    - edam:format_3987
+
 steps:
-    editconf:
-      in:
-        config: !ii
-          box_type: cubic
-          distance_to_molecule: 1.0
-    solvate:
-      in:
-        input_top_zip_path: !* complex_vac.zip
-      out:
-      - output_crd_path: !& solvate.gro
-      - output_top_zip_path: !& solvate.zip
-    grompp:
-      in:
-        input_crd_path: !* solvate.gro
-        input_top_zip_path: !* solvate.zip
-        config: !ii
-          maxwarn: 1 # net charge != 0
-          mdp:
-            integrator: steep
-    genion:
-      in:
-        config: !ii
-          neutral: True
-      out:
-      - output_top_zip_path: !& genion.zip
+  gmx_editconf:
+    in:
+      #input_crd_path: crd_path
+      align_principal_axes: !ii 0
+      box_type: !ii cubic
+      distance_to_molecule: !ii 1.2
+  solvate:
+    in:
+      input_top_zip_path: top_zip_path
+    out:
+    - output_crd_path: !& solvate.gro
+    -  output_top_zip_path: !& solvate.zip
+  grompp:
+    in:
+      input_crd_path: !* solvate.gro
+      input_top_zip_path: !* solvate.zip
+      config: !ii
+        maxwarn: 1 # net charge != 0
+        mdp:
+          integrator: steep
+  genion:
+    in:
+      config: !ii
+        neutral: True
+    out:
+    - output_top_zip_path: !& genion.zip
 # Use &filename to create a reference to an output. Inputs in later steps can
 # use *filename to dereference the filename and create an explicit edge.
 wic:
   graphviz:
     label: Solvation & Ionization
     ranksame:
-    - (1, editconf)
+    - (1, gmx_editconf)
     - (4, genion)
   steps:
-    (1, editconf):
+    (1, gmx_editconf):
       wic:
         graphviz:
           label: 'Initialize\nPeriodic Box'

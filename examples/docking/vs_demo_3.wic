@@ -127,18 +127,24 @@ wic:
     (7, gen_topol_params.wic):
       wic:
         inlineable: False
+
     (8, stability.wic):
       wic:
         inlineable: False
         steps:
-          (1, setup.wic):
+          (1, setup_vac_min.wic):
             wic:
               steps:
-                (4, genion):
-                  out:
-                  - output_top_zip_path: !& genion_complex.zip
+                (3, solv_ion.wic):
+                  wic:
+                    steps:
+                      (4, genion):
+                        out:
+                        - output_top_zip_path: !& genion_complex.zip
           (2, basic.wic):
-            wic:
+            in: 
+              top_zip_path: !* genion_complex.zip
+            wic: 
               steps:
                 (3, prod.wic):
                   wic:

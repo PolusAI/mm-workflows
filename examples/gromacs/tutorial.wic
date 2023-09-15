@@ -1,15 +1,15 @@
 # This is based on the excellent gromacs CWL tutorial
 # https://mmb.irbbarcelona.org/biobb/availability/tutorials/cwl
 steps:
-    modeling.wic:
-    stability.wic:
-      in:
-        crd_path: !* complex_vac.pdb
-        top_zip_path: !* complex_vac.zip
-        nsteps: !ii 100000
-        dt: !ii 0.002
-        temperature: !ii 298.0
-        pressure: !ii 1.0
+  modeling.wic:
+  stability.wic:
+    in:
+      crd_path: !* complex_vac.pdb
+      top_zip_path: !* complex_vac.zip
+      nsteps: !ii 100000
+      dt: !ii 0.002
+      temperature: !ii 298.0
+      pressure: !ii 1.0
 
 wic:
   graphviz:
