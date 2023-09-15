@@ -92,6 +92,7 @@ steps:
         input_structure1: '*receptor_gro.pdb' # '*receptor_hydrogens.pdb'
         input_structure2: '*pose_ligand.pdb'
         output_structure_path: '&complex_vac.pdb'
+        method: rdkit  # Must use rdkit! See combine_pdb.py
 
 wic:
    graphviz:

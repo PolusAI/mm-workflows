@@ -68,7 +68,7 @@ inputs:
     - edam:format_2330
     inputBinding:
       prefix: --method
-    default: mdtraj
+    default: rdkit
 
 
 outputs:
