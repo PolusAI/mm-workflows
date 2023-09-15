@@ -1,0 +1,52 @@
+steps:
+  - download_gdb9_database:
+      in:
+        output_sdf_path: '&gdb9.sdf'
+        output_NP_Score_path: '&NP_score.pkl.gz'
+        output_SA_Score_path: '&SA_score.pkl.gz'
+        
+  - preprocess_molgan_database:
+      in:
+        input_sdf_path: '*gdb9.sdf'
+        output_data_path: '&data.pkl'
+
+  - train_molgan_model:
+      in:
+        input_data_path: '*data.pkl'
+        input_NP_Score_path: '*NP_score.pkl.gz'
+        input_SA_Score_path: '*SA_score.pkl.gz'
+        output_log_path: training_log
+        output_model_dir: '&models'
+        validation_metrics: 'validity,sas'
+        num_epochs: 2
+        save_frequency: 1
+        
+  - run_trained_molgan_model:
+      in:
+        input_data_path: '*data.pkl'
+        input_NP_Score_path: '*NP_score.pkl.gz'
+        input_SA_Score_path: '*SA_score.pkl.gz'
+        input_model_dir: '*models'
+        output_sdf_path: 'generated_mols.sdf'
+        output_log_path: test_log
+
+wic:
+  graphviz:
+    label: MolGAN Tool for Generating Small Molecules
+  steps:
+    (1, download_gdb9_database):
+      wic:
+        graphviz:
+          label: Download GDB9 Database
+    (2, preprocess_molgan_database):
+      wic:
+        graphviz:
+          label: Preprocess The GDB9 Database
+    (3, train_molgan_model):
+      wic:
+        graphviz:
+          label: Train The model
+    (4, run_trained_molgan_model):
+      wic:
+        graphviz:
+          label: Generate Molecules With the Trained model
