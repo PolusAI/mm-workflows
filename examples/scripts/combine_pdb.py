@@ -10,6 +10,15 @@ import mdtraj as mdj
 import parmed as pmd
 
 
+# "Combining" two pdb files is non-trivial. Literally concatenating the two pdb
+# file contents (e.g. using biobb cat_pdb) will cause spurious bonds if there
+# are explicit CONECT records (and if the indices are not re-numbered).
+# Similarly, there will be problems if the atom names or residue names are
+# modified, or if the order of the atoms and/or residues are modified such
+# that they no longer agree with the order in the combined topology file.
+# MDtraj doesn't work because it modifies the atom names, Parmed doesn't
+# work because it removes CONECT records in the combined file, but RDKit
+# preserves all of the topological information.
 def parse_arguments() -> argparse.Namespace:
     """ This function parses the arguments.
 
@@ -20,7 +29,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument('--input_structure1', required=True)
     parser.add_argument('--input_structure2', required=True)
     parser.add_argument('--output_structure_path', required=True)
-    parser.add_argument('--method', required=False, default='mdtraj')
+    parser.add_argument('--method', required=False, default='rdkit')
     args = parser.parse_args()
     return args
 
