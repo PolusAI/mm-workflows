@@ -8,8 +8,16 @@ label: Downloads the NCI lgand database(s)
 doc: |-
   Downloads the NCI lgand database(s)
 
+# cwltool uses the command, arguments, resolved paths of inputs of File type, and
+# a few requirement field (e.g. DockerRequirement, InitialWorkDirRequirement) to
+# construct a keydict and calculate its md5 hashcode as the name of the cache
+# folder of a workflow step. In order to reuse the cached output when rerunning,
+# we should avoid using nondeterministic values, like $(runtime.outdir), and
+# favor static values, like "." for output directory.
+# See https://github.com/common-workflow-language/cwltool/blob/20f01e04328537714e57d136e242d3e7a9d44266/cwltool/command_line_tool.py#L850C1-L906C1.
+
 baseCommand: cp
-arguments: [$(inputs.database), $(runtime.outdir)]
+arguments: [$(inputs.database), $(".")]
 
 requirements:
   InlineJavascriptRequirement: {}
