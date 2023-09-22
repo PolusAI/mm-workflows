@@ -155,7 +155,7 @@ outputs:
     type: File
     format: edam:format_2330 # 'Textual format'
     outputBinding:
-      glob: output/setup/setup.log # $(runtime.outdir)/output/setup/setup.log also works
+      glob: output/setup/setup.log
 
 # Actually, these outputs are only relevant for the receptor/ligand setup route.
 
