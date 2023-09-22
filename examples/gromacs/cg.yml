@@ -4,6 +4,8 @@ steps:
         config:
           mdp:
             integrator: cg
+            define: -DFLEXIBLE # Defines a flexible water model if it exists in the system
+            # https://manual.gromacs.org/current/reference-manual/algorithms/energy-minimization.html#conjugate-gradient
             rvdw: 1.4
             rcoulomb: 1.4
             #coulombtype: PME
