@@ -20,6 +20,8 @@ steps:
         # https://manual.gromacs.org/current/release-notes/2022/2022.3.html#energy-minimization-would-not-converge-with-gpu-and-without-dd
         bonded_terms: cpu # GPU implementation IS supported for md integrator, is NOT supported for sd integrator, etc.
         pme_terms: cpu
+        pme_fft_terms: cpu
+        update_terms: cpu
   - gmx_energy:
       in:
         config:

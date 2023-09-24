@@ -3,7 +3,7 @@ steps:
       in:
         config:
           mdp:
-            integrator: sd
+            integrator: md  # Use md for performance so we can update coordinates on GPU. Use sd for proper statistical properties.
             rvdw: 1.0
             rcoulomb: 1.0
             coulombtype: PME

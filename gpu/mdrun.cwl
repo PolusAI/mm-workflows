@@ -33,7 +33,6 @@ inputs:
     type: string?
     inputBinding:
       prefix: -nb
-      position: 1
     default: gpu
 
   bonded_terms:
@@ -43,7 +42,6 @@ inputs:
     type: string?
     inputBinding:
       prefix: -bonded
-      position: 2
     default: gpu
 
   pme_terms:
@@ -53,7 +51,24 @@ inputs:
     type: string?
     inputBinding:
       prefix: -pme
-      position: 3
+    default: gpu
+
+  pme_fft_terms:
+    label: Device to perform PME FFT calculations on
+    doc: |-
+      Device to perform PME FFT calculations on
+    type: string?
+    inputBinding:
+      prefix: -pmefft
+    default: gpu
+
+  update_terms:
+    label: Device to perform coordinate updates and constraints on
+    doc: |-
+      Device to perform PME coordinate updates and constraints on
+    type: string?
+    inputBinding:
+      prefix: -update
     default: gpu
 
   number_threads:
@@ -68,7 +83,6 @@ inputs:
 # Need to set -ntomp instead.
     inputBinding:
       prefix: -nt
-      position: 4
     default: 2 # We want to essentially disable the CPU-GPU load-balancing.
     # However, since some operations are CPU only, using only 1 CPU will
     # slow down overall runtime (see Amdahl's Law). However, we also do NOT
@@ -88,7 +102,6 @@ inputs:
     format:
     - edam:format_2333
     inputBinding:
-      position: 5
       prefix: -s
 
   output_trr_path:
@@ -103,7 +116,6 @@ inputs:
     format:
     - edam:format_3910
     inputBinding:
-      position: 6
       prefix: -o
     default: system.trr
 
@@ -119,7 +131,6 @@ inputs:
     format:
     - edam:format_2033
     inputBinding:
-      position: 7
       prefix: -c
     default: system.gro
     # Consider using .g96 files for increased precision
@@ -137,7 +148,6 @@ inputs:
     format:
     - edam:format_2330
     inputBinding:
-      position: 8
       prefix: -e
     default: system.edr
 
@@ -153,7 +163,6 @@ inputs:
     format:
     - edam:format_2330
     inputBinding:
-      position: 9
       prefix: -g
     default: system.log
 
