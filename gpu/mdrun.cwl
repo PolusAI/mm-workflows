@@ -8,17 +8,20 @@ label: Wrapper of the GROMACS mdrun module with GPUs.
 doc: |-
   MDRun is the main computational chemistry engine within GROMACS. It performs Molecular Dynamics simulations, but it can also perform Stochastic Dynamics, Energy Minimization, test particle insertion or (re)calculation of energies.
 
-baseCommand: gmx
+baseCommand: /gromacs/bin/gmx
 arguments: ["mdrun"]
 
 hints:
   cwltool:CUDARequirement:
-    cudaVersionMin: "11.4"
+    cudaVersionMin: "11.8"  # 11.8 for gromacs 2023, 11.4 otherwise
     cudaComputeCapability: "3.0"
     cudaDeviceCountMin: 1
     cudaDeviceCountMax: 1
   DockerRequirement:
-    dockerPull: gromacs/gromacs:2021.4 # uses CUDA 10.1 which is compatible with our EC2 instances.
+    dockerPull: jakefennick/gromacs:2023.2 # ~2X performance improvement over gromacs 2022
+    # dockerPull: gromacs/gromacs:2022.2 # Compatible with AWS EC2 "P3" instance types.
+    # dockerPull: gromacs/gromacs:2021.4 # uses CUDA 10.1 which is compatible with AWS EC2 "P2" instance types.
+    # See https://aws.amazon.com/ec2/instance-types/#Accelerated_Computing
     # NOTE: None of the nvcr.io/hpc/gromacs images seem to work
 
 inputs:
@@ -53,17 +56,18 @@ inputs:
       position: 3
     default: gpu
 
-  number_threads_openmp:
-    label: Number of openmp threads to start
+  number_threads:
+    label: Number of threads to start
     doc: |-
-      Number of openmp threads to start
+      Number of threads to start
     type: int
 # Cannot set total number of threads -nt with the gromacs/gromacs images, else:
 # "Fatal error:
 # Setting the total number of threads is only supported with thread-MPI and
 # GROMACS was compiled without thread-MPI"
+# Need to set -ntomp instead.
     inputBinding:
-      prefix: -ntomp
+      prefix: -nt
       position: 4
     default: 2 # We want to essentially disable the CPU-GPU load-balancing.
     # However, since some operations are CPU only, using only 1 CPU will
@@ -118,6 +122,8 @@ inputs:
       position: 7
       prefix: -c
     default: system.gro
+    # Consider using .g96 files for increased precision
+    # default: system.g96
 
   output_edr_path:
     label: Path to the output GROMACS portable energy file EDR

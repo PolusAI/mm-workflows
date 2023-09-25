@@ -15,7 +15,7 @@ steps:
             constraints: h-bonds
             nstxout: 100
             nstenergy: 10
-            define: -DPOSRES
+            # define: -DPOSRES
             comm-mode: Linear
             comm-grps: system
   - mdrun:

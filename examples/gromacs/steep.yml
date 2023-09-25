@@ -10,6 +10,7 @@ steps:
             integrator: steep
             rvdw: 1.4
             rcoulomb: 1.4
+            #coulombtype: PME
             nsteps: 1000
             emstep: 0.0001
             emtol: 100
@@ -17,6 +18,8 @@ steps:
             nstenergy: 1
   - mdrun:
       in:
+        nb_terms: cpu  # NOTE: Workaround for a bug in gromacs 2022.2, fixed in 2022.3
+        # https://manual.gromacs.org/current/release-notes/2022/2022.3.html#energy-minimization-would-not-converge-with-gpu-and-without-dd
         bonded_terms: cpu # GPU implementation IS supported for md integrator, is NOT supported for sd integrator, etc.
         pme_terms: cpu
   - gmx_energy:
