@@ -28,11 +28,13 @@ inputs:
     type: File
     format:
     - edam:format_1476 # pdb
+    - edam:format_3877 # xyz
 
   input_2_path:
     type: File
     format:
     - edam:format_1476 # pdb
+    - edam:format_3877 # xyz
 
   input_3_path:
     type: File

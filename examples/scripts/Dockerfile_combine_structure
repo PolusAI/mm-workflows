@@ -1,6 +1,6 @@
 FROM condaforge/mambaforge
 # NOT mambaforge-pypy3 (rdkit is incompatible with pypy)
 
-RUN mamba install -c conda-forge rdkit parmed mdtraj
+RUN mamba install -c conda-forge rdkit
 
-ADD combine_pdb.py .
+ADD combine_structure.py .

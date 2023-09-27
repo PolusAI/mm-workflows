@@ -1,15 +1,12 @@
 steps:
-- bash_docker_build:
-    in:
-      # NOTE: docker_build.sh uses sudo, so you will be prompted for your sudo password.
-      script: ../scripts/docker_build.sh
-      docker_file: ../scripts/Dockerfile_PDBbind_refined
-      tag: pdbbind_refined_v2020 # NOTE: no username
-      python_script: ../scripts/generate_pdbbind_complex.py
-
 - extract_pdbbind_refined:
     in:
-      query: '(Kd_Ki == "Kd") & (value < 0.000002)'
+      # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.query.html
+      # The query() method uses a slightly modified Python syntax by default. 
+      # For example, the & and | (bitwise) operators have the precedence of their 
+      # boolean cousins, and and or. This is syntactically valid Python, however 
+      # the semantics are different.
+      query: '(Kd_Ki == "Kd") and (value < 0.000002)'
       max_row: 1 #25 # Use 1 for CI
       convert_Kd_dG: 'True'
       output_txt_path: '&binding_data.txt'
@@ -78,8 +75,8 @@ steps:
     in:
       input_ligand_pdbqt_path: '*ligand_filter.pdbqt'
       input_top_zip_path: '*receptor.zip'
-      input_receptor_pdb_path: '*receptor_gro.pdb'
-    scatter: [input_ligand_pdbqt_path, input_top_zip_path, input_receptor_pdb_path]
+      input_receptor_xyz_path: '*receptor.xyz'
+    scatter: [input_ligand_pdbqt_path, input_top_zip_path, input_receptor_xyz_path]
     scatterMethod: dotproduct
 
 - stability.yml:
@@ -104,41 +101,37 @@ wic:
   graphviz:
     label: Virtual Screening Demo
   steps:
-    (1, bash_docker_build):
-      wic:
-        graphviz:
-          label: Download PDBbind\nBuild Docker Image
-    (2, extract_pdbbind_refined):
+    (1, extract_pdbbind_refined):
       wic:
         graphviz:
           label: Extract PDBbind Data
-    (3, fix_side_chain):
+    (2, fix_side_chain):
       wic:
         graphviz:
           label: Fix Side Chains
-    (4, convert_pdbqt.yml):
+    (3, convert_pdbqt.yml):
       wic:
         inlineable: False
-    (5, autodock_vina_rescore.yml):
+    (4, autodock_vina_rescore.yml):
       wic:
         inlineable: False
-    (6, duplicate):
+    (5, duplicate):
       wic:
         graphviz:
           label: Duplicate Receptor PDB
-    (7, autodock_vina_filter):
+    (6, autodock_vina_filter):
       wic:
         graphviz:
           label: Apply Docking\nScore Cutoff
-    (8, setup_pdb.yml):
+    (7, setup_pdb.yml):
       wic:
         inlineable: False # Due to yml wic tag inlineing issue and ~pdb_id
         graphviz:
           label: Setup PDB
-    (9, gen_topol_params.yml):
+    (8, gen_topol_params.yml):
       wic:
         inlineable: False
-    (10, stability.yml):
+    (9, stability.yml):
       wic:
         inlineable: False # Due to yml wic tag inlineing issue and ~ inputs
         steps:
@@ -172,10 +165,10 @@ wic:
                 (2, analysis_final.yml):
                   wic:
                     backend: complex
-    (11, autodock_vina_rescore.yml):
+    (10, autodock_vina_rescore.yml):
       wic:
         inlineable: False
-    (12, scatter_plot):
+    (11, scatter_plot):
       wic:
         graphviz:
           label: Plot Experimental\nvs Predicted Binding

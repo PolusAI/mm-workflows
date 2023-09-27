@@ -76,23 +76,21 @@ steps:
         output_pdbqt_path: '&pose_ligand.pdbqt'
         config:
           model: 1 # NOTE: score, rmsd l.b., rmsd u.b. stored in REMARK lines
-  - babel_convert:
+  - convert_xyz:
       in:
         input_path: '*pose_ligand.pdbqt'
-        output_path: '&pose_ligand.pdb'
-
+        output_xyz_path: '&pose_ligand.xyz'
 # Molecular Dynamics combine receptor & ligand
   - append_ligand:
       in:
         input_itp_path: '*ligand_GMX.itp'
         input_top_zip_path: '*receptor.zip'
         output_top_zip_path: '&complex_vac.zip'
-  - combine_pdb:
+  - combine_structure:
       in:
-        input_structure1: '*receptor_gro.pdb' # '*receptor_hydrogens.pdb'
-        input_structure2: '*pose_ligand.pdb'
+        input_structure1: '*receptor.xyz' # '*receptor_hydrogens.pdb'
+        input_structure2: '*pose_ligand.xyz'
         output_structure_path: '&complex_vac.pdb'
-        method: rdkit  # Must use rdkit! See combine_pdb.py
 
 wic:
    graphviz:
@@ -122,15 +120,15 @@ wic:
        wic:
          graphviz:
            label: Extract Best\nDocking Pose
-     (9, babel_convert):
+     (9, convert_xyz):
        wic:
          graphviz:
-           label: Convert Complex\npdb to pdbqt
+           label: Convert Complex\npdbqt to xyz
      (10, append_ligand):
        wic:
          graphviz:
            label: Append Ligand Topology\nto Receptor Topology
-     (11, combine_pdb):
+     (11, combine_structure):
        wic:
          graphviz:
            label: Append Ligand Coordinates\nto Receptor Coordinates
