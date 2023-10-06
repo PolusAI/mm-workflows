@@ -25,7 +25,7 @@ jobs:
                      remove_terminal_residue_name_prefixes,
                      rename_residues_mol, combine_pdb,
                      remove_terminal_residue_name_prefixes, molgan,
-                     pdbbind_refined]  # No username for pdbind_refined
+                     pdbbind_refined, onionnet-sfct, smina]  # No username for pdbind_refined
         # skip data/ and cwl_adapters/file_format_conversions/biosimspace/
     runs-on: [ubuntu-latest]
 
