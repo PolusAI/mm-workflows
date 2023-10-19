@@ -3,16 +3,16 @@ cwlVersion: v1.0
 
 class: CommandLineTool
 
-label: A tool that employs MDtraj to combine two PDB structures in a single PDB file.
+label: A tool that employs RDKit to combine two XYZ structures in a single PDB file.
 
 doc: |-
   None
 
-baseCommand: ['python', '/combine_pdb.py']
+baseCommand: ['python', '/combine_structure.py']
 
 hints:
   DockerRequirement:
-    dockerPull: ndonyapour/combine_pdb
+    dockerPull: ndonyapour/combine_structure
 
 inputs:
   input_structure1:
@@ -21,11 +21,10 @@ inputs:
       Input structure 1 file path
       Type: string
       File type: input
-      Accepted formats: pdb
-      Example file: https://github.com/bioexcel/biobb_structure_utils/raw/master/biobb_structure_utils/test/data/utils/cat_protein.pdb
+      Accepted formats: xyz
     type: File
     format:
-    - edam:format_1476
+    - edam:format_3877
     inputBinding:
       prefix: --input_structure1
 
@@ -35,18 +34,17 @@ inputs:
       Input structure 2 file path
       Type: string
       File type: input
-      Accepted formats: pdb
-      Example file: https://github.com/bioexcel/biobb_structure_utils/raw/master/biobb_structure_utils/test/data/utils/cat_ligand.pdb
+      Accepted formats: xyz
     type: File
     format:
-    - edam:format_1476
+    - edam:format_3877 
     inputBinding:
       prefix: --input_structure2
 
   output_structure_path:
-    label: Output protein file path
+    label: Output combined PDB file path
     doc: |-
-      Output protein file path
+      Output combined PDB file path
       Type: string
       File type: output
       Accepted formats: pdb
@@ -57,20 +55,6 @@ inputs:
     inputBinding:
       prefix: --output_structure_path
     default: system.pdb
-
-  method:
-    label: The frequency to save the outputs
-    doc: |-
-      The frequency to save the outputs
-      Type: string
-    type: string?
-    format:
-    - edam:format_2330
-    inputBinding:
-      prefix: --method
-    default: rdkit
-
-
 outputs:
   output_structure_path:
     label: Output protein file path

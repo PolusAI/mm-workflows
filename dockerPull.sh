@@ -23,4 +23,5 @@ docker pull jakefennick/rename_residues_mol
 docker pull ndonyapour/molgan
 docker pull cyangnyu/onionnet-sfct
 docker pull cyangnyu/smina
+docker pull ndonyapour/combine_structure
 

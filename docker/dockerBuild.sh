@@ -29,7 +29,7 @@ sudo docker build --no-cache --pull -f Dockerfile_nmr4md -t jakefennick/nmr4md .
 sudo docker build --no-cache --pull -f Dockerfile_openbabel -t jakefennick/openbabel .
 sudo docker build --no-cache --pull -f Dockerfile_remove_terminal_residue_name_prefixes -t jakefennick/remove_terminal_residue_name_prefixes .
 sudo docker build --no-cache --pull -f Dockerfile_rename_residues_mol -t jakefennick/rename_residues_mol .
-sudo docker build --no-cache --pull -f Dockerfile_combine_pdb -t ndonyapour/combine_pdb .
+sudo docker build --no-cache --pull -f Dockerfile_combine_structure -t ndonyapour/combine_structure .
 sudo docker build --no-cache --pull -f Dockerfile_molgan -t ndonyapour/molgan .
 sudo docker build --no-cache --pull -f Dockerfile_onionnet-sfct -t cyangnyu/onionnet-sfct .
 sudo docker build --no-cache --pull -f Dockerfile_smina -t cyangnyu/smina .

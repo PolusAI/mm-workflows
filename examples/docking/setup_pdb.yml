@@ -102,11 +102,10 @@ steps:
         # "Warning: atom name nnn in *.top and *.g96 does not match"
         output_top_zip_path: '&receptor.zip'
         config: '*config_tag_pdb2gmx'
-  - babel_convert:
+  - convert_xyz:
       in:
         input_path: '*receptor.gro'
-        output_path: '&receptor_gro.pdb'
-
+        output_xyz_path: '&receptor.xyz'
 wic:
    graphviz:
      label: Receptor Modeling + Docking + Initial Topology Setup
@@ -147,7 +146,7 @@ wic:
        wic:
          graphviz:
            label: Generate Initial\nReceptor Topology
-     (10, babel_convert):
+     (10, convert_xyz):
        wic:
          graphviz:
-           label: Convert Receptor\ngro to pdb
+           label: Convert Receptor\ngro to xyz
