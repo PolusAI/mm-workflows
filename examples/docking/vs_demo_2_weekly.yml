@@ -1,0 +1,15 @@
+steps:
+- vs_demo_2.yml:
+
+wic:
+  steps:
+    (1, vs_demo_2.yml):
+      wic:
+        steps:
+          (3, download_smiles_ligand_db.yml):
+            in:
+              max_row: 16 # Override default 1
+          (8, autodock_vina_filter):
+            in:
+              max_num_poses_per_ligand: 2 # Override default 1
+              max_num_poses_total: 16 # Override default 1
