@@ -18,20 +18,23 @@ RUN apt-get update && apt-get install -y wget git
 #0 23.40    └─ openbabel 2.4.1 would require
 #0 23.40       └─ python >=3.7,<3.8.0a0 , which can be installed.
 # So, explicitly downgrade to python=3.7.*
-RUN mamba install -c conda-forge "python=3.7.*" "openbabel<3.0" numpy pandas mdtraj biopandas -y
-RUN pip install -U scikit-learn rdkit-pypi
+RUN mamba install -c conda-forge "python=3.7.*" "openbabel<3.0" numpy pandas mdtraj biopandas tensorflow -y
+# /opt/conda/lib/python3.7/site-packages/sklearn/externals/joblib/__init__.py:15: 
+# FutureWarning: sklearn.externals.joblib is deprecated in 0.21 and will be removed in 0.23.
+RUN pip install -U "scikit-learn<0.23" rdkit-pypi
 
 # cleanup
 RUN apt-get clean
 RUN mamba clean --all --yes
 RUN pip cache purge
 
-# Install OnionNet-SFCT
-RUN git clone https://github.com/cyangNYU/OnionNet-SFCT.git
-WORKDIR /OnionNet-SFCT
+# Install onionnet
+RUN git clone https://github.com/cyangNYU/onionnet.git
+WORKDIR /onionnet
 
 # Download models
-## This weights model is originally extracted from the docker image (https://hub.docker.com/r/hotwa/onionnet_sfct).
-RUN mkdir -p data && cd data && wget https://huggingface.co/cyangNYU/OnionNet-SFCT-final-model/resolve/main/sfct_std_final.model
-
-ADD Dockerfile_onionnet-sfct .
+## the default model of onionnet-v1 in github repo is not correct, the actually size is around 600 MB. 
+## The authors provided a google drive link to download it, 
+## but their command wget "https://drive.google.com/uc?export=download&id=1cwJN44TgaVBWYEEb_SGU5JBJp6WbFdM1" -O "CNN_final_model_weights.h5" is not working.
+RUN cd models && rm CNN_final_model_weights.h5 && wget https://huggingface.co/cyangNYU/onionnet-v1/resolve/main/CNN_final_model_weights.h5
+ADD Dockerfile_onionnet .

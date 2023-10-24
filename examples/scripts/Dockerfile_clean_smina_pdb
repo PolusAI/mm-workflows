@@ -1,0 +1,6 @@
+FROM python
+
+RUN apt-get update && apt-get install -y wget
+RUN apt-get clean
+
+COPY clean_smina_pdb.py /
