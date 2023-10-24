@@ -33,7 +33,6 @@ inputs:
     - edam:format_3815
     - edam:format_3816
     inputBinding:
-      position: 1
       prefix: -r
 
   ligand_file:
@@ -50,7 +49,6 @@ inputs:
     - edam:format_3815
     - edam:format_3816
     inputBinding:
-      position: 2
       prefix: -l
 
   ligand_box:
@@ -67,14 +65,24 @@ inputs:
     - edam:format_3815
     - edam:format_3816
     inputBinding:
-      position: 3
       prefix: --autobox_ligand
+
+  local_only:
+    label: try local minimization only rather than docking
+    type: boolean?
+    inputBinding:
+      prefix: --local_only
+
+  score_only:
+    label: Do not do any conformational search; simply rescore.
+    type: boolean?
+    inputBinding:
+      prefix: --score_only
 
   scoring:
     label: scoring function option, default is vina, options can be (vina, vinardo, or a customized scoring function) 
     type: string?
     inputBinding:
-      position: 4
       prefix: --scoring
     default: "vina"
 
@@ -83,7 +91,6 @@ inputs:
     type: string?
     format: edam:format_1476
     inputBinding:
-      position: 5
       prefix: -o
     default: "docked.pdb"
 
