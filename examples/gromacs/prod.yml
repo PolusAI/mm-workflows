@@ -19,15 +19,15 @@ steps:
         ref-p: ~ref-p #1.0
         config:
           mdp:
-            integrator: sd
+            integrator: md  # Use md for performance so we can update coordinates on GPU. Use sd for proper statistical properties.
             rvdw: 1.0
             rcoulomb: 1.0
             coulombtype: PME
             tc-grps: system
             tau-t: 2
             constraints: h-bonds
-            nstxout: 100
-            nstenergy: 100
+            nstxout: 1000
+            nstenergy: 1000
             pcoupl: Parrinello-Rahman
             tau-p: 1
             compressibility: 4.5e-5
