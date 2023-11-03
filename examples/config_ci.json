@@ -1,0 +1,72 @@
+// NOTE: This file should be in one of the directories listed in yml_dirs.txt
+// (Technically comments are not allowed in JSON, but we are manually
+// stripping out all lines that start with // before parsing.)
+{
+    // Due to the computational complexity of the graph isomorphism problem, we
+    // need to manually exclude large workflows.
+    // See https://en.wikipedia.org/wiki/Graph_isomorphism_problem
+    "large_workflows": [
+        "dsb", "dsb1", "elm", "vs_demo_2", "vs_demo_3", "vs_demo_4"
+    ],
+    // NOTE: Most of the workflows in this list have free variables because they are subworkflows
+    // i.e. if you try to run them, you will get "Missing required input parameter"
+    "run_blacklist": [
+        "assign_partial_charges_batch",
+        "convert_ligand_mol2_to_pdbqt_mdanalysis",
+        "download_smiles_ligand_db",
+        "convert_ligand_mol2_to_pdbqt_obabel",
+        "analysis_realtime_ligand",
+        "analysis_realtime_complex",
+        "analysis_realtime_protein",
+        "ligand_modeling_docking",
+        "align_protein_CA_pymol",
+        "assign_partial_charges",
+        "minimize_ligand_only",
+        "analysis_final_steps",
+        "autodock_vina_rescore",
+        "analysis_final",
+        "gen_topol_params",
+        "analysis_realtime",
+        "convert_pdbqt",
+        "download_pdb",
+        "setup_vac_min",
+        "npt_gromacs",
+        "setup_pdb",
+        "docking_stability",
+        "npt_amber",
+        "analysis",
+        "solv_ion",
+        "topology",
+        "stability",
+        "docking",
+        "l-bfgs",
+        "basic",
+        "equil",
+        "setup",
+        "steep",
+        // modeling called in tutorial
+        "modeling",
+        // Do NOT run nmr, because it makes the CI go from ~30 mins to >6 hours due to:
+        "nmr",
+        // "MDAnalysis/coordinates/XDR.py:202: UserWarning:
+        // Cannot write lock/offset file in same location as
+        // .../prod.trr. Using slow offset calculation."
+        // So let's un-blacklist tutorial
+        // "tutorial",  // called in nmr
+        "prod",
+        "flc",
+        "dsb",
+        "npt",
+        "nvt",
+        "min",
+        "cg",
+        "yank",
+        // These (currently) always return success, so no point in running them.
+        "cwl_watcher_analysis",
+        "cwl_watcher_complex",
+        "cwl_watcher_ligand",
+        "cwl_watcher_protein",
+        // Skip vs_demo_4 so we don't accidentally DOS pdbbind.org.cn
+        "vs_demo_4"
+    ]
+}
