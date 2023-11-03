@@ -17,18 +17,9 @@ steps:
     in:
       output_pdb_path: '&mol_prod.pdbqt'
 
-# remove waters, then assigns partial charges to the protein
-- pdb4amber_run:
-    in:
-      input_pdb_path: ~input_pdb_path
-      output_pdb_path: '&pdbbind_pdb4amber.pdb'
-      config:
-        remove_waters: True
-        remove_hydrogens: True
-
 - convert_mol2:
     in:
-      input_path: '*pdbbind_pdb4amber.pdb'
+      input_path: ~input_pdb_path
 
 - convert_pdbqt:
     in:
@@ -46,15 +37,11 @@ wic:
       wic:
         graphviz:
           label: Convert to\npdbqt format
-    (3, pdb4amber_run):
-      wic:
-        graphviz:
-          label: Fix Residue Names\n(pdb4amber)
-    (4, convert_mol2):
+    (3, convert_mol2):
       wic:
         graphviz:
           label: Assign Partial Charges
-    (5, convert_pdbqt):
+    (4, convert_pdbqt):
       wic:
         graphviz:
           label: Convert to\npdbqt format

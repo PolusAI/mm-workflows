@@ -139,7 +139,14 @@ inputs:
     type: string?
     format:
     - edam:format_2330
-
+    
+  pdb_ids:
+    label: The PDBID of proteins
+    doc: |-
+      The PDBID of proteins
+    type: string?
+    format:
+    - edam:format_2330
 outputs:
 
   output_txt_path:
@@ -235,7 +242,32 @@ outputs:
             return experimental_dGs;
           }
         }
+        
+  pdb_ids:
+    label: The PDBID of proteins
+    doc: |-
+      The PDBID of proteins
+    type:
+      type: array
+      items: string
+    outputBinding:
+      glob: $(inputs.output_txt_path)
+      loadContents: true
+      outputEval: |
+        ${
+          var lines = self[0].contents.split("\n");
+          var pdbids = [];
+          for (var i = 0; i < lines.length; i++) {
+            var words = lines[i].split(" ");
+            pdbids.push(words[0]);
+            }
 
+          if (pdbids.length == 0) {
+            throw new Error("Error! pdbids are empty!");
+          } else {
+            return pdbids;
+          }
+        }
 $namespaces:
   edam: https://edamontology.org/
 

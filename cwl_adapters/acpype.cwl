@@ -12,7 +12,7 @@ baseCommand: acpype
 
 hints:
   DockerRequirement:
-    dockerPull: quay.io/biocontainers/biobb_chemistry:4.0.0--pyhdfd78af_1
+    dockerPull: acpype/acpype
 
 inputs:
   input_path:
@@ -118,6 +118,21 @@ inputs:
       position: 4
       prefix: --net_charge
 
+  output_pdb_path:
+    label: Path to the PDB output file
+    doc: |-
+      Path to the PDB output file
+      Type: string
+      File type: output
+      Accepted formats: pdb
+      #Example file:
+    type: string
+    format:
+    - edam:format_1476
+    # inputBinding:
+    #   prefix: --output_pdb_path
+    default: system.pdb
+
 outputs:
   output_gro_path:
     label: Path to the GRO output file
@@ -146,6 +161,14 @@ outputs:
       glob: "*/$(inputs.base_name)_GMX.top"
     format: edam:format_3880
 
+  output_pdb_path:
+    label: Path to the TOP output file
+    doc: |-
+      Path to the TOP output file
+    type: File
+    outputBinding:
+      glob: "*/$(inputs.base_name)_NEW.pdb"
+    format: edam:format_1476
 # See https://rabix.io/cwl-patterns.html
 #  output_all:
 #    type:

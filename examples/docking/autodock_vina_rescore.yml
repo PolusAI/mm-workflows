@@ -2,6 +2,9 @@ inputs:
   input_pdb_path:
     type: File
     format: edam:format_1476
+  input_ligand_pdb_path:
+    type: File
+    format: edam:format_1476
 
 steps:
 - python_script:
@@ -24,6 +27,19 @@ steps:
       dockerPull: jakefennick/atomselect
       selection_string: resname MOL # Extract the ligand from the last timestep
       input_pdb_path: ~input_pdb_path # '*prod.pdb'
+      # output_pdb_path: '&ligand_temp.pdbqt'
+
+# It utilizes a helper PDB file to overwrite the atom element
+# types (last column) of the input PDB file 
+# Input pdb file
+# ATOM   4653  C26 MOL A 286      44.880  26.370  42.560  1.00  0.00           C
+# ATOM   4654  BR  MOL A 286      48.190  27.540  40.260  1.00  0.00           B
+# Input helepr pdb file
+# ATOM     52  C26 MOL Z   1     -18.069 -34.542  22.368  1.00  0.00           C
+# ATOM     53   BR MOL Z   1     -14.786 -32.819  20.524  1.00  0.00          BR
+- fix_pdb_atom_column:
+    in:
+      input_helper_structure_path: ~input_ligand_pdb_path
 # Assign partial charges (ligand)
 - convert_mol2:
 - convert_pdbqt:
@@ -58,15 +74,19 @@ wic:
       wic:
         graphviz:
           label: Select Ligand\nfrom last timestep
-    (5, convert_mol2):
+    (5, fix_pdb_atom_column):
+      wic:
+        graphviz:
+          label: Correct atom\nelement types
+    (6, convert_mol2): 
       wic:
         graphviz:
           label: Assign Partial\nCharges
-    (6, convert_pdbqt):
+    (7, convert_pdbqt):
       wic:
         graphviz:
           label: Convert to\npdbqt format
-    (7, autodock_vina_rescore):
+    (8, autodock_vina_rescore):
       wic:
         graphviz:
           label: Re-score Refined\nDocking Poses

@@ -1,0 +1,7 @@
+FROM condaforge/mambaforge
+# NOT mambaforge-pypy3 (mdanalysis is incompatible with pypy)
+
+RUN mamba install -c conda-forge mdanalysis
+
+ADD fix_pdb_atom_column.py .
+ADD Dockerfile_fix_pdb_atom_column .
