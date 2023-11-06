@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.2.0-devel-ubuntu22.04 as devel
+FROM nvidia/cuda:11.8.0-devel-ubuntu22.04 as devel
 
 # SHELL ["/bin/bash", "-c"]
 
@@ -35,7 +35,7 @@ ADD Dockerfile_gromacs .
 
 # Now copy everything into a minimal cuda runtime base image.
 # (~2GB instead of ~7GB)
-FROM nvidia/cuda:12.2.0-runtime-ubuntu22.04 as runtime
+FROM nvidia/cuda:11.8.0-runtime-ubuntu22.04 as runtime
 
 # Install openmp
 RUN apt-get update && apt-get install -y libgomp1
