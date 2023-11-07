@@ -6,7 +6,11 @@
     // need to manually exclude large workflows.
     // See https://en.wikipedia.org/wiki/Graph_isomorphism_problem
     "large_workflows": [
-        "dsb", "dsb1", "elm", "vs_demo_2", "vs_demo_3", "vs_demo_4"
+        "dsb", "dsb1", "elm", "vs_demo_2", "vs_demo_3", "vs_demo_4",
+        "vs_demo_2_weekly",
+        "vs_demo_3_weekly",
+        "vs_demo_4_weekly",
+        "docking_rescoring_weekly"
     ],
     // NOTE: Most of the workflows in this list have free variables because they are subworkflows
     // i.e. if you try to run them, you will get "Missing required input parameter"
@@ -68,5 +72,13 @@
         "cwl_watcher_protein",
         // Skip vs_demo_4 so we don't accidentally DOS pdbbind.org.cn
         "vs_demo_4"
+    ],
+    // Run computationally intensive stress tests weekly.
+    // e.g. these workflows should scatter over much larger input arrays.
+    "run_weekly": [
+        "vs_demo_2_weekly",
+        "vs_demo_3_weekly",
+        "vs_demo_4_weekly",
+        "docking_rescoring_weekly"
     ]
 }

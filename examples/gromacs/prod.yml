@@ -46,7 +46,7 @@ steps:
         output_crd_path: '&prod.gro'
         output_trr_path: '&prod.trr' # Explicitly specify for cwl_watcher
         output_edr_path: '&prod.edr'
-  - cwl_watcher_analysis.yml:
+  # - cwl_watcher_analysis.yml:
 
 wic:
   graphviz:

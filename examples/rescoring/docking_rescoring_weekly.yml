@@ -1,0 +1,14 @@
+steps:
+- docking_rescoring.yml:
+
+wic:
+  steps:
+    (1, docking_rescoring.yml):
+      wic:
+        steps:
+          (1, extract_pdbbind_refined):
+            in:
+              max_row: 1000  # Default 500
+          (2, random_subset_rows):
+            in:
+              num_of_samples: 32
