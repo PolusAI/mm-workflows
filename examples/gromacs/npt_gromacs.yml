@@ -31,18 +31,18 @@ steps:
         config:
           terms: [Density]
         output_xvg_path: 'density.xvg'
-  - cwl_watcher:
-      in:
-        #cachedir_path: /absolute/path/to/cachedir/ (automatically filled in by wic)
-        file_pattern: '*npt.edr' # This * is a glob wildcard, NOT an explicit edge!
-        cwl_tool: gmx_energy
-        max_times: '5'
-        config:
-          in:
-            input_energy_path: npt.edr
-            config:
-              terms: [Density]
-            output_xvg_path: density.xvg
+  # - cwl_watcher:
+  #     in:
+  #       #cachedir_path: /absolute/path/to/cachedir/ (automatically filled in by wic)
+  #       file_pattern: '*npt.edr' # This * is a glob wildcard, NOT an explicit edge!
+  #       cwl_tool: gmx_energy
+  #       max_times: '5'
+  #       config:
+  #         in:
+  #           input_energy_path: npt.edr
+  #           config:
+  #             terms: [Density]
+  #           output_xvg_path: density.xvg
 
 wic:
   graphviz:

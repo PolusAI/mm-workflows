@@ -30,18 +30,18 @@ steps:
         output_xvg_path: temperature.xvg
 # NOTE: explicit edges are not supported with cwl_watcher, and all filenames
 # must be globally unique!
-  - cwl_watcher:
-      in:
-        #cachedir_path: /absolute/path/to/cachedir/ (automatically filled in by wic)
-        file_pattern: '*nvt.edr' # This * is a glob wildcard, NOT an explicit edge!
-        cwl_tool: gmx_energy
-        max_times: '5'
-        config:
-          in:
-            input_energy_path: '*nvt.edr' # This * is automatically removed.
-            config:
-              terms: [Temperature]
-            output_xvg_path: temperature.xvg
+  # - cwl_watcher:
+  #     in:
+  #       #cachedir_path: /absolute/path/to/cachedir/ (automatically filled in by wic)
+  #       file_pattern: '*nvt.edr' # This * is a glob wildcard, NOT an explicit edge!
+  #       cwl_tool: gmx_energy
+  #       max_times: '5'
+  #       config:
+  #         in:
+  #           input_energy_path: '*nvt.edr' # This * is automatically removed.
+  #           config:
+  #             terms: [Temperature]
+  #           output_xvg_path: temperature.xvg
 
 wic:
   graphviz:
