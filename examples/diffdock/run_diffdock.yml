@@ -27,6 +27,22 @@ steps:
         samples_per_complex: 20 # figure 3 left in DiffDock paper
         inference_steps: 20 # figure S11 in DiffDock paper
         batch_size: 16 # section D.3 in DiffDock paper
+        output_files: "&diffdock_poses"
+
+  - rank_diffdock_poses:
+      scatter: [diffdock_poses]
+      in:
+        top_n_confident: 1000 # if only using top_percent_confidence, then set top_n_confident to trivially high number
+        # if only want to use top_n_confident, then set top_percent_confidence to 100
+        top_percent_confidence: 33 # take top third of most confident poses, see figure 3 right in DiffDock paper
+        diffdock_poses: "*diffdock_poses"
+        output_poses: "&output_poses"
+
+  - pose_cluster_filter:
+      scatter: [predicted_poses]
+      in:
+        predicted_poses: "*output_poses"
+        centroid_cutoff: 5 # if centroid of all poses are within cutoff then only keep most confident pose, requires visual inspection
 
 wic:
   graphviz:
@@ -46,3 +62,11 @@ wic:
         namespace: gpu
         graphviz:
           label: Executing DiffDock
+    (4, rank_diffdock_poses):
+      wic:
+        graphviz:
+          label: Rank all poses
+    (5, pose_cluster_filter):
+      wic:
+        graphviz:
+          label: Cluster poses
