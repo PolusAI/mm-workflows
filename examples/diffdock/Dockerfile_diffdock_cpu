@@ -28,6 +28,7 @@ RUN conda init bash
 # generate the pre-computed cached files for speeding up the inference
 # See https://github.com/gcorso/DiffDock#running-diffdock-on-your-own-complexes
 # Note that the first time you run DiffDock on a device the program will precompute and store in cache look-up tables for SO(2) and SO(3) distributions (typically takes a couple of minutes), this won't be repeated in following runs.
+# output pre-computed cached files are of the format .*.npy such as .so3_omegas_array2.npy, .so3_cdf_vals2.npy, .so3_score_norms2.npy, .so3_exp_score_norms2.npy
 RUN python -m inference --protein_ligand_csv data/protein_ligand_example_csv.csv --out_dir results/user_predictions_small --inference_steps 1 --samples_per_complex 1 --batch_size 1 --actual_steps 1
 
 # Delete output results so not in same output folder as future runs
