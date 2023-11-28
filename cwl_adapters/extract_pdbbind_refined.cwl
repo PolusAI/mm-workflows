@@ -160,7 +160,24 @@ outputs:
       Accepted formats: pdb
     type: File[]
     outputBinding:
-      glob: ./*.pdb #or  "*.pdb"
+      # NOTE: Do NOT just use glob: ./*.pdb !!! This will return an array sorted by filenames.
+      # We want the order of output_pdb_paths to match the order of experimental_dGs, etc
+      # Becasue we need to compare experimental ΔGs with predicted values.
+      glob: $(inputs.output_txt_path)
+      loadContents: true
+      outputEval: |
+        ${
+          var lines = self[0].contents.split("\n");
+          var pdbs = [];
+          for (var i = 0; i < lines.length; i++) {
+            var words = lines[i].split(" ");
+            var pdbid = words[0];
+            var pdbfile = {"class": "File", "path": pdbid + "_protein.pdb"};
+            pdbs.push(pdbfile);
+            }
+
+          return pdbs;
+        }
     format: edam:format_1476
 
   output_sdf_paths:
@@ -172,7 +189,24 @@ outputs:
       Accepted formats: sdf
     type: File[]
     outputBinding:
-      glob: ./*.sdf #or  "*.sdf"
+      # NOTE: Do NOT just use glob: ./*.sdf !!! This will return an array sorted by filenames.
+      # We want the order of output_sdf_paths to match the order of experimental_dGs, etc
+      # Because we need to compare experimental ΔGs with predicted values.
+      glob: $(inputs.output_txt_path)
+      loadContents: true
+      outputEval: |
+        ${
+          var lines = self[0].contents.split("\n");
+          var sdfs = [];
+          for (var i = 0; i < lines.length; i++) {
+            var words = lines[i].split(" ");
+            var pdbid = words[0];
+            var sdffile = {"class": "File", "path": pdbid + "_ligand.sdf"};
+            sdfs.push(sdffile);
+            }
+            
+          return sdfs;
+        }
     format: edam:format_3814
 
   experimental_dGs:
