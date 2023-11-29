@@ -33,3 +33,7 @@ steps:
 wic:
   graphviz:
     label: Molecular Dynamics Stability Analysis
+  steps:
+    (2, basic.yml):
+      wic:
+        inlineable: False  # due to renaming ref-t and ref-p
