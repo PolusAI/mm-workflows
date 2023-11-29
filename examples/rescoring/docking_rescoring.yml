@@ -1,8 +1,8 @@
 ## Protein-ligand docking and docking poses re-ranking
 ##
 ## input: pdb structures from PDBbind refined dataset
-## output: 
-##    1. docking poses 
+## output:
+##    1. docking poses
 ##    2. scoring file (vina score, sfct correction, combined_score for re-ranking docking poses)
 
 steps:
@@ -10,17 +10,17 @@ steps:
 - extract_pdbbind_refined:
     in:
       # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.query.html
-      # "The query() method uses a slightly modified Python syntax by default. 
-      # For example, the & and | (bitwise) operators have the precedence of their boolean cousins, and and or. 
+      # "The query() method uses a slightly modified Python syntax by default.
+      # For example, the & and | (bitwise) operators have the precedence of their boolean cousins, and and or.
       # This is syntactically valid Python, however the semantics are different."
-      query: '(Kd_Ki == "Kd") and ((value < 0.0001) or ((0.08 < value) and ( value < 0.1)) or ((8 < value) and ( value < 10)) or (1000 < value))' 
+      query: '(Kd_Ki == "Kd") and ((value < 0.0001) or ((0.08 < value) and ( value < 0.1)) or ((8 < value) and ( value < 10)) or (1000 < value))'
         # to obtain a broader experimental dGs
       max_row: 500 # first 500 rows selection.
       convert_Kd_dG: 'True'
       output_txt_path: '&binding_data.txt'
       output_pdb_paths: '&pdbbind_pdbs'
       output_sdf_paths: '&pdbbind_sdfs'
-      experimental_dGs: '&exp_dGs' 
+      experimental_dGs: '&exp_dGs'
 
 - random_subset_rows:
     in:
@@ -92,7 +92,7 @@ steps:
       xs: '*pdbbind_filter_exp_dGs'
       ys: '*docking_scores'
       # Use massive tolerances because the re-docking performance of classical scoring functions (Vina) are unreliable.
-      tol_quad: 0.05
+      tol_quad: 0.16
       slope_min: -10
       slope_max: 10
 
