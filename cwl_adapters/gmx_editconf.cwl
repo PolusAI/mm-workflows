@@ -71,7 +71,7 @@ inputs:
     inputBinding:
       position: 5
       prefix: -box
-      
+
   box_vector_angles:
     type:
       - "null"
@@ -79,7 +79,7 @@ inputs:
         items: float
     inputBinding:
       position: 6
-      prefix: -angles  
+      prefix: -angles
 
   align_principal_axes:
     type: int? # Group number to align (0 == system)

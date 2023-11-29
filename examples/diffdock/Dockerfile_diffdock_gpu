@@ -1,0 +1,55 @@
+# docker build -f Dockerfile_diffdock_gpu -t mrbrandonwalker/diffdock_gpu .
+
+FROM nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04 as devel
+
+# Install conda / mamba
+RUN apt-get update && apt-get install -y wget git build-essential
+
+RUN CONDA="Mambaforge-Linux-x86_64.sh" && \
+    wget --quiet https://github.com/conda-forge/miniforge/releases/latest/download/$CONDA && \
+    chmod +x $CONDA && \
+    ./$CONDA -b -p /mambaforge && \
+    rm -f $CONDA
+ENV PATH /mambaforge/bin:$PATH
+
+RUN conda install pytorch==1.13.0 pytorch-cuda=11.7 pytorch-cluster -c pytorch -c nvidia -c pyg
+
+# Website suggests torch 1.12 but only 1.12 doesn't exist with cuda 11.7 https://github.com/gcorso/DiffDock https://data.pyg.org/whl/torch-1.13.0+cu117.html
+# Need to install pytorch first before other torch packages
+# Cannot use conda for these packages otherwise will install them with a default CUDA (not same as cuda 11.7)
+# so need to specify which package versions (CUDA and Torch)
+# If install pytorch-cluster below with rest of torch packages, the will get error Not compiled with CUDA support
+
+RUN pip install torch-scatter torch-sparse torch-spline-conv torch-geometric==2.0.4 -f https://data.pyg.org/whl/torch-1.13.0+cu117.html
+
+RUN conda install PyYAML scipy "networkx[default]" biopython rdkit e3nn spyrmsd pandas biopandas
+
+# See install for GPU https://github.com/gcorso/DiffDock, some packages are only in pip
+
+RUN pip install 'openfold @ git+https://github.com/aqlaboratory/openfold.git@4b41059694619831a7db195b7e0988fc4ff3a307' 'dllogger @ git+https://github.com/NVIDIA/dllogger.git' "fair-esm[esmfold]"
+
+RUN git clone https://github.com/gcorso/DiffDock.git
+
+WORKDIR /DiffDock
+
+RUN conda init bash
+
+# generate the pre-computed cached files for speeding up the inference
+# See https://github.com/gcorso/DiffDock#running-diffdock-on-your-own-complexes
+# Note that the first time you run DiffDock on a device the program will precompute and store in cache look-up tables for SO(2) and SO(3) distributions (typically takes a couple of minutes), this won't be repeated in following runs.
+# output pre-computed cached files are of the format .*.npy such as .so3_omegas_array2.npy, .so3_cdf_vals2.npy, .so3_score_norms2.npy, .so3_exp_score_norms2.npy
+RUN python -m inference --protein_ligand_csv data/protein_ligand_example_csv.csv --out_dir results/user_predictions_small --inference_steps 1 --samples_per_complex 1 --batch_size 1 --actual_steps 1
+
+# Delete output results so not in same output folder as future runs
+RUN rm -r results/user_predictions_small
+
+# Now copy everything into a minimal cuda runtime base image.
+FROM nvidia/cuda:11.7.1-cudnn8-runtime-ubuntu20.04 as runtime
+
+COPY --from=devel DiffDock/ DiffDock/
+COPY --from=devel mambaforge/ mambaforge/
+
+# shell file to copy cached files, run diffdock and remove large cached files after execution
+ADD diffdock_cmds.sh /DiffDock/
+
+ENV PATH /mambaforge/bin:$PATH

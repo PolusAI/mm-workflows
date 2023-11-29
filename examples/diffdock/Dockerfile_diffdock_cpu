@@ -1,0 +1,44 @@
+# docker build -f Dockerfile_diffdock_cpu -t mrbrandonwalker/diffdock_cpu .
+
+FROM condaforge/mambaforge
+# NOT mambaforge-pypy3 (torch-scatter is incompatible with pypy)
+
+RUN apt-get update && apt-get install -y wget git build-essential
+
+RUN conda install pytorch==1.13.0 cpuonly -c pytorch
+
+# Using torch 1.13 to be as consistent as possible with gpu DiffDock image
+# Need to install pytorch first before other torch packages
+# Cannot use conda for these packages otherwise will install them with a default CUDA (not same as cuda 11.7)
+# so need to specify which package versions (CUDA and Torch)
+
+RUN pip install torch-scatter torch-sparse torch-cluster torch-spline-conv torch-geometric==2.0.4 -f https://data.pyg.org/whl/torch-1.12.0+cpu.html
+
+RUN conda install PyYAML scipy "networkx[default]" biopython rdkit e3nn spyrmsd pandas biopandas
+
+# still need this package for importing despite documentation on github saying only needed for GPU implementation
+RUN pip install "fair-esm[esmfold]"
+
+RUN git clone https://github.com/gcorso/DiffDock.git
+
+WORKDIR /DiffDock
+
+RUN conda init bash
+
+# generate the pre-computed cached files for speeding up the inference
+# See https://github.com/gcorso/DiffDock#running-diffdock-on-your-own-complexes
+# Note that the first time you run DiffDock on a device the program will precompute and store in cache look-up tables for SO(2) and SO(3) distributions (typically takes a couple of minutes), this won't be repeated in following runs.
+# output pre-computed cached files are of the format .*.npy such as .so3_omegas_array2.npy, .so3_cdf_vals2.npy, .so3_score_norms2.npy, .so3_exp_score_norms2.npy
+RUN python -m inference --protein_ligand_csv data/protein_ligand_example_csv.csv --out_dir results/user_predictions_small --inference_steps 1 --samples_per_complex 1 --batch_size 1 --actual_steps 1
+
+# Delete output results so not in same output folder as future runs
+RUN rm -r results/user_predictions_small
+
+RUN mamba clean --all --yes
+
+RUN pip cache purge
+
+RUN apt-get clean
+
+# shell file to copy cached files, run diffdock and remove large cached files after execution
+ADD diffdock_cmds.sh /DiffDock/

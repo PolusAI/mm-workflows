@@ -70,8 +70,9 @@
         "cwl_watcher_complex",
         "cwl_watcher_ligand",
         "cwl_watcher_protein",
-        // Skip vs_demo_4 so we don't accidentally DOS pdbbind.org.cn
-        "vs_demo_4"
+        // Skip vs_demo_4 and run_diffdock so we don't accidentally DOS pdbbind.org.cn
+        "vs_demo_4",
+        "run_diffdock"
     ],
     // Run computationally intensive stress tests weekly.
     // e.g. these workflows should scatter over much larger input arrays.
@@ -79,6 +80,7 @@
         "vs_demo_2_weekly",
         "vs_demo_3_weekly",
         "vs_demo_4_weekly",
-        "docking_rescoring_weekly"
+        "docking_rescoring_weekly",
+        "run_diffdock_weekly"
     ]
 }
