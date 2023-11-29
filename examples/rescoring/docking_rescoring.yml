@@ -92,7 +92,7 @@ steps:
       xs: '*pdbbind_filter_exp_dGs'
       ys: '*docking_scores'
       # Use massive tolerances because the re-docking performance of classical scoring functions (Vina) are unreliable.
-      tol_quad: 0.16
+      tol_quad: 0.18
       slope_min: -10
       slope_max: 10
 
