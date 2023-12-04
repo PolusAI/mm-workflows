@@ -34,7 +34,7 @@ def calculate_dG(Kd: float) -> float:
 
 
 def main(input_excel_path, query, min_row, max_row, smiles_column,  # type: ignore[no-untyped-def]
-         binding_data_column, convert_Kd_dG, output_txt_path):
+         binding_data_column, convert_Kd_dG, output_txt_path, output_sdf_path):
     import pandas
     import rdkit
     from rdkit import Chem
@@ -131,6 +131,7 @@ inputs = {'input_excel_path': xlsxfile,
           'smiles_column': string,
           'binding_data_column': string,
           'convert_Kd_dG': string,
-          'output_txt_path': string}
+          'output_txt_path': string,
+          'output_sdf_path': string}
 outputs = {'output_txt_path': ('$(inputs.output_txt_path)', textfile),
            'output_sdf_path': ('*.sdf', sdffiles)}
