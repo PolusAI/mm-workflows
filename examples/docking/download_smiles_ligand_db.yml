@@ -36,6 +36,8 @@ steps:
       binding_data_column: ~binding_data_column #Standard Value
       convert_Kd_dG: ~convert_Kd_dG #'True'
       output_txt_path: ~output_txt_path # '&binding_data.txt'
+      output_sdf_path: '&ligand_conformers.sdf'
+
 
 wic:
   graphviz:
