@@ -1,0 +1,14 @@
+
+# docker build -f Dockerfile_pose_cluster_filter -t mrbrandonwalker/pose_cluster_filter .
+
+FROM condaforge/mambaforge
+
+RUN conda install -c conda-forge rdkit --yes
+
+RUN conda init bash
+
+COPY pose_cluster_filter.py /
+
+RUN mamba clean --all --yes
+
+ADD Dockerfile_pose_cluster_filter .

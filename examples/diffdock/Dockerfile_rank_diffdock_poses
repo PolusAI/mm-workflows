@@ -1,0 +1,8 @@
+
+# docker build -f Dockerfile_rank_diffdock_poses -t mrbrandonwalker/rank_diffdock_poses .
+
+FROM python
+
+COPY rank_diffdock_poses.py /
+
+ADD Dockerfile_rank_diffdock_poses .

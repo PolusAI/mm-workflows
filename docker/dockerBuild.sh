@@ -40,4 +40,6 @@ cd ../..
 cd examples/diffdock/
 sudo docker build --no-cache --pull -f Dockerfile_diffdock_cpu -t mrbrandonwalker/diffdock_cpu .
 sudo docker build --no-cache --pull -f Dockerfile_diffdock_gpu -t mrbrandonwalker/diffdock_gpu .
+sudo docker build --no-cache --pull -f Dockerfile_rmsd_pose_cluster -t mrbrandonwalker/rmsd_pose_cluster .
+sudo docker build --no-cache --pull -f Dockerfile_rank_diffdock_poses -t mrbrandonwalker/rank_diffdock_poses .
 cd ../..

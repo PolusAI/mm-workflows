@@ -86,12 +86,26 @@ inputs:
       prefix: --complex_name
     default:  outputs
 
+  output_files:
+    type: string?
+
+  max_confident_pose:
+    type: string?
+
 outputs:
+
+  max_confident_pose:
+    type: File
+    outputBinding:
+      # the diffdock developers copy only the top ranked pose to a new file rank1.sdf
+      glob: $(inputs.out_dir)/$(inputs.complex_name)/rank1.sdf
+    format: edam:format_3814
 
   output_files:
     type: File[]
     outputBinding:
-      glob: $(inputs.out_dir)/$(inputs.complex_name)/*.sdf
+      # all other output files besides rank1.sdf have confidence information in them rank*_confidence*.sdf
+      glob: $(inputs.out_dir)/$(inputs.complex_name)/rank*_confidence*.sdf
     format: edam:format_3814
 
   stderr:
