@@ -16,7 +16,7 @@ wic:
   steps:
     (1, steep.yml):
       wic:
-        inlineable: False
+        inlineable: True
     (2, cg.yml):
       wic:
-        inlineable: False
+        inlineable: True

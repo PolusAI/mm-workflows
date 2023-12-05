@@ -56,7 +56,7 @@ wic:
   steps:
     (1, download_pdb.yml):
       wic:
-        inlineable: False # Due to yml wic tag inlineing issue and ~pdb_id
+        inlineable: True
         graphviz:
           label: 'Download\nProtein Model'
 #    (2, structure_check):

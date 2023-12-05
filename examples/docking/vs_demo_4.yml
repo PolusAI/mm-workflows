@@ -24,6 +24,11 @@ steps:
 - convert_pdbqt.yml:
     scatter: [input_pdb_path, input_sdf_path]
     scatterMethod: dotproduct
+    in:
+      # NOTE: input_pdb_path and input_sdf_path are currently only necessary
+      # due to a limitation of the inlineing implementation.
+      input_pdb_path: '*pdbbind_pdbs.pdb'
+      input_sdf_path: '*pdbbind_sdfs'
 
 # rescore protein ligand complexes
 - autodock_vina_rescore:
@@ -83,6 +88,10 @@ steps:
     scatter: [crd_path, top_zip_path]
     scatterMethod: dotproduct
     in:
+      # NOTE: crd_path and top_zip_path are currently only necessary
+      # due to a limitation of the inlineing implementation.
+      crd_path: '*complex_vac.pdb'
+      top_zip_path: '*complex_vac.zip'
       nsteps: 100000
       dt: 0.002
       temperature: 298.0
@@ -90,6 +99,10 @@ steps:
 
 - autodock_vina_rescore.yml:
     scatter: [input_pdb_path]
+    in:
+      # NOTE: input_pdb_path is currently only necessary
+      # due to a limitation of the inlineing implementation.
+      input_pdb_path: '*prod.pdb'
 
 - scatter_plot:
     in:
@@ -125,7 +138,7 @@ wic:
           label: Apply Docking\nScore Cutoff
     (7, setup_pdb.yml):
       wic:
-        inlineable: False # Due to yml wic tag inlineing issue and ~pdb_id
+        inlineable: False
         graphviz:
           label: Setup PDB
     (8, gen_topol_params.yml):
@@ -133,7 +146,7 @@ wic:
         inlineable: False
     (9, stability.yml):
       wic:
-        inlineable: False # Due to yml wic tag inlineing issue and ~ inputs
+        inlineable: False
         steps:
           (1, setup.yml):
             wic:

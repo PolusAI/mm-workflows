@@ -23,13 +23,15 @@ steps:
 # NOTE: We need to extract the models first, before splitting them into separate files.
 # If we try to do both simultaneously, obabel ignores -f and -l and outputs ALL models.
 - split_sdf:
-#    in:
+    in:
 #      input_path: '*ligands.sdf'
-#      output_sdf_path: '&ligand.sdf' # Array type
-- dsb.yml:
+      output_sdf_path: '&ligand.sdf' # Array type
+- docking_stability.yml:
     scatter: [sdf_path]
-#    in:
-#      sdf_path: '*ligand.sdf'
+    in:
+      # NOTE: sdf_path is currently only necessary
+      # due to a limitation of the inlineing implementation.
+      sdf_path: '*ligand.sdf'
 # NOTE: Do not add scattering arguments here, add them to the wic: metadata annotations.
 # (We want this information at the call site, not inserted within the subworkflow.)
 
@@ -37,7 +39,7 @@ wic:
   steps:
     (1, setup_pdb.yml):
       wic:
-        inlineable: False # Due to yml wic tag inlineing issue and ~pdb_id
+        inlineable: True
     (3, extract_molecules_sdf):
       wic:
         graphviz:
@@ -46,7 +48,7 @@ wic:
       wic:
         graphviz:
           label: Split Ligands into\nSeparate Files
-    (5, dsb.yml):
+    (5, docking_stability.yml):
       wic:
         # Scattering changes the input/output types and thus creates a barrier to inlineing.
         inlineable: False
