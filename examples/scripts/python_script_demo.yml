@@ -20,4 +20,4 @@ wic:
   steps:
     (1, download_pdb.yml):
       wic:
-        inlineable: False
+        inlineable: True
