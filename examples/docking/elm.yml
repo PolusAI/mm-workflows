@@ -37,18 +37,18 @@ steps:
 
 wic:
   steps:
-    (1, setup_pdb.yml):
+    (2, setup_pdb.yml):
       wic:
         inlineable: True
-    (3, extract_molecules_sdf):
+    (4, extract_molecules_sdf):
       wic:
         graphviz:
           label: Choose Ligands from\nCheminformatics Database
-    (4, split_sdf):
+    (5, split_sdf):
       wic:
         graphviz:
           label: Split Ligands into\nSeparate Files
-    (5, docking_stability.yml):
+    (6, docking_stability.yml):
       wic:
         # Scattering changes the input/output types and thus creates a barrier to inlineing.
         inlineable: False
