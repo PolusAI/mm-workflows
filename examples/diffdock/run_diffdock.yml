@@ -11,6 +11,7 @@ steps:
         convert_Kd_dG: True
         output_pdb_paths: '&pdbbind_pdbs'
         output_sdf_paths: '&pdbbind_sdfs'
+        experimental_dGs: '&exp_dGs'
 
   - fix_side_chain:
       scatter: [input_pdb_path]
@@ -18,15 +19,39 @@ steps:
         input_pdb_path: '*pdbbind_pdbs'
         output_pdb_path: '&pdbbind_pdbs.pdb'
 
+  - sanitize_ligand:
+      scatter: [input_small_mol_ligand]
+      in:
+        input_small_mol_ligand: "*pdbbind_sdfs"
+        output_ligand: "&sanitized_sdfs"
+        valid_ligand: "&valid_ligands"
+
+  - filter_array: # remove invalid ligands from sanitized_ligand, avoid using null
+      in:
+        input_array: "*sanitized_sdfs"
+        input_bool_array: "*valid_ligands"
+        output_array: "&final_sanitized_sdfs"
+
+  - filter_array: # remove proteins corresponding to invalid ligands from sanitized_ligand
+      in:
+        input_array: "*pdbbind_pdbs.pdb"
+        input_bool_array: "*valid_ligands"
+        output_array: "&final_pdbbind_pdbs.pdb"
+
+  - filter_array: # remove dGs corresponding to invalid ligands from sanitized_ligand
+      in:
+        input_array: "*exp_dGs"
+        input_bool_array: "*valid_ligands"
+        output_array: "&final_exp_dGs"
+
   - diffdock:
       scatter: [protein_path, ligand_path]
       scatterMethod: dotproduct
       in:
-        protein_path: "*pdbbind_pdbs.pdb"
-        ligand_path: "*pdbbind_sdfs"
+        protein_path: "*final_pdbbind_pdbs.pdb"
+        ligand_path: "*final_sanitized_sdfs"
         samples_per_complex: 20 # figure 3 left in DiffDock paper
         inference_steps: 20 # figure S11 in DiffDock paper
-        batch_size: 16 # section D.3 in DiffDock paper
         output_files: "&diffdock_poses"
 
   - rank_diffdock_poses:
@@ -57,16 +82,32 @@ wic:
       wic:
         graphviz:
           label: Fix Side Chains
-    (3, diffdock):
+    (3, sanitize_ligand):
+      wic:
+        graphviz:
+          label: Sanitize Ligands
+    (4, filter_array):
+      wic:
+        graphviz:
+          label: Filter Ligands
+    (5, filter_array):
+      wic:
+        graphviz:
+          label: Filter Proteins
+    (6, filter_array):
+      wic:
+        graphviz:
+          label: Filter dG's
+    (7, diffdock):
       wic:
         namespace: gpu
         graphviz:
           label: Executing DiffDock
-    (4, rank_diffdock_poses):
+    (8, rank_diffdock_poses):
       wic:
         graphviz:
           label: Rank all poses
-    (5, pose_cluster_filter):
+    (9, pose_cluster_filter):
       wic:
         graphviz:
           label: Cluster poses
