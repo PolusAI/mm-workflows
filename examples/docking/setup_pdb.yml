@@ -23,16 +23,33 @@ outputs:
   pdb_path:
     type: File
     format: edam:format_1476
-    outputSource: setup_pdb__step__4__str_check_add_hydrogens/output_structure_path
+    outputSource: setup_pdb__step__6__str_check_add_hydrogens/output_structure_path
   box_path:
     type: File
     format: edam:format_1476
-    outputSource: setup_pdb__step__7__box/output_pdb_path
+    outputSource: setup_pdb__step__9__box/output_pdb_path
 
 steps:
-  - pdb4amber_run: # NOTE: See comments below w.r.t. pdb2gmx
+  - pdb_fixer:
       in:
         input_pdb_path: ~input_pdb_path
+        output_pdb_path: '&protein_pdbfixer.pdb'
+        add_atoms: heavy
+        add_residues: True
+        keep_heterogens: none
+  - fix_amides:
+      in:
+        input_pdb_path:  '*protein_pdbfixer.pdb'
+        output_pdb_path: '&protein_fix_amides.pdb'    
+  #- structure_check:
+  #    in:
+  #      output_summary_path: structure_check_protein_fix_amides.json
+  # - fix_side_chain:
+  #     in:
+  #       output_pdb_path: protein_fix_side_chain.pdb
+  - pdb4amber_run: # NOTE: See comments below w.r.t. pdb2gmx
+      in:
+        input_pdb_path: '*protein_fix_amides.pdb'
         output_pdb_path: '&receptor_pdb4amber.pdb'
   - str_check_add_hydrogens:
       in: # charges = True outputs in pdbqt format; mode = auto, list, ph (must use ph mode to set ph!)
@@ -107,46 +124,55 @@ steps:
         input_path: '*receptor.gro'
         output_xyz_path: '&receptor.xyz'
 wic:
-   graphviz:
-     label: Receptor Modeling + Docking + Initial Topology Setup
-   steps:
-     (1, pdb4amber_run):
-       wic:
-         graphviz:
-           label: Fix Residue Names\n(pdb4amber)
-     (2, str_check_add_hydrogens):
-       wic:
-         graphviz:
-           label: Add Hydrogen Atoms\nReceptor (no charges)
-     (3, python3_pdb_to_pdb):
-       wic:
-         graphviz:
-           label: Fix Terminal\nResidue Names
-     (4, str_check_add_hydrogens):
-       wic:
-         graphviz:
-           label: Add Hydrogen Atoms\nReceptor (w/ charges)
-     (5, convert_pdbqt):
-       wic:
-         graphviz:
-           label: Convert Receptor\npdb to pdbqt
-     (6, config_tag_box):
-       wic:
-         graphviz:
-           label: Specify Bounding\nBox Buffer
-     (7, box):
-       wic:
-         graphviz:
-           label: Get Receptor\nBounding Box
-     (8, config_tag_pdb2gmx):
-       wic:
-         graphviz:
-           label: Configure Forcefield\nOptions
-     (9, pdb2gmx):
-       wic:
-         graphviz:
-           label: Generate Initial\nReceptor Topology
-     (10, convert_xyz):
-       wic:
-         graphviz:
-           label: Convert Receptor\ngro to xyz
+  graphviz:
+    label: Receptor Modeling + Docking + Initial Topology Setup
+  steps:
+    (1, pdbfixer):
+      wic:
+        graphviz:
+          label: Fix Protein Structure
+    (2, fix_amides):
+      wic:
+        graphviz:
+          label: 'Fix Amides'
+
+    (3, pdb4amber_run):
+      wic:
+        graphviz:
+          label: Fix Residue Names\n(pdb4amber)
+    (4, str_check_add_hydrogens):
+      wic:
+        graphviz:
+          label: Add Hydrogen Atoms\nReceptor (no charges)
+    (5, python3_pdb_to_pdb):
+      wic:
+        graphviz:
+          label: Fix Terminal\nResidue Names
+    (6, str_check_add_hydrogens):
+      wic:
+        graphviz:
+          label: Add Hydrogen Atoms\nReceptor (w/ charges)
+    (7, convert_pdbqt):
+      wic:
+        graphviz:
+          label: Convert Receptor\npdb to pdbqt
+    (8, config_tag_box):
+      wic:
+        graphviz:
+          label: Specify Bounding\nBox Buffer
+    (9, box):
+      wic:
+        graphviz:
+          label: Get Receptor\nBounding Box
+    (10, config_tag_pdb2gmx):
+      wic:
+        graphviz:
+          label: Configure Forcefield\nOptions
+    (11, pdb2gmx):
+      wic:
+        graphviz:
+          label: Generate Initial\nReceptor Topology
+    (12, convert_xyz):
+      wic:
+        graphviz:
+          label: Convert Receptor\ngro to xyz

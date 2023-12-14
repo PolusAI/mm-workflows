@@ -1,0 +1,6 @@
+FROM condaforge/mambaforge-pypy3
+
+RUN mamba install -c conda-forge openmm
+
+ADD extract_protein.py .
+ADD Dockerfile_extract_protein .

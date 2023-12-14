@@ -14,15 +14,25 @@ steps:
 #- structure_check:
 #    in:
 #      output_summary_path: structure_check_protein_fix_backbone.json
+
+- pdb_fixer:
+    in:
+      input_pdb_path: '*protein.pdb'
+      output_pdb_path: '&protein_pdbfixer.pdb'
+      add_atoms: heavy
+      add_residues: True
+      replace_nonstandard: True
+      keep_heterogens: none
 - fix_amides:
     in:
-      output_pdb_path: protein_fix_amides.pdb
+      input_pdb_path: '*protein_pdbfixer.pdb'
+      output_pdb_path: '&protein_fix_amides.pdb'
 #- structure_check:
 #    in:
 #      output_summary_path: structure_check_protein_fix_amides.json
-- fix_side_chain:
-    in:
-      output_pdb_path: protein_fix_side_chain.pdb
+# - fix_side_chain:
+#     in:
+#       output_pdb_path: protein_fix_side_chain.pdb
 #- structure_check:
 #    in:
 #      output_summary_path: structure_check_protein_fix_side_chain.json
@@ -33,6 +43,7 @@ steps:
         mode: auto # mode = auto, list, ph (must use ph mode to set ph!)
         ph: 7.4
         keep_canonical_resnames: False
+      input_structure_path:  '*protein_fix_amides.pdb'
       output_structure_path: protein_hydrogens.pdb
 #- structure_check:
 #    in:
@@ -63,7 +74,11 @@ wic:
 #      wic:
 #        graphviz:
 #          label: 'Structure\nCheck'
-    (2, fix_amides):
+    (2, pdbfixer):
+      wic:
+        graphviz:
+          label: Fix Protein Structure
+    (3, fix_amides):
       wic:
         graphviz:
           label: 'Fix Amides'
@@ -71,10 +86,10 @@ wic:
 #      wic:
 #        graphviz:
 #          label: 'Structure\nCheck'
-    (3, fix_side_chain):
-      wic:
-        graphviz:
-          label: 'Fix Side Chains'
+    # (3, fix_side_chain):
+    #   wic:
+    #     graphviz:
+    #       label: 'Fix Side Chains'
 #    (6, structure_check):
 #      wic:
 #        graphviz:

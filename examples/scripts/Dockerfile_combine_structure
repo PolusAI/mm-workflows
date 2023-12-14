@@ -4,3 +4,4 @@ FROM condaforge/mambaforge
 RUN mamba install -c conda-forge rdkit
 
 ADD combine_structure.py .
+ADD Dockerfile_combine_structure .

@@ -39,6 +39,7 @@ steps:
       # Otherwise, we will get the grompp atom name warning (see below).
       output_gro_path: '&ligand_GMX.gro'
 #      output_top_path: '&ligand_GMX.top'
+      output_pdb_path: '&ligand_GMX.pdb'
       charge_method: user # take charges from mol2 file
 # NOTE: acpype doesn't add forcefield or water topology #include lines.
 - bash_top:
@@ -53,9 +54,13 @@ steps:
 #      output_top_zip_path: '&ligand_GMX.zip'
 - convert_xyz:
     in:
-      input_path: '*ligand_GMX.gro' #'*pose_ligand.pdbqt'
+      input_path: '*ligand_GMX.pdb' # Need .pdb, otherwise: issues, such as 
+      # the conversion of one atom type to another, can happen.
+      # Because Openbabel doesn't work for gro files 
+      # https://open-babel.readthedocs.io/en/latest/FileFormats/GRO_format.html#
+      # For example if you use the gro format and have a BR (Bromine) atom "1  MOL   BR   53  -1.479  -3.282   2.052"
+      # it will be converted to Boron (B) in the output xyz file "B        -14.79000      -32.82000       20.52000"
       output_xyz_path: '&pose_ligand.xyz'
-# Molecular Dynamics combine receptor & ligand
 - append_ligand:
     in:
 #      input_itp_path: '*ligand_GMX.itp'
