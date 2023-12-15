@@ -24,7 +24,7 @@ steps:
       max_row: 1 #25 # Use 1 for CI
       smiles_column: SMILES
       binding_data_column: Standard Value
-      convert_Kd_dG: 'True'
+      convert_Kd_dG: True
       output_txt_path: '&binding_data.txt'
 
 - assign_partial_charges.yml:
