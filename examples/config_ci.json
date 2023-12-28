@@ -10,7 +10,8 @@
         "vs_demo_2_weekly",
         "vs_demo_3_weekly",
         "vs_demo_4_weekly",
-        "docking_rescoring_weekly"
+        "docking_rescoring_weekly",
+        "docking_rescoring_onionnet"
     ],
     // NOTE: Most of the workflows in this list have free variables because they are subworkflows
     // i.e. if you try to run them, you will get "Missing required input parameter"

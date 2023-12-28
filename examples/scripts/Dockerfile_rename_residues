@@ -3,4 +3,5 @@ FROM python
 RUN apt-get update && apt-get install -y wget
 RUN apt-get clean
 
-COPY clean_smina_pdb.py /
+Add rename_residues.py .
+Add Dockerfile_rename_residues .
