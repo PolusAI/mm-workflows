@@ -24,11 +24,12 @@ steps:
 
 # NOTE: Rename all residues to MOL before calling acpypye. Otherwise, acpype crashes with:
 # "ERROR: more than one residue detected '{'UNL', 'MOL'}'"
-  - python3_mol2_to_mol2:
+  - rename_residues_mol2:
       in:
-        script: /rename_residues_mol.py # NOTE: Initial / required
-        input_mol2_path: '*ligand_min.mol2'
-        output_mol2_path: '&conformer.mol2'
+        input_path: '*ligand_min.mol2'
+        output_path: '&conformer.mol2'
+        residue_name: MOL
+        column_index: 7
 
 # Docking
   - convert_ligand_mol2_to_pdbqt_obabel.yml:
@@ -52,7 +53,7 @@ wic:
   graphviz:
     label: Perform Ligand\nModeling & Docking
   steps:
-    (2, python3_mol2_to_mol2):
+    (2, rename_residues_mol2):
       wic:
         graphviz:
           label: Rename Residues\nto MOL
