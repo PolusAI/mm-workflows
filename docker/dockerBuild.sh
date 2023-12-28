@@ -27,7 +27,6 @@ sudo docker build --no-cache --pull -f Dockerfile_mol2_to_pdbqt -t jakefennick/m
 sudo docker build --no-cache --pull -f Dockerfile_nmr4md -t jakefennick/nmr4md .
 sudo docker build --no-cache --pull -f Dockerfile_openbabel -t ndonyapour/openbabel .
 sudo docker build --no-cache --pull -f Dockerfile_remove_terminal_residue_name_prefixes -t jakefennick/remove_terminal_residue_name_prefixes .
-sudo docker build --no-cache --pull -f Dockerfile_rename_residues_mol -t jakefennick/rename_residues_mol .
 sudo docker build --no-cache --pull -f Dockerfile_combine_structure -t ndonyapour/combine_structure .
 sudo docker build --no-cache --pull -f Dockerfile_molgan -t ndonyapour/molgan .
 sudo docker build --no-cache --pull -f Dockerfile_onionnet-sfct -t polusai/onionnet-sfct-tool:1.0.0 .
@@ -37,6 +36,9 @@ sudo docker build --no-cache --pull -f Dockerfile_extract_protein -t ndonyapour/
 sudo docker build --no-cache --pull -f Dockerfile_extract_ligand_protein -t mrbrandonwalker/extract_ligand_protein .
 sudo docker build --no-cache --pull -f Dockerfile_fix_pdb_atom_column -t ndonyapour/fix_pdb_atom_column .
 sudo docker build --no-cache --pull -f Dockerfile_generate_conformers -t ndonyapour/generate_conformers .
+sudo docker build --no-cache --pull -f Dockerfile_onionnet -t ndonyapour/onionnet .
+sudo docker build --no-cache --pull -f Dockerfile_combine_pdb -t ndonyapour/combine_pdb .
+sudo docker build --no-cache --pull -f Dockerfile_rename_residues -t ndonyapour/rename_residues .
 
 sudo docker build --no-cache --pull -f Dockerfile_pdbbind_refined -t pdbbind_refined_v2020 .  # NOTE: no username
 cd ../..

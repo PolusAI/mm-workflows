@@ -6,7 +6,6 @@
 ##    2. scoring file (vina score, sfct correction, combined_score for re-ranking docking poses)
 
 steps:
-#
 - id: extract_pdbbind_refined
   in:
     # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.query.html
