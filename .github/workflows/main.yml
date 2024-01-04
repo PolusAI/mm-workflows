@@ -1,6 +1,6 @@
 name: CI
 
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
@@ -17,7 +17,7 @@ jobs:
 
     - name: Run tests
       run: |
-        python -m unittest discover
+        python -m unittest discover tests
     - name: Check CI status
       run: |
         echo "CI status received from 'PolusAI/workflow-inference-compiler'"
