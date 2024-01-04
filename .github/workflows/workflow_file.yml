@@ -1,0 +1,28 @@
+name: Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Run script
+      run: |
+        echo "CI status received from 'PolusAI/workflow-inference-compiler'"
+        # Add other commands here
+        # Ensure all commands have matching opening and closing statements
+        # For example, if using an if statement, ensure there is a matching fi
+        # if [ condition ]
+        # then
+        #   command
+        # fi
