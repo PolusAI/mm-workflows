@@ -1,6 +1,7 @@
-rdkit==2020.03.3
+rdkit==2020.09.2
 pandas
 mdtraj
 biopandas
 scikit-learn
 rdkit-pypi
+numpy==1.18.*
