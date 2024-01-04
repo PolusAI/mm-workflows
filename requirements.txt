@@ -3,5 +3,5 @@ numpy
 pandas
 mdtraj
 biopandas
-scikit+learn
+scikit-learn
 rdkit-pypi
