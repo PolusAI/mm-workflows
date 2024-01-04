@@ -17,13 +17,13 @@ def parse_arguments() -> argparse.Namespace:
         argparse.Namespace: The command line arguments
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('--index_file_name', required=True)
-    parser.add_argument('--base_dir', required=True)
-    parser.add_argument('--query', required=False, default=False)
-    parser.add_argument('--output_txt_path', required=True)
-    parser.add_argument('--min_row', required=False, default=1)
-    parser.add_argument('--max_row', required=False, default=-1)
-    parser.add_argument('--convert_Kd_dG', required=False, default="False")
+    parser.add_argument('--index_file_name', type=str)
+    parser.add_argument('--base_dir', type=str)
+    parser.add_argument('--query', type=str)
+    parser.add_argument('--output_txt_path', type=str)
+    parser.add_argument('--min_row', required=False, type=int, default=1)
+    parser.add_argument('--max_row', required=False, type=int, default=-1)
+    parser.add_argument('--convert_Kd_dG', required=False, action='store_true')
 
     args = parser.parse_args()
     return args
