@@ -13,7 +13,7 @@ steps:
     in:
       input_top_path: unzip_gro_amb__step__1__unzip_top/output_top_path
       input_crd_path: unzip_gro_amb__step__2__bss_gro_amb__input_crd_path
-    out:
+    outputs:
     - output_top_path
     - output_crd_path
 cwlVersion: v1.0
