@@ -13,7 +13,7 @@ dependencies:
 # Workflow dependencies
   - numpy
   - scipy
-  - rdkit
+  - rdkit>=2020.09.2
   - openpyxl
   - xorg-libxrender
   - mdtraj
