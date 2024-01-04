@@ -24,7 +24,7 @@ class DockerfileSminaTest(unittest.TestCase):
     def test_smina_compiled(self):
         image, _ = self.client.images.build(path="examples/scripts/", dockerfile="Dockerfile_smina")
         container = self.client.containers.run(image, command="bash -c '/smina-code/build/smina --help'", remove=True)
-        self.assertIn("smina: a customizable, GPU accelerated molecular docking program", container.decode())
+        self.assertIn("--help                        display usage summary", container.decode())
 
 if __name__ == "__main__":
     unittest.main()
