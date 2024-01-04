@@ -8,7 +8,7 @@ steps:
       # the semantics are different.
       query: '(Kd_Ki == "Kd") and (value < 0.001)'
       max_row: 1 #25 # Use 1 for CI
-      convert_Kd_dG: 'True'
+      convert_Kd_dG: True
       output_txt_path: '&binding_data.txt'
       output_pdb_paths: '&pdbbind_pdbs'
       output_sdf_paths: '&pdbbind_sdfs'

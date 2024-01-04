@@ -16,7 +16,7 @@ steps:
       query: '(Kd_Ki == "Kd") and ((value < 0.0001) or ((0.08 < value) and ( value < 0.1)) or ((8 < value) and ( value < 10)) or (1000 < value))'
         # to obtain a broader experimental dGs
       max_row: 500 # first 500 rows selection.
-      convert_Kd_dG: 'True'
+      convert_Kd_dG: True
       output_txt_path: '&binding_data.txt'
       output_pdb_paths: '&pdbbind_pdbs'
       output_sdf_paths: '&pdbbind_sdfs'

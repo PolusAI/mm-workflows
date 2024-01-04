@@ -124,7 +124,7 @@ inputs:
   convert_Kd_dG:
     label: If this is set to true, dG will be calculated
     doc: If this is set to true, dG will be calculated
-    type: string
+    type: boolean
     format:
     - edam:format_2330
     inputBinding:
