@@ -14,7 +14,7 @@ RUN git clone https://github.com/ndonyapour/MolGAN.git
 # "tf.compat.v1". Essentially, it’s still v1.certain. Truely upgrade to v2 requires rewriting most 
 # functions of MolGAN, including model creation, data processing, and training.
 
-RUN mamba install -c conda-forge rdkit "tensorflow<2.13" numpy scikit-learn xorg-libxrender 
+RUN mamba install -c conda-forge rdkit="2020.09.1.0" "tensorflow<2.13" numpy="1.19.*" scikit-learn xorg-libxrender 
 
 # Make sure rdkit is activated 
 RUN python -c "import rdkit"
