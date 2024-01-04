@@ -7,10 +7,10 @@ on:
   # Run it every Tuesday at midnight.
     - cron: '0 0 * * 2'
 
-permissions:
-  actions: read
-  contents: read
-  pull-requests: read
+  permissions:
+    actions: read
+    contents: read
+    pull-requests: read
 
 jobs:
   docker_build:
@@ -30,7 +30,7 @@ jobs:
         # skip data/ and cwl_adapters/file_format_conversions/biosimspace/
     runs-on: [ubuntu-latest]
 
-    steps:
+        steps:
     - name: Checkout source code
       uses: actions/checkout@v3
 
