@@ -11,13 +11,15 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.7'
+      with:
+        python-version: '3.7'
     - name: Install dependencies
       run: |
         if grep -q "rdkit" requirements.txt; then
           conda install -c rdkit rdkit
         fi
 
-        python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+        pip install pandas mdtraj biopandas scikit-learn
     - name: Run tests
       run: |
         python -m unittest discover
