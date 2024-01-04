@@ -13,7 +13,7 @@ steps:
   amb_gro_zip__step__2__zip_top:
     run: ../zip_top.cwl
     in:
-      input_top_path: amb_gro_zip__step__1__bss_amb_gro/output_top_path
+      input: amb_gro_zip__step__1__bss_amb_gro/output_top_path
     out:
     - output_top_zip_path
 cwlVersion: v1.0
