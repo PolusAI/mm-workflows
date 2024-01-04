@@ -1,0 +1,40 @@
+name: CI Workflow
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run script
+      run: python scripts/ci_status_script.py
+```
+
+In the scripts directory, create a new file `ci_status_script.py`:
+
+```python
+import os
+
+def main():
+    try:
+        print("CI status received from 'PolusAI/workflow-inference-compiler'")
+    except Exception as e:
+        print(f"Error: {e}")
+        os.exit(1)
+
+if __name__ == "__main__":
+    main()
