@@ -1,0 +1,25 @@
+name: Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Run command
+      id: run_cmd
+      run: echo "Running command" # Replace this with the actual command
+
+    - name: Echo CI status
+      if: steps.run_cmd.outcome == 'success'
+      run: echo "CI status received from 'PolusAI/workflow-inference-compiler'"
