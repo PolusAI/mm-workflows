@@ -15,6 +15,9 @@ jobs:
       run: |
   
 
+    - name: Install docker module
+      run: |
+        pip install docker
     - name: Run tests
       run: |
         python -m unittest discover tests
