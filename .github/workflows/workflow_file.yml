@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run shell script
+      run: |
+        #!/bin/bash
+        echo "CI status received from 'PolusAI/workflow-inference-compiler'"
+        # Add additional commands here
+        # Ensure all control structures (if, for, case) are properly closed
+        # For example:
+        # if [ "$VAR" == "value" ]; then
+        #   echo "Condition met"
+        # fi
