@@ -12,5 +12,9 @@ jobs:
       - name: Receive CI status from remote repository
         if: github.event.action == 'ci_status'
         run: |
-          echo "CI status received from '${{ github.event.client_payload.repository }}'" && \
-          ${{ github.event.client_payload.success }}
+          echo "CI status received from '${{ github.event.client_payload.repository }}'"
+          if [ "${{ github.event.client_payload.success }}" = "true" ]; then
+            echo "CI run was successful."
+          else
+            echo "CI run failed."
+          fi
