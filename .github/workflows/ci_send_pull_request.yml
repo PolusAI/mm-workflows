@@ -20,6 +20,14 @@ jobs:
       # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions- settings-for-a-repository#controlling-changes-from-forks-to-workflows-in-public-repositories
       # "Note: Workflows triggered by pull_request_target events are run in the context of the base
       # branch. Since the base branch is considered trusted, workflows triggered by these events will always run,
+      # REGARDLESS OF APPROVAL SETTINGS.
+      # Therefore, membership must be checked to authorize PRs to run workflows.
+      #
+      # Note: 1. To use this repository's private action, you must check out the repository
+      # 2. PRs from external accounts could alter behaviors of the custom actions and execute
+      # the altered actions if the head of PR is checked out to use custom actions. Therefore,
+      # always checkout the base branch of the PR to use trustful actions before the identity
+      # could be verified.
       # REGARDLESS OF APPROVAL SETTINGS."
       # Therefore, membership must be checked to authorize PRs to run workflows.
       #
@@ -66,4 +74,5 @@ jobs:
           sender_repo_ref: ${{ github.event.pull_request.head.ref }}
           commit_message: ${{ env.commit_message }}
           target_repository: workflow-inference-compiler
-          access_token: ${{ steps.generate_token.outputs.token }}
+              access_token: ${{ steps.generate_token.outputs.token }}
+        
