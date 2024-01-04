@@ -7,15 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.7'
+    RUN mamba install -c conda-forge "python=3.7.*"
     - name: Install dependencies
       run: |
+RUN mamba install -c conda-forge rdkit>=2020.09.2
         if grep -q "rdkit" requirements.txt; then
-          conda install -c rdkit rdkit
-        fi
+        if grep -q "rdkit" requirements.txt; then
 
         python3 -m pip install --upgrade pip && python3 -m pip install -r requirements.txt
     - name: Run tests
