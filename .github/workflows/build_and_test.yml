@@ -6,6 +6,8 @@ on:
 defaults:
   run:
     shell: bash -l {0} # Invoke bash in login mode, NOT interactive mode.
+# This will cause bash to look for the startup file ~/.bash_profile, NOT ~/.bashrc
+# This is important since conda init writes to ~/.bashrc
     # This will cause bash to look for the startup file ~/.bash_profile, NOT ~/.bashrc
     # This is important since conda init writes to ~/.bashrc
 
@@ -104,6 +106,7 @@ jobs:
       - name: PEP8 Code Formatting
         if: always()
         id: autopep8
+        if: always()
         run: cd mm-workflows/ && autopep8 --exit-code --recursive --diff --max-line-length 120 examples/ src/
       - name: Fail if autopep8 made changes
         if: steps.autopep8.outputs.exit-code == 2
