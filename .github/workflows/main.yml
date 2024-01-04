@@ -14,11 +14,14 @@ jobs:
     - name: Install dependencies
       run: |
         if grep -q "rdkit" requirements.txt; then
-          conda install -c rdkit rdkit
+          mamba install -c conda-forge "rdkit=2020.09.1.0" -y
+        conda install -c rdkit rdkit
         fi
 
         python -m pip install --upgrade pip && python -m pip install -r requirements.txt
-    - name: Run tests
+    - name: Install RDKit
+      run: |
+        mamba install -c conda-forge "rdkit=2020.09.1.0" -y
       run: |
         python -m unittest discover
     - name: Check CI status
