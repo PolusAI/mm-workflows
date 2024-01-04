@@ -11,4 +11,4 @@ fi
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 # Build the docker image
-docker build -t mm-workflows $DIR/../
+docker build -t mm-workflows "$DIR"/../
