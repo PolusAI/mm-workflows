@@ -1,11 +1,12 @@
 import unittest
 
 import docker
+from docker import DockerClient
 
 
 class DockerfileSminaTest(unittest.TestCase):
     def setUp(self):
-        self.client = docker.from_env()
+        self.client = docker.DockerClient.from_env()
 
     def test_build_image(self):
         image, _ = self.client.images.build(path="examples/scripts/", dockerfile="Dockerfile_smina")
