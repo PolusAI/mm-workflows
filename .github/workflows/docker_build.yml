@@ -35,4 +35,4 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Docker Build scripts/
-      run: cd examples/scripts/ && docker build --no-cache --pull -f Dockerfile_${{ matrix.dockerfile }} -t polusai/mm_${{ matrix.dockerfile }} .
+      run: cd examples/scripts/ && ./docker_build.sh
