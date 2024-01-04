@@ -5,10 +5,11 @@ channels:
   - schrodinger  # pymol
 
 dependencies:
-# NOTE: Do not install pypy. openbabel, pymol, and rdkit require cpython
+  - rdkit
   - shellcheck
 #  - wget  # Does not exist on windows
 #  - zip  # Does not exist on windows
+  - python=3.7.*
   - libarchive  # for bsdtar
 # Workflow dependencies
   - numpy
