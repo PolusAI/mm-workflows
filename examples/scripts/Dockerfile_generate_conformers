@@ -1,7 +1,7 @@
 FROM condaforge/mambaforge
 # NOT mambaforge-pypy3 (pandas & rdkit are incompatible with pypy)
 
-RUN mamba install -c conda-forge pandas rdkit>=2020.09.2 openpyxl xorg-libxrender
+RUN mamba install -c conda-forge pandas rdkit=2020.09.2 numpy=1.20 python=3.8 openpyxl xorg-libxrender
 
 ADD generate_conformers.py .
 ADD python_cwl_driver.py .
