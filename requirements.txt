@@ -1,4 +1,4 @@
-rdkit==2020.09.2
+rdkit
 pandas
 mdtraj
 biopandas
