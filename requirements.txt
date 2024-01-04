@@ -1,4 +1,4 @@
-numpy
+rdkit-pypinumpy
 pandas
 mdtraj
 biopandas
