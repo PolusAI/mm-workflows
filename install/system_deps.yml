@@ -6,7 +6,7 @@ channels:
 
 dependencies:
 # NOTE: Do not install pypy. openbabel, pymol, and rdkit require cpython
-  - shellcheck
+  - python=2.7.*
   - wget
   - zip
   - libarchive  # for bsdtar
