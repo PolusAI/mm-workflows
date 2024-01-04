@@ -4,6 +4,8 @@ on:
   pull_request_target:
 
 jobs:
+
+jobs:
   ci_send:
     runs-on: ubuntu-latest
     steps:
@@ -15,6 +17,7 @@ jobs:
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
+      steps:
 
       # !!!!!! CRITICAL: PLEASE READ !!!!!!
       # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions- settings-for-a-repository#controlling-changes-from-forks-to-workflows-in-public-repositories
@@ -57,7 +60,13 @@ jobs:
         run: |
           echo "commit_message=$(git show -s --format=%s)" >> $GITHUB_ENV
 
-      - name: Initiating repository dispatch event
+      - name: Checkout commit sha (Pull Request only)
+      uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Get commit message (Pull Request only)
+        run:
+          echo "commit_message=$(git show -s --format=%s)" >> $GITHUB_ENV
         uses: ./.github/my_actions/repository_dispatch/
         with:
           event_name: ${{ github.event_name }}
