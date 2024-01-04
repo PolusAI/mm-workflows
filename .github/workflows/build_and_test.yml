@@ -41,6 +41,7 @@ jobs:
     steps:
       - name: Checkout mm-workflows
         if: always()
+        run: shellcheck -e SC1017 $(find mm-workflows/ -name "*.sh" -not -path "./biobb_adapters/*" -and -not -path "./3/*")
         uses: actions/checkout@v3
         with:
           path: mm-workflows
@@ -77,6 +78,7 @@ jobs:
 
       - name: ShellCheck Script Quality
         if: always()
+        run: cd mm-workflows/ && pip install ".[all]" && mm-workflows
         # "SC1017 (error): Literal carriage return. Run script through tr -d '\r' ."
         run: shellcheck -e SC1017 $(find mm-workflows/ -name "*.sh" -not -path "./biobb_adapters/*" -and -not -path "./3/*")
 
@@ -92,6 +94,7 @@ jobs:
 
       - name: MyPy Check Type Annotations
         if: always()
+        run: cd mm-workflows/docs && make html
         run: cd mm-workflows/ && mypy src/ examples/ cwl_adapters/
         # NOTE: Do not use `mypy .` because then mypy will check both src/ and build/ causing:
         # src/wic/__init__.py: error: Duplicate module named "wic" (also at "./build/lib/wic/__init__.py")
@@ -103,8 +106,5 @@ jobs:
 
       - name: PEP8 Code Formatting
         if: always()
-        id: autopep8
-        run: cd mm-workflows/ && autopep8 --exit-code --recursive --diff --max-line-length 120 examples/ src/
-      - name: Fail if autopep8 made changes
-        if: steps.autopep8.outputs.exit-code == 2
-        run: exit 1
+        if: always()
+        run: cd mm-workflows/ && autopep8 --exit-code --recursive --diff --max-line-length 120 examples/ src/ && exit 1
