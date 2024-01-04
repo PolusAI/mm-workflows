@@ -1,0 +1,6 @@
+numpy
+pandas
+mdtraj
+biopandas
+scikit-learn
+rdkit-pypi
