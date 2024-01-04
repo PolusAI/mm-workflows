@@ -1,0 +1,18 @@
+if [ "$CONDITION" == "true" ]; then
+  echo "Condition is true"
+fi
+```
+
+Or if a 'do' loop was missing a 'done', the corrected script might look like this:
+
+```bash
+for i in {1..5}
+do
+   echo "Welcome $i times"
+done
+```
+
+Or if a string was missing a closing quote, the corrected script might look like this:
+
+```bash
+echo "Hello, World!"
