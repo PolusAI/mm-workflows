@@ -1,0 +1,24 @@
+name: Workflow
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Run script
+      run: |
+        echo "CI status received from 'PolusAI/workflow-inference-compiler'"
+        if [ "$?" -ne "0" ]; then
+          echo "Error occurred"
+          exit 1
+        fi
