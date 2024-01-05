@@ -4,14 +4,19 @@ FROM condaforge/mambaforge-pypy3
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Install essential packages
-RUN apt-get update && apt-get install -y git build-essential libboost-all-dev libopenbabel-dev libeigen3-dev cmake
+RUN apt-get update && apt-get install -y git build-essential libboost-all-dev libopenbabel-dev libeigen3-dev libeigen3-dev cmake
 ENV PATH="${PATH}:/smina-code/build"
 
 # Download Smina code and compile binary 
 ## The URL (https://github.com/mwojcikowski/smina) is the Smina repo in GitHub and final updated in 2018
 ## The URL (https://git.code.sf.net/p/smina/code) is the Smina repo in original SourceForge \ 
 ## (https://sourceforge.net/p/smina/code/ci/master/tree/) and final updated in 2021.
-RUN git clone https://git.code.sf.net/p/smina/code smina-code && \
+RUN git clone https://github.com/mwojcikowski/smina smina-code && \
+    cd smina-code && \
+    mkdir build && \
+    cd build && \
+    cmake .. && \
+    make -j12
     cd smina-code && mkdir build && cd build && cmake .. && make -j12
 
 RUN echo "alias smina=/smina-code/build/smina" >> ~/.bashrc
