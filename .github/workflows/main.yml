@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Run command
+      run: |
+        set -e
+        echo "Running command..."
+        if ! output=$(command_to_run 2>&1); then
+          echo "Command failed with error: $output"
+          exit 1
+        fi
+        echo "Command output: $output"
