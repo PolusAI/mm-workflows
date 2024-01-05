@@ -27,6 +27,28 @@ def parse_arguments() -> argparse.Namespace:
     return args
 
 
+def check_pdb_null(input_pdb_path: str, pdbid: str, url: str) -> bool:
+    """ Check if all of the residues are unknown
+
+    Args:
+        input_pdb_path (str): The input PDB structure path
+        pdbid (str): PDB id from RCSB 
+        url (str): URL to retrieve PDB fro
+    Returns:
+        bool: Return True if all of the residues are unknown
+    """
+    if input_pdb_path:
+        fixer = PDBFixer(filename=input_pdb_path)
+    elif pdbid:
+        fixer = PDBFixer(pdbid=pdbid)
+    elif url:
+        fixer = PDBFixer(url=url)
+
+    all_unknown: bool = not [residue for residue in fixer.topology.residues() if residue in fixer.templates]
+
+    return all_unknown
+
+
 def find_missing_residues(fixer: PDBFixer) -> PDBFixer:
     """ Finds the missing residues and adds missing residues within a 
     chain to prevent "floppy tails," which can lead to an increase in the box size, 
@@ -46,6 +68,13 @@ def find_missing_residues(fixer: PDBFixer) -> PDBFixer:
         chain = fixer_chains[chain_idx]
         if res_idx == 0 or res_idx == len(list(chain.residues())):
             del fixer.missingResidues[tuple([chain_idx, res_idx])]
+
+    # Sometimes, protein structures have missing residues, but the type of these
+    # missing residues is unknown and denoted as UNK. Figuring out the correct type
+    # of these residues is beyond the capabilities of a command-line tool. Therefore,
+    # we often remove missing residues without a template, such as UNK, N, and others.
+    for key, resnames in list(fixer.missingResidues.items()):
+        fixer.missingResidues[key] = [r for r in resnames if r in fixer.templates]
     return fixer
 
 
@@ -119,9 +148,14 @@ def main() -> None:
         print(f'Error: Can not find file {args.input_helper_pdb_path}')
         sys.exit(1)
 
+    if check_pdb_null(args.input_pdb_path, args.pdbid, args.url):
+        print(f'Error: All the residues in {args.input_pdb_path} are unkown')
+        sys.exit(1)
+
     if (args.input_pdb_path is None) and (args.pdbid is None) and (args.url is None):
         print("Error: No input is provided")
         sys.exit(1)
+
     runpdbfixer(args.input_pdb_path, args.input_helper_pdb_path,
                 args.output_pdb_path, args.add_atoms, args.add_residues,
                 args.pdbid, args.url, args.replace_nonstandard, args.keep_heterogens)
