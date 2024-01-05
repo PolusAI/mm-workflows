@@ -27,7 +27,7 @@ RUN mamba clean --all --yes
 RUN pip cache purge
 
 # Install OnionNet-SFCT
-RUN git clone https://github.com/cyangNYU/OnionNet-SFCT.git
+RUN git clone <correct_url>
 WORKDIR /OnionNet-SFCT
 
 # Download models
