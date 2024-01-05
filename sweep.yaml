@@ -1,3 +1,6 @@
 # This sets whether to create pull requests as drafts. If this is set to True, then all pull requests will be created as drafts and GitHub Actions will not be triggered.
 draft: True
 # NOTE: Disable the CI because for some reason sweepAI is generating PRs which fail the CI, which then triggers more PRs in an infinite loop.
+# By default Sweep will read the logs and outputs from your existing Github Actions. To disable this, set this to false.
+# We are trying to stop sweepai bot to read GHA output and go bonker in fixing things
+gha_enabled: False
