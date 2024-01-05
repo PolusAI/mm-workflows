@@ -5,6 +5,11 @@
 # atomselect.py cannot simultaneously be in two directories.
 # Thus, we need to make relative paths be w.r.t. each subworkflow, or otherwise
 # modify the design of relative paths.
+# But since relative paths are currently w.r.t. the directory of the root workflow
+# (i.e. this file), if this file is in the examples/ directory, then
+# atomselect.py cannot simultaneously be in two directories.
+# Thus, we need to make relative paths be w.r.t. each subworkflow, or otherwise
+# modify the design of relative paths.
 steps:
 - download_pdb.yml:
     in:
