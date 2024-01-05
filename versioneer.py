@@ -1193,7 +1193,12 @@ def get_versions() -> Dict[str, Any]:
 
 @register_vcs_handler("git", "get_keywords")
 def git_get_keywords(versionfile_abs: str) -> Dict[str, str]:
-    """Extract version information from the given file."""
+    try:
+        with open(versionfile_abs, "r") as fobj:
+    except OSError:
+        return {}
+    keywords = {}
+    for line in fobj:"""Extract version information from the given file."""
     # the code embedded in _version.py can just fetch the value of these
     # keywords. When used from setup.py, we don't want to import _version.py,
     # so we do it with a regexp instead. This function is not used from
