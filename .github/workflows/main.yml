@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Build and run Dockerfiles
+      run: |
+        docker build -t image-name .
+        docker run image-name
+
+    - name: Run CWL files
+      run: |
+        cwl-runner cwl-file
+
+    - name: Echo CI status
+      run: |
+        if [ -d "PolusAI/workflow-inference-compiler" ]; then
+          echo "CI status received from 'PolusAI/workflow-inference-compiler'"
+        else
+          echo "Repository not found"
+        fi
