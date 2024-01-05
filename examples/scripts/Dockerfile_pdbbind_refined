@@ -3,7 +3,7 @@ FROM condaforge/mambaforge
 
 RUN apt-get update && apt-get install -y wget
 # Download the bdbbind dataset
-# RUN wget --no-clobber http://www.pdbbind.org.cn/download/PDBbind_v2020_refined.tar.gz
+# RUN wget --no-clobber https://pdbbind.oss-cn-hangzhou.aliyuncs.com/download/PDBbind_v2020_refined.tar.gz
 ## update to the new download URL (around 10 times faster) from PDBbind website.
 RUN wget --no-clobber https://pdbbind.oss-cn-hangzhou.aliyuncs.com/download/PDBbind_v2020_refined.tar.gz
 RUN tar -xvf PDBbind_v2020_refined.tar.gz
