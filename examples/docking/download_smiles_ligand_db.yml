@@ -10,7 +10,7 @@ inputs:
   binding_data_column:
     type: string
   convert_Kd_dG:
-    type: string
+    type: boolean
   output_txt_path:
     type: string
 
@@ -18,16 +18,14 @@ outputs:
   output_txt_path:
     type: File
     format: edam:format_2330
-    outputSource: download_smiles_ligand_db__step__2__python_script/output_txt_path
+    outputSource: download_smiles_ligand_db__step__2__generate_conformers/output_txt_path
 
 steps:
 - wget_xlsx:
     in:
       url: ~path
-- python_script:
+- generate_conformers:
     in:
-      script: ../scripts/generate_conformers.py
-      dockerPull: jakefennick/generate_conformers
       #input_excel_path: # inferred
       # query syntax: `column name` 'column value'
       query: ~query #"`Standard Type` == 'Kd' and `duplicate-type-classifier` == 'unique'"
@@ -47,7 +45,7 @@ wic:
       wic:
         graphviz:
           label: Download Excel File
-    (2, python_script):
+    (2, generate_conformers):
       wic:
         graphviz:
           label: Query Spreadsheet\nGenerate Conformers

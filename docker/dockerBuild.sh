@@ -23,7 +23,6 @@ sudo docker build --no-cache --pull -f Dockerfile_autodock_vina -t jakefennick/a
 sudo docker build --no-cache --pull -f Dockerfile_autodock_vina_filter -t jakefennick/autodock_vina_filter .
 sudo docker build --no-cache --pull -f Dockerfile_bash_scripts -t jakefennick/bash_scripts .
 sudo docker build --no-cache --pull -f Dockerfile_calculate_net_charge -t jakefennick/calculate_net_charge .
-sudo docker build --no-cache --pull -f Dockerfile_generate_conformers -t jakefennick/generate_conformers .
 sudo docker build --no-cache --pull -f Dockerfile_mol2_to_pdbqt -t jakefennick/mol2_to_pdbqt .
 sudo docker build --no-cache --pull -f Dockerfile_nmr4md -t jakefennick/nmr4md .
 sudo docker build --no-cache --pull -f Dockerfile_openbabel -t jakefennick/openbabel .
@@ -35,7 +34,8 @@ sudo docker build --no-cache --pull -f Dockerfile_onionnet-sfct -t cyangnyu/onio
 sudo docker build --no-cache --pull -f Dockerfile_smina -t cyangnyu/smina .
 sudo docker build --no-cache --pull -f Dockerfile_pdb_fixer -t ndonyapour/pdbfixer .
 sudo docker build --no-cache --pull -f Dockerfile_extract_protein -t ndonyapour/extract_protein .
-sudo docker build --no-cache --pull -f Dockerfile_extract_protein -t ndonyapour/fix_pdb_atom_column .
+sudo docker build --no-cache --pull -f Dockerfile_fix_pdb_atom_column -t ndonyapour/fix_pdb_atom_column .
+sudo docker build --no-cache --pull -f Dockerfile_generate_conformers -t ndonyapour/generate_conformers .
 
 sudo docker build --no-cache --pull -f Dockerfile_pdbbind_refined -t pdbbind_refined_v2020 .  # NOTE: no username
 cd ../..
