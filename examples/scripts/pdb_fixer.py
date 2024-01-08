@@ -44,7 +44,7 @@ def check_pdb_null(input_pdb_path: str, pdbid: str, url: str) -> bool:
     elif url:
         fixer = PDBFixer(url=url)
 
-    all_unknown: bool = not [residue for residue in fixer.topology.residues() if residue in fixer.templates]
+    all_unknown: bool = not [residue for residue in fixer.topology.residues() if residue.name in fixer.templates]
 
     return all_unknown
 
