@@ -4,7 +4,4 @@ FROM condaforge/mambaforge
 RUN mamba install -c conda-forge pandas rdkit openpyxl xorg-libxrender
 
 ADD generate_conformers.py .
-ADD python_cwl_driver.py .
-ADD workflow_types.py .
-
 ADD Dockerfile_generate_conformers .

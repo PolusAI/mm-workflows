@@ -1,13 +1,35 @@
-# pylint: disable=import-outside-toplevel,no-member
-import distutils.util
 import math
+import argparse
 from typing import List
+import pandas
 
-from workflow_types import *
+import rdkit
+from rdkit import Chem
+from rdkit.Chem import AllChem
+
+
+def parse_arguments() -> argparse.Namespace:
+    """ This function parses the arguments.
+
+    Returns:
+        argparse.Namespace: The command line arguments
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--input_excel_path', type=str)
+    parser.add_argument('--output_txt_path', type=str)
+    parser.add_argument('--query', type=str)
+    parser.add_argument('--min_row', required=False, type=int, default=1)
+    parser.add_argument('--max_row', required=False, type=int, default=-1)
+    parser.add_argument('--smiles_column', type=str)
+    parser.add_argument('--binding_data_column', type=str)
+    parser.add_argument('--convert_Kd_dG', required=False, action='store_true')
+
+    args = parser.parse_args()
+    return args
 
 
 def calculate_dG(Kd: float) -> float:
-    """ Calculates binding free energy from Kd
+    """ Calculates binding free energy from Kd, See https://en.wikipedia.org/wiki/Binding_constant
 
     Args:
         Kd (float): The binding affinity of the protein-ligand complex
@@ -33,12 +55,19 @@ def calculate_dG(Kd: float) -> float:
     return dG
 
 
-def main(input_excel_path, query, min_row, max_row, smiles_column,  # type: ignore[no-untyped-def]
-         binding_data_column, convert_Kd_dG, output_txt_path, output_sdf_path):
-    import pandas
-    import rdkit
-    from rdkit import Chem
-    from rdkit.Chem import AllChem
+def load_data(input_excel_path: str, query: str, smiles_column: str, binding_data_column: str,
+              output_txt_path: str, min_row: int = 1, max_row: int = -1, convert_Kd_dG: bool = False) -> None:
+    """ Reads SMILES strings and numerical binding affinity data from the given Excel spreadsheet using a Pandas query
+
+    Args:
+        input_excel_path: (str): Path to the input xlsx file
+        query (str): The Query to perform
+        min_row (int): min index of rows. Defaults to 1.
+        max_row (int): max index of rows. Defaults to -1.
+        smiles_column (str): The name of smiles column
+        convert_Kd_dG (bool): If this set to True, The dG will be calculated. Defaults to False.
+        output_txt_path (str): The output text file
+    """
 
     df = pandas.read_excel(input_excel_path, sheet_name=1)  # Requires openpyxl
 
@@ -93,7 +122,6 @@ def main(input_excel_path, query, min_row, max_row, smiles_column,  # type: igno
 
     # Generate 2D and/or 3D conformers
     smiles_binding_data: List[str] = []
-    convert_Kd_dG = distutils.util.strtobool(convert_Kd_dG)
     for idx, row in enumerate(df.values):
 
         (smiles, binding_datum) = row
@@ -110,11 +138,14 @@ def main(input_excel_path, query, min_row, max_row, smiles_column,  # type: igno
         mol_2D: rdkit.Chem.rdchem.Mol = Chem.MolFromSmiles(smiles)
         AllChem.Compute2DCoords(mol_2D)
 
+        # See https://www.rdkit.org/docs/source/rdkit.Chem.rdmolops.html#rdkit.Chem.rdmolops.AddHs
+        # NOTE: "Much of the code assumes that Hs are not included in the molecular topology,
+        # so be very careful with the molecule that comes back from this function."
         mol_3D = Chem.AddHs(mol_2D)
         AllChem.EmbedMolecule(mol_3D)
         AllChem.MMFFOptimizeMolecule(mol_3D)
 
-        filename = f'{idx}.sdf'  # chemblid is NOT unique!
+        filename = f'ligand_{idx}.sdf'  # chemblid is NOT unique!
         writer = Chem.SDWriter(filename)
         # writer = Chem.rdmolfiles.PDBWriter(filename)
         writer.write(mol_3D)
@@ -124,14 +155,16 @@ def main(input_excel_path, query, min_row, max_row, smiles_column,  # type: igno
         f.write('\n'.join(smiles_binding_data))
 
 
-inputs = {'input_excel_path': xlsxfile,
-          'query': string,
-          'min_row': {'type': 'int', 'format': 'edam:format_2330', 'default': 1},
-          'max_row': {'type': 'int', 'format': 'edam:format_2330', 'default': -1},
-          'smiles_column': string,
-          'binding_data_column': string,
-          'convert_Kd_dG': string,
-          'output_txt_path': string,
-          'output_sdf_path': string}
-outputs = {'output_txt_path': ('$(inputs.output_txt_path)', textfile),
-           'output_sdf_path': ('*.sdf', sdffiles)}
+def main() -> None:
+    """ Reads the command line arguments and loads an Excel database of small molecules,
+    performs a query to extract the SMILES and binding affinity, generates 3D structures 
+    and saves them in SDF format.
+    """
+    args = parse_arguments()
+
+    load_data(args.input_excel_path, args.query, args.smiles_column, args.binding_data_column,
+              args.output_txt_path, args.min_row, args.max_row, args.convert_Kd_dG)
+
+
+if __name__ == '__main__':
+    main()
