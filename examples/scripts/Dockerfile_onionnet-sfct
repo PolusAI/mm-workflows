@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y wget git
 #0 23.40    └─ openbabel 2.4.1 would require
 #0 23.40       └─ python >=3.7,<3.8.0a0 , which can be installed.
 # So, explicitly downgrade to python=3.7.*
-RUN mamba install -c conda-forge "python=3.7.*" "openbabel<3.0" numpy pandas mdtraj biopandas -y
+RUN mamba install -c conda-forge "python=3.7.*" "openbabel<3.0" numpy pandas mdtraj biopandas rdkit -y
 RUN pip install -U scikit-learn rdkit-pypi
 
 # cleanup
