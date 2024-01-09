@@ -3,4 +3,4 @@ FROM condaforge/mambaforge-pypy3
 RUN mamba install -c conda-forge pdbfixer
 
 ADD pdb_fixer.py .
-ADD Dockerfile_pdb_fixer .
+ADD Dockerfile_pdbfixer .
