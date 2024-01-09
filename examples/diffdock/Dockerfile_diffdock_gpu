@@ -12,7 +12,7 @@ RUN CONDA="Mambaforge-Linux-x86_64.sh" && \
     rm -f $CONDA
 ENV PATH /mambaforge/bin:$PATH
 
-RUN conda install pytorch==1.13.0 pytorch-cuda=11.7 pytorch-cluster -c pytorch -c nvidia -c pyg
+RUN conda install pytorch==1.13.0 pytorch-cuda=11.7.0 pytorch-cluster -c pytorch -c nvidia -c pyg
 
 # Website suggests torch 1.12 but only 1.12 doesn't exist with cuda 11.7 https://github.com/gcorso/DiffDock https://data.pyg.org/whl/torch-1.13.0+cu117.html
 # Need to install pytorch first before other torch packages
