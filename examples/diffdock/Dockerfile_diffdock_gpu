@@ -48,7 +48,6 @@ FROM nvidia/cuda:11.7.1-cudnn8-runtime-ubuntu20.04 as runtime
 
 COPY --from=devel DiffDock/ DiffDock/
 COPY --from=devel mambaforge/ mambaforge/
-
 # shell file to copy cached files, run diffdock and remove large cached files after execution
 ADD diffdock_cmds.sh /DiffDock/
 
