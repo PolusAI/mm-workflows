@@ -4,7 +4,7 @@ FROM condaforge/mambaforge-pypy3
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Install essential packages
-RUN apt-get update && apt-get install -y git build-essential libboost-all-dev libopenbabel-dev libeigen3-dev cmake
+RUN apt-get update && apt-get install -y git build-essential libboost-all-dev libopenbabel-dev libeigen3-dev cmake libeigen3-dev
 ENV PATH="${PATH}:/smina-code/build"
 
 # Download Smina code and compile binary 
