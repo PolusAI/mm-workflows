@@ -32,6 +32,7 @@ sudo docker build --no-cache --pull -f Dockerfile_combine_structure -t ndonyapou
 sudo docker build --no-cache --pull -f Dockerfile_molgan -t ndonyapour/molgan .
 sudo docker build --no-cache --pull -f Dockerfile_onionnet-sfct -t cyangnyu/onionnet-sfct .
 sudo docker build --no-cache --pull -f Dockerfile_smina -t cyangnyu/smina .
+sudo docker build --no-cache --pull -f Dockerfile_pdbfixer -t jakefennick/pdbfixer .
 sudo docker build --no-cache --pull -f Dockerfile_pdbfixer -t ndonyapour/pdbfixer .
 sudo docker build --no-cache --pull -f Dockerfile_extract_protein -t ndonyapour/extract_protein .
 sudo docker build --no-cache --pull -f Dockerfile_fix_pdb_atom_column -t ndonyapour/fix_pdb_atom_column .
