@@ -20,7 +20,10 @@ RUN conda install pytorch==1.13.0 pytorch-cuda=11.7.0 pytorch-cluster -c pytorch
 # so need to specify which package versions (CUDA and Torch)
 # If install pytorch-cluster below with rest of torch packages, the will get error Not compiled with CUDA support
 
-RUN pip install torch-scatter torch-sparse torch-spline-conv torch-geometric==2.0.4 -f https://data.pyg.org/whl/torch-1.13.0+cu117.html
+RUN pip install torch-scatter torch-sparse torch-spline-conv torch-geometric==2.0.4 -f https://data.pyg.org/whl/torch-1.13.0+cu117.html \
+ openfold @ git+https://github.com/aqlaboratory/openfold.git@4b41059694619831a7db195b7e0988fc4ff3a307 \
+ dllogger @ git+https://github.com/NVIDIA/dllogger.git \
+ fair-esm[esmfold]
 
 RUN conda install PyYAML scipy "networkx[default]" biopython rdkit e3nn spyrmsd pandas biopandas spyrmsd biopandas
 
