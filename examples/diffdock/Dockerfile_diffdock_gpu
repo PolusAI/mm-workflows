@@ -22,7 +22,7 @@ RUN conda install pytorch==1.13.0 pytorch-cuda=11.7.0 pytorch-cluster -c pytorch
 
 RUN pip install torch-scatter torch-sparse torch-spline-conv torch-geometric==2.0.4 -f https://data.pyg.org/whl/torch-1.13.0+cu117.html
 
-RUN conda install PyYAML scipy "networkx[default]" biopython rdkit e3nn spyrmsd pandas biopandas
+RUN conda install PyYAML scipy "networkx[default]" biopython rdkit e3nn spyrmsd pandas biopandas spyrmsd biopandas
 
 # See install for GPU https://github.com/gcorso/DiffDock, some packages are only in pip
 
