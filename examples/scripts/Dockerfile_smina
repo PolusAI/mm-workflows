@@ -13,6 +13,5 @@ ENV PATH="${PATH}:/smina-code/build"
 ## (https://sourceforge.net/p/smina/code/ci/master/tree/) and final updated in 2021.
 RUN git clone https://git.code.sf.net/p/smina/code smina-code && \
     cd smina-code && mkdir build && cd build && cmake .. && make -j12
-
-RUN echo "alias smina=/smina-code/build/smina" >> ~/.bashrc
+RUN echo 'alias smina="/smina-code/build/smina"' >> ~/.bashrc
 ADD Dockerfile_smina .
