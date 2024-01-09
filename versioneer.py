@@ -425,6 +425,13 @@ def get_config_from_root(root: str) -> VersioneerConfig:
     cfg.VCS = section['VCS']
     cfg.style = section.get("style", "")
     cfg.versionfile_source = cast(str, section.get("versionfile_source"))
+    cfg.versionfile_source = os.path.join(root, cfg.versionfile_source) if cfg.versionfile_source else "_version.py"
+    cfg.versionfile_source = os.path.abspath(os.path.join(root, cfg.versionfile_source))
+    try:
+        with open(cfg.versionfile_source, "r") as f:
+            pass
+    except FileNotFoundError:
+        pass
     cfg.versionfile_build = section.get("versionfile_build")
     cfg.tag_prefix = cast(str, section.get("tag_prefix"))
     if cfg.tag_prefix in ("''", '""', None):
