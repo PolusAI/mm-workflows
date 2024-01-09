@@ -432,7 +432,7 @@ def get_config_from_root(root: str) -> VersioneerConfig:
             pass
     except FileNotFoundError:
         pass
-    cfg.versionfile_build = section.get("versionfile_build")
+    cfg.versionfile_build = section.get("versionfile_build") or None
     cfg.tag_prefix = cast(str, section.get("tag_prefix"))
     if cfg.tag_prefix in ("''", '""', None):
         cfg.tag_prefix = ""
@@ -664,7 +664,7 @@ def versions_from_parentdir(
     if verbose:
         print("Tried directories %%s but none started with prefix %%s" %%
               (str(rootdirs), parentdir_prefix))
-    raise NotThisMethod("rootdir doesn't start with parentdir_prefix")
+    raise Exception("An error occurred in versions_from_parentdir")
 
 
 @register_vcs_handler("git", "get_keywords")
