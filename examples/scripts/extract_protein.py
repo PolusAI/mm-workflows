@@ -2,10 +2,9 @@
 import sys
 import os
 import argparse
-from typing import Optional, List
-import numpy as np
+from typing import List
 
-import openmm.app as omma
+import openmm.app as omma  # pylint: disable=import-error
 
 
 def parse_arguments() -> argparse.Namespace:

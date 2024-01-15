@@ -1,7 +1,7 @@
 import subprocess as sub
 import sys
 
-import pymol
+import pymol  # pylint: disable=import-error
 
 # The `polymer` selection keyword incorrectly assigns the C-terminal amino
 # acid residue to the ligand. Alternatively, we can select atoms based on their
@@ -101,9 +101,9 @@ if ALIGN_AVERAGED:
 
 MDTRAJ = True
 if MDTRAJ:
-    import MDAnalysis
-    from MDAnalysis.analysis import align
-    from MDAnalysis.coordinates import TRR
+    import MDAnalysis  # pylint: disable=import-error
+    from MDAnalysis.analysis import align  # pylint: disable=import-error
+    from MDAnalysis.coordinates import TRR  # pylint: disable=import-error
 
     gro = MDAnalysis.Universe(topology=geniongro, coordinates=geniongro)
     print(gro)

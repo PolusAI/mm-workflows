@@ -141,7 +141,7 @@ ignore_errors = false
 # versioneer to the exclude=regex above, but this works.
 
 [[tool.mypy.overrides]]
-module = ["BioSimSpace.*", "MDAnalysis.*", "pymol.*", "rdkit.*", "nmrformd.*", "setuptools.*", "parmed.*", "pdbfixer.*", "openmm.*"]
+module = ["BioSimSpace.*", "MDAnalysis.*", "pymol.*", "rdkit.*", "nmrformd.*", "setuptools.*", "parmed.*", "pdbfixer.*", "openmm.*", "mdtraj.*"]
 ignore_missing_imports = true
 
 

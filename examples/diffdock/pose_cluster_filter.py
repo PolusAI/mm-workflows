@@ -41,8 +41,8 @@ def EuclideanDist(pi: Chem.SDMolSupplier, pj: Chem.SDMolSupplier) -> float:
     # GetConformers will just use input coordinates if conformations are not pre-generated
     confi = pi.GetConformers()[0]
     confj = pj.GetConformers()[0]
-    centeri = rdmt.ComputeCentroid(confi)
-    centerj = rdmt.ComputeCentroid(confj)
+    centeri = rdmt.ComputeCentroid(confi)  # pylint: disable=c-extension-no-member
+    centerj = rdmt.ComputeCentroid(confj)  # pylint: disable=c-extension-no-member
     dv = np.array([centeri.x, centeri.y, centeri.z]) - np.array([centerj.x, centerj.y, centerj.z])
     return float(np.sqrt(np.dot(dv, dv)))
 

@@ -1,10 +1,17 @@
-from workflow_types import *
+from workflow_types import tprfile, trrfile, pngfile, string  # pylint: disable=import-error
+import MDAnalysis as mda  # pylint: disable=import-error
+import nmrformd  # pylint: disable=import-error
+from matplotlib import pyplot as plt
 
 
-def main(input_tpr_path, input_trr_path, output_png_path):  # type: ignore[no-untyped-def]
-    import MDAnalysis as mda
-    import nmrformd
-    from matplotlib import pyplot as plt
+def main(input_tpr_path: str, input_trr_path: str, output_png_path: str) -> None:
+    """Generate NMR analysis plots from trajectory files.
+
+    Args:
+        input_tpr_path (str): Input tpr file path
+        input_trr_path (str): Input trr file path
+        output_png_path (str): Output png file path
+    """
 
     # The following code comes directly from the nmr4md tutorial at
     # https://github.com/simongravelle/nmrformd/blob/main/docs/source/tutorials/bulk-water.rst

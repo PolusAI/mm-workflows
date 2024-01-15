@@ -1,6 +1,6 @@
 import sys
 
-import MDAnalysis
+import MDAnalysis  # pylint: disable=import-error
 
 input_mol2 = sys.argv[1]
 output_pdb = sys.argv[2]

@@ -2,8 +2,8 @@
 import argparse
 from typing import Optional
 
-from rdkit import Chem
-from rdkit.Chem import AllChem
+from rdkit import Chem  # pylint: disable=import-error
+from rdkit.Chem import AllChem  # pylint: disable=import-error
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -33,7 +33,7 @@ def get_net_charge(file_path: str, addhydrogens: bool = False) -> Optional[int]:
 
     try:
         mol = Chem.MolFromMol2File(file_path, removeHs=False)
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught
         return None
 
     if not mol:
@@ -45,7 +45,7 @@ def get_net_charge(file_path: str, addhydrogens: bool = False) -> Optional[int]:
         AllChem.ComputeGasteigerCharges(mol,
                                         nIter=50,
                                         throwOnParamFailure=True)
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught
         return None
 
     num_atoms = mol.GetNumAtoms()

@@ -1,6 +1,6 @@
 import sys
 
-import MDAnalysis as mda
+import MDAnalysis as mda  # pylint: disable=import-error
 
 input_structure = sys.argv[1]
 input_helper_structure = sys.argv[2]

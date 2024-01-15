@@ -82,7 +82,7 @@ else:
                 floats = [float(x) for x in strs[1:]]
                 score = floats[0]
                 scores.append(score)
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught
                 scores_all.append(scores)
                 parsing = False
 
