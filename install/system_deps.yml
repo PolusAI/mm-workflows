@@ -18,6 +18,7 @@ dependencies:
   - xorg-libxrender
   - mdtraj
   - pymol-open-source
+  - openmm
   - pdbfixer
 # Alternatively, can use pymol-bundle from the schrodinger channel.
 #  - pymol-bundle
