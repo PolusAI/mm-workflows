@@ -4,7 +4,7 @@ import argparse
 from typing import List, Tuple
 
 from pdbfixer import PDBFixer
-import openmm.app as omma  # pylint: disable=import-error
+import openmm.app as omma
 
 
 def parse_arguments() -> argparse.Namespace:

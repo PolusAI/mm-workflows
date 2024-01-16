@@ -4,7 +4,7 @@ import os
 import argparse
 from typing import List
 
-import openmm.app as omma  # pylint: disable=import-error
+import openmm.app as omma
 
 
 def parse_arguments() -> argparse.Namespace:
