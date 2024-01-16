@@ -1,8 +1,8 @@
 import sys
 
-import MDAnalysis  # pylint: disable=import-error
-from MDAnalysis.analysis import align  # pylint: disable=import-error
-from MDAnalysis.coordinates import TRR  # pylint: disable=import-error
+import MDAnalysis
+from MDAnalysis.analysis import align
+from MDAnalysis.coordinates import TRR
 
 input_gro_path = sys.argv[1]
 input_trr_path = sys.argv[2]

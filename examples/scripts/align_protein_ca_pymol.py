@@ -101,9 +101,9 @@ if ALIGN_AVERAGED:
 
 MDTRAJ = True
 if MDTRAJ:
-    import MDAnalysis  # pylint: disable=import-error
-    from MDAnalysis.analysis import align  # pylint: disable=import-error
-    from MDAnalysis.coordinates import TRR  # pylint: disable=import-error
+    import MDAnalysis
+    from MDAnalysis.analysis import align
+    from MDAnalysis.coordinates import TRR
 
     gro = MDAnalysis.Universe(topology=geniongro, coordinates=geniongro)
     print(gro)

@@ -1,5 +1,5 @@
 from workflow_types import string, pdbfile  # pylint: disable=import-error
-import mdtraj  # pylint: disable=import-error
+import mdtraj
 # NOTE: No other top-level imports supported
 
 

@@ -1,5 +1,5 @@
 from workflow_types import tprfile, trrfile, pngfile, string  # pylint: disable=import-error
-import MDAnalysis as mda  # pylint: disable=import-error
+import MDAnalysis as mda
 import nmrformd  # pylint: disable=import-error
 from matplotlib import pyplot as plt
 

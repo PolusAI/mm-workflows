@@ -3,7 +3,7 @@ import os
 import argparse
 from typing import Optional
 
-from rdkit import Chem  # pylint: disable=import-error
+from rdkit import Chem
 
 
 def parse_arguments() -> argparse.Namespace:

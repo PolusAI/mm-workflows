@@ -2,8 +2,8 @@
 import argparse
 from typing import Optional
 
-from rdkit import Chem  # pylint: disable=import-error
-from rdkit.Chem import AllChem  # pylint: disable=import-error
+from rdkit import Chem
+from rdkit.Chem import AllChem
 
 
 def parse_arguments() -> argparse.Namespace:

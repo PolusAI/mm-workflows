@@ -3,9 +3,9 @@ import argparse
 from typing import List
 import pandas
 
-import rdkit  # pylint: disable=import-error
-from rdkit import Chem  # pylint: disable=import-error
-from rdkit.Chem import AllChem  # pylint: disable=import-error
+import rdkit
+from rdkit import Chem
+from rdkit.Chem import AllChem
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -156,7 +156,7 @@ def load_data(input_excel_path: str, query: str, smiles_column: str, binding_dat
             smiles_binding_data.append(f'{smiles} {binding_datum}')
 
         # See https://www.rdkit.org/docs/GettingStartedInPython.html#working-with-3d-molecules
-        mol_2D: rdkit.Chem.rdchem.Mol = Chem.MolFromSmiles(smiles)  # pylint: disable=c-extension-no-member
+        mol_2D: rdkit.Chem.rdchem.Mol = Chem.MolFromSmiles(smiles)  # pylint: disable=c-extension-no-member,no-member
         AllChem.Compute2DCoords(mol_2D)  # pylint: disable=no-member
 
         # See https://www.rdkit.org/docs/source/rdkit.Chem.rdmolops.html#rdkit.Chem.rdmolops.AddHs

@@ -59,6 +59,10 @@ workflow-deps = [
     "numpy>=1.21.0",
     "mdanalysis",
     "nmrformd",
+    "mdanalysis",
+    "mdtraj",
+    "rdkit",
+    "openmm",
 ]
 # See docs/requirements.txt
 doc = [
