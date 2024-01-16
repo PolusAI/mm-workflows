@@ -1,7 +1,7 @@
 import subprocess as sub
 import sys
 
-import pymol  # pylint: disable=import-error
+import pymol
 
 # The `polymer` selection keyword incorrectly assigns the C-terminal amino
 # acid residue to the ligand. Alternatively, we can select atoms based on their

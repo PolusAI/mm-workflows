@@ -3,7 +3,7 @@ import os
 import argparse
 from typing import List, Tuple
 
-from pdbfixer import PDBFixer  # pylint: disable=import-error
+from pdbfixer import PDBFixer
 import openmm.app as omma  # pylint: disable=import-error
 
 
