@@ -1,5 +1,4 @@
 from workflow_types import string, pdbfile  # pylint: disable=import-error
-import mdtraj
 # NOTE: No other top-level imports supported
 
 
@@ -11,6 +10,7 @@ def main(selection_string: str, input_pdb_path: str, output_pdb_path: str) -> No
         input_pdb_path (str): The path to the input PDB file
         output_pdb_path (str): The path to the output PDB file
     """
+    import mdtraj  # pylint: disable=import-outside-toplevel
     traj = mdtraj.load(input_pdb_path)
     print(traj)
     selection_indices = traj.topology.select(selection_string)
