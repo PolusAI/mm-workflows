@@ -52,7 +52,7 @@ mypy-types = [
     "types-openpyxl",
     "types-pyyaml",
 ]
-# For pylint
+
 workflow-deps = [
     "matplotlib",
     "pandas",
