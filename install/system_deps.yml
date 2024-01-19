@@ -18,7 +18,7 @@ dependencies:
   - xorg-libxrender
   - mdtraj
   - pymol-open-source
-  - openmm
+  - openmm # http://docs.openmm.org/latest/userguide/application/01_getting_started.html#installing-openmm
   - pdbfixer
 # Alternatively, can use pymol-bundle from the schrodinger channel.
 #  - pymol-bundle
