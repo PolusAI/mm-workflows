@@ -2,7 +2,6 @@ import sys
 import os
 import argparse
 from typing import Optional
-import numpy as np
 
 from rdkit import Chem
 
@@ -21,16 +20,16 @@ def parse_arguments() -> argparse.Namespace:
     return args
 
 
-def read_xyz_rdkit(input_structure_path: str) -> Optional[Chem.rdchem.Mol]:
-    """ Read a PDB file using RDKit 
+def read_xyz_rdkit(input_structure_path: str) -> Optional[Chem.rdchem.Mol]:  # pylint: disable=c-extension-no-member
+    """ Read a PDB file using RDKit
 
     Args:
-        input_structure_path (str): The path to the xyz structure 
+        input_structure_path (str): The path to the xyz structure
 
     Returns:
         Optional[Chem.rdchem.Mol]: The created molecule object
     """
-    xyz = Chem.rdmolfiles.MolFromXYZFile(input_structure_path)
+    xyz = Chem.rdmolfiles.MolFromXYZFile(input_structure_path)  # pylint: disable=c-extension-no-member
 
     if not xyz:
         print(f'Error: failed to generate molecule from file {input_structure_path}')
@@ -43,8 +42,8 @@ def combine_structure_rdkit(input_structure1_path: str, input_structure2_path: s
     """ Combine two structures into a single PDB file using RDKit
 
     Args:
-        input_structure1_path (str): The path to the xyz structure 1 
-        input_structure2_path (str): The path to the xyz structure 2 
+        input_structure1_path (str): The path to the xyz structure 1
+        input_structure2_path (str): The path to the xyz structure 2
         output_structure_path (str): The path to the output combined structure
     """
 
@@ -52,9 +51,9 @@ def combine_structure_rdkit(input_structure1_path: str, input_structure2_path: s
     structure2 = read_xyz_rdkit(input_structure2_path)
 
     if structure1 and structure2:
-        combo = Chem.CombineMols(structure1, structure2)
+        combo = Chem.CombineMols(structure1, structure2)  # pylint: disable=no-member
 
-        with Chem.PDBWriter(output_structure_path) as writer:
+        with Chem.PDBWriter(output_structure_path) as writer:  # pylint: disable=no-member
             writer.write(combo)
 
 

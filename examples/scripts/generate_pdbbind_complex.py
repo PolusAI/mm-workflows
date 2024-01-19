@@ -91,6 +91,8 @@ def read_index_file(index_file_path: str) -> pd.DataFrame:
 
     return pd.DataFrame.from_dict(data)
 
+# pylint: disable=too-many-arguments,too-many-locals
+
 
 def load_data(index_file_name: str, base_dir: str, query: str, output_txt_path: str,
               min_row: int = 1, max_row: int = -1, convert_Kd_dG: bool = False) -> None:
@@ -117,7 +119,7 @@ def load_data(index_file_name: str, base_dir: str, query: str, output_txt_path: 
     if int(min_row) != 1 or int(max_row) != -1:
         # We want to convert to zero-based indices and we also want
         # the upper index to be inclusive (i.e. <=) so -1 lower index.
-        df = df[(int(min_row) - 1):int(max_row)]
+        df = df[(int(min_row) - 1):int(max_row)]  # pylint: disable=unsubscriptable-object
 
     # Calculate dG
     df = df[['PDB_code', 'value', 'Kd_Ki']]

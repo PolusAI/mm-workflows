@@ -32,8 +32,8 @@ def check_pdb_null(input_pdb_path: str, pdbid: str, url: str) -> bool:
 
     Args:
         input_pdb_path (str): The input PDB structure path
-        pdbid (str): PDB id from RCSB 
-        url (str): URL to retrieve PDB fro
+        pdbid (str): PDB id from RCSB
+        url (str): URL to retrieve PDB from
     Returns:
         bool: Return True if all of the residues are unknown
     """
@@ -50,9 +50,9 @@ def check_pdb_null(input_pdb_path: str, pdbid: str, url: str) -> bool:
 
 
 def find_missing_residues(fixer: PDBFixer) -> PDBFixer:
-    """ Finds the missing residues and adds missing residues within a 
-    chain to prevent "floppy tails," which can lead to an increase in the box size, 
-    significantly increasingthe computation time. This step is taken as floppy tails 
+    """ Finds the missing residues and adds missing residues within a
+    chain to prevent "floppy tails," which can lead to an increase in the box size,
+    significantly increasingthe computation time. This step is taken as floppy tails
     are generally not critical for binding.
 
     Args:
@@ -77,11 +77,13 @@ def find_missing_residues(fixer: PDBFixer) -> PDBFixer:
         fixer.missingResidues[key] = [r for r in resnames if r in fixer.templates]
     return fixer
 
+# pylint: disable=too-many-arguments
+
 
 def runpdbfixer(input_pdb_path: str, input_helper_pdb_path: str, output_pdb_path: str,
                 add_atoms: str, add_res: bool, pdbid: str, url: str, rep_nonstandard: bool, heterogens: str) -> None:
-    """ Fixes the protein structure using PDBFixer.PDBFixer offers options 
-    to add hydrogens and solvate the system, but in our usage, we employ 
+    """ Fixes the protein structure using PDBFixer.PDBFixer offers options
+    to add hydrogens and solvate the system, but in our usage, we employ
     PDBFixer solely for adding missing heavy atoms and residues.
 
     Args:
@@ -90,7 +92,7 @@ def runpdbfixer(input_pdb_path: str, input_helper_pdb_path: str, output_pdb_path
         input_helper_pdb_path (str): The input helper PDB structure path
         add_atoms (str): What missing atoms to add: all, heavy, hydrogen, or none
         add_res (bool): If set to True, adds missing residues
-        pdbid (str): PDB id from RCSB 
+        pdbid (str): PDB id from RCSB
         url (str): URL to retrieve PDB from
         rep_nonstandard (bool): Replace nonstandard residues with standard equivalents
     """
