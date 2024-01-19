@@ -1,7 +1,4 @@
 from workflow_types import tprfile, trrfile, pngfile, string  # pylint: disable=import-error
-import MDAnalysis as mda
-import nmrformd  # pylint: disable=import-error
-from matplotlib import pyplot as plt
 
 
 def main(input_tpr_path: str, input_trr_path: str, output_png_path: str) -> None:
@@ -12,6 +9,10 @@ def main(input_tpr_path: str, input_trr_path: str, output_png_path: str) -> None
         input_trr_path (str): Input trr file path
         output_png_path (str): Output png file path
     """
+
+    import MDAnalysis as mda  # pylint: disable=import-outside-toplevel
+    import nmrformd  # pylint: disable=import-error,import-outside-toplevel
+    from matplotlib import pyplot as plt  # pylint: disable=import-outside-toplevel
 
     # The following code comes directly from the nmr4md tutorial at
     # https://github.com/simongravelle/nmrformd/blob/main/docs/source/tutorials/bulk-water.rst
