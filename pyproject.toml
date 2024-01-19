@@ -63,6 +63,7 @@ workflow-deps = [
     "mdtraj",
     "rdkit",
     "pymol",
+    "pdbfixer @ git+https://github.com/openmm/pdbfixer.git",
 ]
 # See docs/requirements.txt
 doc = [
