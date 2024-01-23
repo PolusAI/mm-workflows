@@ -47,3 +47,8 @@ sudo docker build --no-cache --pull -f Dockerfile_rmsd_pose_cluster -t mrbrandon
 sudo docker build --no-cache --pull -f Dockerfile_rank_diffdock_poses -t mrbrandonwalker/rank_diffdock_poses .
 sudo docker build --no-cache --pull -f Dockerfile_sanitize_ligand -t mrbrandonwalker/sanitize_ligand .
 cd ../..
+
+cd examples/pocket_detection/
+sudo docker build --no-cache --pull -f Dockerfile_insert_ligand_pocket -t mrbrandonwalker/insert_ligand_pocket .
+sudo docker build --no-cache --pull -f Dockerfile_p2rank -t mrbrandonwalker/p2rank .
+cd ../..

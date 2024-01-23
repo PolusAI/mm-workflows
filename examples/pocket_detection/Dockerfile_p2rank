@@ -1,0 +1,10 @@
+# docker build -f Dockerfile_p2rank -t mrbrandonwalker/p2rank .
+FROM eclipse-temurin:17-jdk-jammy
+
+RUN wget https://github.com/rdk/p2rank/releases/download/2.4.1/p2rank_2.4.1.tar.gz
+
+RUN tar -xzf p2rank_2.4.1.tar.gz
+
+RUN mv p2rank_2.4.1 p2rank
+
+WORKDIR /p2rank
