@@ -71,6 +71,7 @@ inputs:
       items: [Directory, File]
     format: edam:format_2330 # 'Textual format'
     # NOTE: Cannot provide default value here; add [] to the yml file.
+    # NOTE: This also seems to cause a validation failure.
     #default: []
     # No inputBinding
 
