@@ -4,7 +4,7 @@ steps:
  - yank_trailblaze:
      in:
        phase: trailblaze
-       input_dir_path: []
+       # input_dir_path: []  # temporarily comment out due to validation failure
        yaml: ../yank/yank_config_template.yaml
        input_complex_top_zip_path: '*genion_complex.zip'
        input_complex_crd_path: '*prod_complex.gro'
