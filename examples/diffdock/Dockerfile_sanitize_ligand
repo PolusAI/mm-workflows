@@ -1,0 +1,15 @@
+
+# docker build -f Dockerfile_sanitize_ligand -t mrbrandonwalker/sanitize_ligand .
+
+FROM condaforge/mambaforge
+# NOT mambaforge-pypy3 (rdkit is incompatible with pypy)
+
+RUN conda install -c conda-forge rdkit --yes
+
+RUN conda init bash
+
+COPY sanitize_ligand.py /
+
+RUN mamba clean --all --yes
+
+ADD Dockerfile_sanitize_ligand .

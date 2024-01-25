@@ -34,6 +34,7 @@ RUN python -m inference --protein_ligand_csv data/protein_ligand_example_csv.csv
 # Delete output results so not in same output folder as future runs
 RUN rm -r results/user_predictions_small
 
+# Clean up temp files
 RUN mamba clean --all --yes
 
 RUN pip cache purge

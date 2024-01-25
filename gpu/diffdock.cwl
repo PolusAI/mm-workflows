@@ -56,7 +56,7 @@ inputs:
     type: int?
     inputBinding:
       prefix: --batch_size
-    default: 10
+    default: 1
 
   out_dir:
     label: where output from diffdock is saved

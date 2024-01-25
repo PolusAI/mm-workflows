@@ -45,4 +45,5 @@ sudo docker build --no-cache --pull -f Dockerfile_diffdock_cpu -t mrbrandonwalke
 sudo docker build --no-cache --pull -f Dockerfile_diffdock_gpu -t mrbrandonwalker/diffdock_gpu .
 sudo docker build --no-cache --pull -f Dockerfile_rmsd_pose_cluster -t mrbrandonwalker/rmsd_pose_cluster .
 sudo docker build --no-cache --pull -f Dockerfile_rank_diffdock_poses -t mrbrandonwalker/rank_diffdock_poses .
+sudo docker build --no-cache --pull -f Dockerfile_sanitize_ligand -t mrbrandonwalker/sanitize_ligand .
 cd ../..
