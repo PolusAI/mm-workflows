@@ -6,7 +6,7 @@
     // need to manually exclude large workflows.
     // See https://en.wikipedia.org/wiki/Graph_isomorphism_problem
     "large_workflows": [
-        "dsb", "dsb1", "elm", "vs_demo_2", "vs_demo_3", "vs_demo_4",
+        "elm", "vs_demo_2", "vs_demo_3", "vs_demo_4",
         "vs_demo_2_weekly",
         "vs_demo_3_weekly",
         "vs_demo_4_weekly",
@@ -59,7 +59,6 @@
         // "tutorial",  // called in nmr
         "prod",
         "flc",
-        "dsb",
         "npt",
         "nvt",
         "min",
