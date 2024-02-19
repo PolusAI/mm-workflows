@@ -9,7 +9,7 @@ baseCommand: ["python", "/OnionNet-SFCT/scorer.py"]
 
 hints:
   DockerRequirement:
-    dockerPull: cyangnyu/onionnet-sfct
+    dockerPull: polusai/onionnet-sfct-tool:1.0.0
 
 requirements:
   InlineJavascriptRequirement: {}
@@ -60,12 +60,12 @@ inputs:
 
   output_docking_score:
     type: string?
-  
+
   output_poses_rescore:
     type: string?
-    
+
 outputs:
-  
+
   output_score_path:
     type: File
     outputBinding:
