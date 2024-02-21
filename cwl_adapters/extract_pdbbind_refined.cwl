@@ -14,7 +14,7 @@ hints:
   DockerRequirement:
     dockerImageId: pdbbind_refined_v2020  # NOTE: no username
     dockerFile:
-        $include: ../examples/scripts/Dockerfile_pdbbind_refined
+        $include: ../../../mm-workflows/examples/scripts/Dockerfile_pdbbind_refined
 
 requirements:
   InlineJavascriptRequirement: {}
