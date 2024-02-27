@@ -126,13 +126,6 @@ outputs:
       glob: $(inputs.output_mol2_path)
     format: edam:format_3816 # mol2
 
-  stderr:
-    type: File
-    outputBinding:
-      glob: stderr
-
-stderr: stderr
-
 $namespaces:
   edam: https://edamontology.org/
 
