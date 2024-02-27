@@ -11,6 +11,13 @@ hints:
   DockerRequirement:
     dockerPull: ndonyapour/molgan
 
+# Set environment variables for the tool,
+# See: https://www.commonwl.org/user_guide/topics/environment-variables.html
+requirements:
+  EnvVarRequirement:
+    envDef:
+      RDKIT_ERROR_LOGGING: $(inputs.rdkit_error_logging)
+
 inputs:
   input_data_path:
     label: Path to the input data file
@@ -106,6 +113,16 @@ inputs:
       prefix: --num_samples
     default: 1000
 
+  rdkit_error_logging:
+    label: Enable or disable RDKit error logging
+    doc: |-
+      Enable or disable RDKit error logging
+    type: string?
+    format:
+    - edam:format_2330
+    # RDKit prints out all errors by default, which can pose issues for CI, 
+    # particularly with large databases. It would be more efficient to suppress these errors.
+    default: ON
 outputs:
   output_log_path:
     label: Path to the log file
@@ -124,6 +141,13 @@ outputs:
     outputBinding:
       glob: $(inputs.output_sdf_path)
     format: edam:format_3814 # sdf
+
+  stderr:
+    type: File
+    outputBinding:
+      glob: stderr
+
+stderr: stderr
 
 
 $namespaces:
