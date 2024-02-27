@@ -2,9 +2,6 @@
 FROM condaforge/mambaforge
 # NOT mambaforge-pypy3 (rdkit is incompatible with pypy)
 
-# RDKIT logging
-ENV RDKIT_ERROR_LOGGING="OFF"
-
 RUN apt-get update && apt-get install -y wget git
 
 # Clone MolGAN

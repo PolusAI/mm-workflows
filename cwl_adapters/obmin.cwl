@@ -12,7 +12,7 @@ baseCommand: bash
 
 hints:
   DockerRequirement:
-    dockerPull: ndonyapour/openbabel
+    dockerPull: jakefennick/openbabel
 
 inputs:
   script:
@@ -31,8 +31,8 @@ inputs:
     type: string
     format:
     - edam:format_3816
-    inputBinding:
-       position: 3
+#    inputBinding:
+#      position: 3
     default: system.mol2
 
 outputs:
@@ -43,13 +43,7 @@ outputs:
     outputBinding:
       glob: $(inputs.output_mol2_path)
 
-  stderr:
-    type: File
-    outputBinding:
-      glob: stderr
-
-stderr: stderr
-
+stdout: $(inputs.output_mol2_path)
 
 $namespaces:
   edam: https://edamontology.org/
