@@ -1,4 +1,5 @@
 import argparse
+import signal
 from rdkit import Chem
 from rdkit.Chem.rdchem import Atom, Mol
 
@@ -14,11 +15,19 @@ def map_atoms(mol1: Mol, mol2: Mol) -> dict:
     Returns:
         dict: Mapping of atoms from mol1 to mol2.
     """
-    match_atoms = mol1.GetSubstructMatch(mol2)
+    mol1_num_atoms = mol1.GetNumAtoms()
+    mol2_num_atoms = mol2.GetNumAtoms()
+    # if the mol being mapped has less atom then a match won't be found
+    if mol1_num_atoms > mol2_num_atoms:
+        match_atoms = mol1.GetSubstructMatch(mol2)
+        mol2_index_to_mol1_index = {mol2_index: mol1_index for mol2_index, mol1_index in enumerate(match_atoms)}
+        mol1_index_to_mol2_index = {k: v for v, k in mol2_index_to_mol1_index.items()}
+    else:
+        match_atoms = mol2.GetSubstructMatch(mol1)
+        mol1_index_to_mol2_index = {mol1_index: mol2_index for mol1_index, mol2_index in enumerate(match_atoms)}
     if len(match_atoms) == 0:
         raise ValueError("No atoms matched between the two molecules.")
-    mol2_index_to_mol1_index = {mol2_index: mol1_index for mol2_index, mol1_index in enumerate(match_atoms)}
-    mol1_index_to_mol2_index = {k: v for v, k in mol2_index_to_mol1_index.items()}
+
     return mol1_index_to_mol2_index
 
 
@@ -126,8 +135,11 @@ def main() -> None:
     args = parser.parse_args()
     mol1 = Chem.MolFromPDBFile(args.file1, removeHs=False, sanitize=False)
     mol2 = Chem.MolFromPDBFile(args.file2, removeHs=False, sanitize=False)
-
+    signal.alarm(60)
     mol1_index_to_mol2_index = map_atoms(mol1, mol2)
+    # Cancel the alarm if the code executed within the timeout duration
+    signal.alarm(0)
+
     atom_differences = compare_atoms(mol1, mol2, mol1_index_to_mol2_index, intended_changes=args.intended_changes)
     if atom_differences:
         for mol1_idx, diff in atom_differences.items():
