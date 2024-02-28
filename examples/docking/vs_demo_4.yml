@@ -14,7 +14,7 @@ steps:
       output_sdf_paths: '&pdbbind_sdfs'
       experimental_dGs: '&exp_dGs'
       pdb_ids: '&pdbids'
-      
+
 - config_tag_pdb:
     scatter: [pdb_id]
     in:
@@ -39,11 +39,12 @@ steps:
     scatter: [input_pdb_path, input_helper_pdb_path]
     scatterMethod: dotproduct
 
-- extract_protein:
+- extract_ligand_protein:
     scatter: [input_pdb_path]
     in:
       input_pdb_path: '*pdbbind_pdbfixer.pdb'
       output_pdb_path: '&protein.pdb'
+      output_pdb_ligand_path: '&ligand.pdb'
 
 # assign partial charges (ligand)
 - convert_pdbqt.yml:
@@ -160,7 +161,7 @@ wic:
         inlineable: False
         graphviz:
           label: Fix Protein Structure
-    (5, extract_protein):
+    (5, extract_ligand_protein):
       wic:
         inlineable: False
         graphviz:
