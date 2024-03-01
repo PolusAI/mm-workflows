@@ -30,7 +30,7 @@ sudo docker build --no-cache --pull -f Dockerfile_remove_terminal_residue_name_p
 sudo docker build --no-cache --pull -f Dockerfile_rename_residues_mol -t jakefennick/rename_residues_mol .
 sudo docker build --no-cache --pull -f Dockerfile_combine_structure -t ndonyapour/combine_structure .
 sudo docker build --no-cache --pull -f Dockerfile_molgan -t ndonyapour/molgan .
-sudo docker build --no-cache --pull -f Dockerfile_onionnet-sfct -t cyangnyu/onionnet-sfct .
+sudo docker build --no-cache --pull -f Dockerfile_onionnet-sfct -t polusai/onionnet-sfct-tool:1.0.0 .
 sudo docker build --no-cache --pull -f Dockerfile_smina -t cyangnyu/smina .
 sudo docker build --no-cache --pull -f Dockerfile_pdbfixer -t ndonyapour/pdbfixer .
 sudo docker build --no-cache --pull -f Dockerfile_extract_protein -t ndonyapour/extract_protein .
