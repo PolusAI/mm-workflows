@@ -11,6 +11,12 @@ hints:
   DockerRequirement:
     dockerPull: ndonyapour/molgan
 
+# Set environment variables for the tool,
+# See: https://www.commonwl.org/user_guide/topics/environment-variables.html
+requirements:
+  EnvVarRequirement:
+    envDef:
+      RDKIT_ERROR_LOGGING: $(inputs.rdkit_error_logging)
 inputs:
   input_data_path:
     label: Path to the input data file
@@ -41,7 +47,7 @@ inputs:
     default: NP.gz
     inputBinding:
       prefix: --input_NP_Score_path
- 
+
   input_SA_Score_path:
     label: Output ceout file (AMBER ceout)
     doc: |-
@@ -60,10 +66,10 @@ inputs:
   input_model_dir:
     label: Input directory of trained models
     type: string
-    format: 
+    format:
     - edam:format_2330 # 'Textual format'
     inputBinding:
-      prefix: --input_model_dir 
+      prefix: --input_model_dir
     default: output
 
   output_log_path:
@@ -107,6 +113,14 @@ inputs:
       prefix: --num_samples
     default: 1000
 
+  rdkit_error_logging:
+    label: Enable or disable RDKit error logging
+    doc: |-
+      Enable or disable RDKit error logging
+    type: string?
+    # RDKit prints out all errors by default, which can pose issues for CI,
+    # particularly with large databases. It would be more efficient to suppress these errors.
+    default: "ON"
 outputs:
   output_log_path:
     label: Path to the log file
@@ -126,6 +140,12 @@ outputs:
       glob: $(inputs.output_sdf_path)
     format: edam:format_3814 # sdf
 
+  stderr:
+    type: File
+    outputBinding:
+      glob: stderr
+
+stderr: stderr
 
 $namespaces:
   edam: https://edamontology.org/

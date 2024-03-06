@@ -25,7 +25,7 @@ sudo docker build --no-cache --pull -f Dockerfile_bash_scripts -t jakefennick/ba
 sudo docker build --no-cache --pull -f Dockerfile_calculate_net_charge -t jakefennick/calculate_net_charge .
 sudo docker build --no-cache --pull -f Dockerfile_mol2_to_pdbqt -t jakefennick/mol2_to_pdbqt .
 sudo docker build --no-cache --pull -f Dockerfile_nmr4md -t jakefennick/nmr4md .
-sudo docker build --no-cache --pull -f Dockerfile_openbabel -t jakefennick/openbabel .
+sudo docker build --no-cache --pull -f Dockerfile_openbabel -t ndonyapour/openbabel .
 sudo docker build --no-cache --pull -f Dockerfile_remove_terminal_residue_name_prefixes -t jakefennick/remove_terminal_residue_name_prefixes .
 sudo docker build --no-cache --pull -f Dockerfile_rename_residues_mol -t jakefennick/rename_residues_mol .
 sudo docker build --no-cache --pull -f Dockerfile_combine_structure -t ndonyapour/combine_structure .
