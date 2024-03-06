@@ -1,0 +1,7 @@
+FROM condaforge/mambaforge
+# NOT mambaforge-pypy3 (mdanalysis is incompatible with pypy)
+RUN mamba config --add channels conda-forge
+RUN mamba install mdanalysis
+
+ADD extract_ligand_protein.py .
+ADD Dockerfile_extract_ligand_protein .
