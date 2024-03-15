@@ -1,0 +1,11 @@
+steps:
+- p2rank.yml:
+
+wic:
+  steps:
+    (1, p2rank.yml):
+      wic:
+        steps:
+          (1, extract_pdbbind_refined):
+            in:
+              max_row: 16 # Override default 1
