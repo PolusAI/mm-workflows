@@ -16,9 +16,6 @@ hints:
 
 requirements:
   InlineJavascriptRequirement: {}
-  InitialWorkDirRequirement: # conditionally overwrite the input ligand, otherwise cwltool will symlink to the original
-    listing:
-      - $(inputs.input_small_mol_ligand)
 
 inputs:
 
@@ -38,7 +35,7 @@ inputs:
 outputs:
 
   output_ligand:
-    type: File
+    type: File?
     format: edam:format_3814
     outputBinding:
       glob: "*.sdf"
@@ -46,17 +43,15 @@ outputs:
   valid_ligand:
     type: boolean
     outputBinding:
-      glob: valid.txt
-      loadContents: true
+      glob: "*.sdf"
       outputEval: |
-        ${
-          // Read the contents of the file
-          const lines = self[0].contents.split("\n");
-          // Read boolean value from the first line
-          const valid = lines[0].trim() === "True";
-          return valid;
-
-        }
+          ${
+            var lines = self[0];
+            if (lines === undefined) {
+              return false;
+            }
+            return true;
+          }
 
 $namespaces:
   edam: https://edamontology.org/

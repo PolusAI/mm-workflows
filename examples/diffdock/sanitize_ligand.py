@@ -104,7 +104,7 @@ def generate_conformer(molecule: Chem.SDMolSupplier, timeout_value: int = 5) -> 
     signal.alarm(0)
 
 
-def is_valid_ligand(molecule: Chem.SDMolSupplier) -> Tuple[bool, bool, Chem.SDMolSupplier]:
+def is_valid_ligand(molecule: Chem.SDMolSupplier) -> Tuple[bool, Chem.SDMolSupplier]:
     """Check for sanitization errors, attempt to fix formal charges/valence consistency errors.
        DiffDock uses rdkit to generate a seed conformation that will sometimes crash, so generating
        conformations here to catch that error and prevent DiffDock from running that ligand.
@@ -114,11 +114,9 @@ def is_valid_ligand(molecule: Chem.SDMolSupplier) -> Tuple[bool, bool, Chem.SDMo
 
     Returns:
         bool: if ligand is valid
-        bool: if symlink should be used
         Chem.SDMolSupplier: molecule object
     """
     valid_lig = True
-    use_symlink = True
     try:
         Chem.SanitizeMol(molecule)
         generate_conformer(molecule)
@@ -129,7 +127,6 @@ def is_valid_ligand(molecule: Chem.SDMolSupplier) -> Tuple[bool, bool, Chem.SDMo
         # can also be explicit valence error (i.e.) formal charge not consistent with bond topology
         # choose to trust bond topology around atom and add formal charge based on that
         molecule = adjust_formal_charges(molecule)
-        use_symlink = False
     except ValueError:
         # assuming this is Bad Conformer Id error from generate_conformer
         valid_lig = False
@@ -137,16 +134,13 @@ def is_valid_ligand(molecule: Chem.SDMolSupplier) -> Tuple[bool, bool, Chem.SDMo
         # catch *all* exceptions rdkit can throw
         valid_lig = False
 
-    return valid_lig, use_symlink, molecule
+    return valid_lig, molecule
 
 
 mol: Chem.SDMolSupplier = Chem.SDMolSupplier(args.input_small_mol_ligand, sanitize=False, removeHs=False)[0]
 
-valid_ligand, symlink, rdkit_mol = is_valid_ligand(mol)
+valid_ligand, rdkit_mol = is_valid_ligand(mol)
 
-if not symlink and valid_ligand:
+if valid_ligand:
     with Chem.SDWriter(input_small_mol_ligand) as w:
         w.write(rdkit_mol)
-
-with open('valid.txt', 'w', encoding="utf-8") as f:
-    f.write(str(valid_ligand))
