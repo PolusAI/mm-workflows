@@ -68,6 +68,15 @@ steps:
       in:
         predicted_poses: "*output_poses"
         centroid_cutoff: 5 # if centroid of all poses are within cutoff then only keep most confident pose, requires visual inspection
+        filtered_poses: "&filtered_poses"
+
+  - rmsd:
+      scatter: [reference_pose, predicted_poses]
+      scatterMethod: dotproduct
+      in:
+        predicted_poses: "*filtered_poses"
+        reference_pose: "*final_sanitized_sdfs"
+        rmsd_output: "&rmsd"
 
 wic:
   graphviz:
@@ -111,3 +120,7 @@ wic:
       wic:
         graphviz:
           label: Cluster poses
+    (10, rmsd):
+      wic:
+        graphviz:
+          label: Calculate RMSD

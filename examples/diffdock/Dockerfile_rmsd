@@ -1,0 +1,15 @@
+
+# docker build -f Dockerfile_rmsd -t mrbrandonwalker/rmsd .
+
+FROM condaforge/mambaforge
+# NOT mambaforge-pypy3 (rdkit is incompatible with pypy)
+
+RUN conda install -c conda-forge rdkit --yes
+
+RUN conda init bash
+
+COPY rmsd.py /
+
+RUN mamba clean --all --yes
+
+ADD Dockerfile_rmsd .
