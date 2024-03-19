@@ -33,6 +33,9 @@ inputs:
     format:
     - edam:format_3814
 
+  filtered_poses:
+    type: string?
+
 outputs:
 
   filtered_poses:
