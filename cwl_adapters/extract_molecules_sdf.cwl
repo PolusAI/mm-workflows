@@ -70,7 +70,7 @@ arguments: [$(inputs.input_path), "-o", "sdf", "-O", $(inputs.output_sdf_path), 
 
 hints:
   DockerRequirement:
-    #dockerPull: jakefennick/openbabel
+    #dockerPull: ndonyapour/openbabel
     dockerPull: quay.io/biocontainers/biobb_chemistry:4.0.0--pyhdfd78af_1
 
 inputs:
