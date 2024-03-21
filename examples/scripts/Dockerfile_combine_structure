@@ -1,7 +1,7 @@
 FROM condaforge/mambaforge
 # NOT mambaforge-pypy3 (rdkit is incompatible with pypy)
 
-RUN mamba install -c conda-forge rdkit
+RUN mamba install -c conda-forge rdkit mdanalysis gromacs
 
 ADD combine_structure.py .
 ADD Dockerfile_combine_structure .

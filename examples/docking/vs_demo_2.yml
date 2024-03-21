@@ -146,13 +146,18 @@ wic:
       wic:
         inlineable: False
         steps:
-          (1, setup.yml):
+          (1, setup_vac_min.yml):
             wic:
               steps:
-                (4, genion):
-                  in:
-                    output_top_zip_path: '&genion_complex.zip'
+                (3, solv_ion.yml):
+                  wic:
+                    steps:
+                      (4, genion):
+                        in:
+                          output_top_zip_path: '&genion_complex.zip'
           (2, basic.yml):
+            in:
+              top_zip_path: '*genion_complex.zip'
             wic:
               steps:
                 (3, prod.yml):

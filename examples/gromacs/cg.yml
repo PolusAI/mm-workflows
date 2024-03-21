@@ -1,6 +1,13 @@
+inputs:
+  top_zip_path:
+    type: File
+    format:
+    - edam:format_3987
+
 steps:
   - grompp:
       in:
+        input_top_zip_path: ~top_zip_path
         config:
           mdp:
             integrator: cg

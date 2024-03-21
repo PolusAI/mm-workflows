@@ -1,8 +1,37 @@
+inputs:
+  crd_path:
+    type: File
+    format:
+    - edam:format_1476
+    - edam:format_2033
+  top_zip_path:
+    type: File
+    format:
+    - edam:format_3987
+
 steps:
   - topology.yml:
+      in:
+        crd_path: ~crd_path
   - min.yml: # Minimize in vacuum first, then in solvent.
+      in:
+        top_zip_path: ~top_zip_path
   - solv_ion.yml:
-
+      in:
+        top_zip_path: ~top_zip_path
 wic:
   graphviz:
     label: System Setup
+  steps:
+    (1, topology.yml):
+      wic:
+        graphviz:
+          label: 'Initialize\nPeriodic Box'
+    (2, min.yml):
+      wic:
+        graphviz:
+          label: 'Vacuum Minimization'
+    (3, solv_ion.yml):
+      wic:
+        graphviz:
+          label: 'Add Water\nSolvent'
