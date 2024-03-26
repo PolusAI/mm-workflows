@@ -79,7 +79,7 @@ steps:
   - convert_xyz:
       in:
         input_path: '*pose_ligand.pdbqt'
-        output_xyz_path: '&pose_ligand.xyz'
+        output_xyz_path: 'pose_ligand.xyz&pose_ligand.xyz'
 # Molecular Dynamics combine receptor & ligand
   - append_ligand:
       in:
