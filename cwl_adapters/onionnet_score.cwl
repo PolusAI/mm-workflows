@@ -5,7 +5,7 @@ class: CommandLineTool
 
 label: OnionNet (version1) for rescoring of docking poses
 
-baseCommand: ["python", "/onionnet/predict.py"]
+baseCommand: ["conda", "run", "-n", "py37", "python", "/onionnet/predict.py"]
 
 hints:
   DockerRequirement:

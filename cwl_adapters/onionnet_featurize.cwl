@@ -5,7 +5,7 @@ class: CommandLineTool
 
 label: Generate the features for the protein-ligand complexes using OnionNet V1
 
-baseCommand: ["python", "/onionnet/generate_features.py"]
+baseCommand: ["conda", "run", "-n", "py37", "python", "/onionnet/generate_features.py"]
 arguments: ["-inp", "input.dat"]
 
 hints:
