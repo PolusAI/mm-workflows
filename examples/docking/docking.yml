@@ -61,6 +61,8 @@ steps:
 
 # Docking
   - convert_ligand_mol2_to_pdbqt_obabel.yml:
+      in:
+        input_path: '*conformer.mol2'
 #  - convert_ligand_mol2_to_pdbqt_mdanalysis.yml: # generates ligand_rigid.pdbqt only
 
   - autodock_vina_run:

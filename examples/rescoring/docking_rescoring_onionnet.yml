@@ -2,8 +2,8 @@
 ##
 ## input: pdb structures from PDBbind refined dataset
 ## output: 
-##    1. docking poses 
-##    2. scoring file (vina score, sfct correction, combined_score for re-ranking docking poses)
+##    1. Docking  
+##    2. Scoring the best pose using OnionNet
 
 steps:
 - extract_pdbbind_refined:
@@ -22,6 +22,12 @@ steps:
       experimental_dGs: '&exp_dGs'
       pdb_ids: '&pdbids'
       
+- extract_protein:
+    scatter: [input_pdb_path]
+    in:
+      input_pdb_path: '*pdbbind_pdbs'
+      output_pdb_path: '&pdbbind_protein.pdb'
+
 - config_tag_pdb:
     scatter: [pdb_id]
     in:
@@ -36,7 +42,7 @@ steps:
 
 - pdb_fixer:
     in:
-      input_pdb_path: '*pdbbind_pdbs'
+      input_pdb_path: '*pdbbind_protein.pdb'
       input_helper_pdb_path: '*rcsb_protein.pdb' # Note: PDBFixer utilizes sequence information from this file
       output_pdb_path: '&pdbbind_pdbfixer.pdb'
       add_atoms: heavy
@@ -46,44 +52,72 @@ steps:
     scatter: [input_pdb_path, input_helper_pdb_path]
     scatterMethod: dotproduct
 
-- extract_protein:
+- setup_pdb.yml:
     scatter: [input_pdb_path]
     in:
       input_pdb_path: '*pdbbind_pdbfixer.pdb'
-      output_pdb_path: '&protein.pdb'
+      pdb_path: '&pdb.pdbqt'
+      box_path: '&box.pdb'
+      box_buffer: 20 # Angstroms
+      water_type: spce
+      forcefield: amber99sb-ildn
 
-- minimize_ligand_only.yml:
-    scatter: [sdf_path]
+# assign partial charges (ligand)
+- convert_mol2:
+    scatter: [input_path]
     in:
-      sdf_path: '*pdbbind_sdfs'
+      input_path: '*pdbbind_sdfs'
 
-- smina_docking:
-    scatter: [receptor_file, ligand_file, ligand_box]
+- rename_residues_mol2:
+    scatter: [input_path]
+    in:
+      #input_path: '*ligand_min.mol2'
+      output_path: '&ligand.mol2'
+      residue_name: MOL
+      column_index: 7
+
+- convert_ligand_mol2_to_pdbqt_obabel.yml:
+    scatter: [input_path]
+
+- autodock_vina:
+    scatter: [input_ligand_pdbqt_path, input_receptor_pdbqt_path, input_box_path]
     scatterMethod: dotproduct
     in:
-      receptor_file: '*protein.pdb'
-      ligand_file: '*ligand_min.mol2'
-      ligand_box: '*ligand_min.mol2'
-      scoring: 'vina'
-      local_only: True
-      output_dock_file: '&ligand_opt.pdb'
-      output_path: output
+      input_ligand_pdbqt_path: '*ligand_rigid.pdbqt'
+      input_receptor_pdbqt_path: '*pdb.pdbqt'
+      input_box_path: '*box.pdb'
+      output_pdbqt_path: '&poses_ligand.pdbqt'
+      output_log_path: '&vina.log'
+      num_modes: 20
+
+- extract_model_pdbqt:
+    scatter: [input_pdbqt_path]
+    in: 
+      input_pdbqt_path: '*poses_ligand.pdbqt'
+      output_pdbqt_path: '&pose_ligand.pdbqt'
+      config:
+        model: 1 # NOTE: score, rmsd l.b., rmsd u.b. stored in REMARK lines
+
+- convert_pdb:
+    scatter: [input_path]
+    in:
+      input_path: '*pose_ligand.pdbqt'
+      output_pdb_path: '&pose_ligand.pdb'
 
 - rename_residues_pdb:
     scatter: [input_path]
     in:
-      input_path: '*ligand_opt.pdb'
-      output_path: '&ligand_opt_clean.pdb'
-      residue_name: LIG # Note, the residue name should be three characters
-      # See: https://www.cgl.ucsf.edu/chimera/1.4/docs/UsersGuide/tutorials/pdbintro.html
+      input_path: '*pose_ligand.pdb'
+      output_path: '&ligand.pdb'
+      residue_name: LIG
       line_start_column_idxs: '{"ATOM": 3, "HETATM": 3, "TER": 2}'
 
 - combine_pdb:
     scatter: [input_structure1, input_structure2]
     scatterMethod: dotproduct
     in:
-      input_structure1: '*protein.pdb'
-      input_structure2: '*ligand_opt_clean.pdb'
+      input_structure1: '*pdbbind_pdbfixer.pdb'
+      input_structure2: '*ligand.pdb'
       output_structure_path: '&complex_pdbs.pdb'
 
 - onionnet_featurize:
@@ -101,6 +135,7 @@ steps:
     in:
       xs: '*exp_dGs'
       ys: '*onionnet_score'
+      output_png_path: 'dG_exp_wpred.png'
 
 - check_linear_fit:
     in:
@@ -119,57 +154,76 @@ wic:
       wic:
         graphviz:
           label: Extract PDBbind Data
-    (2, config_tag_pdb):
-      wic:
-        inlineable: False
-        graphviz:
-          label: Specify PDB Code
-    (3, pdb):
-      wic:
-        inlineable: False
-        graphviz:
-          label: Download PDB File
-    (4, pdbfixer):
-      wic:
-        inlineable: False
-        graphviz:
-          label: Fix Protein Structure
-    (5, extract_protein):
+    (2, extract_protein):
       wic:
         inlineable: False
         graphviz:
           label: Extract protein
-    (6, minimize_ligand_only.yml):
+    (3, config_tag_pdb):
       wic:
         inlineable: False
         graphviz:
-          label: Minimize (obminimize) ligand structure.
-    (7, smina_docking):
+          label: Specify PDB Code
+    (4, pdb):
+      wic:
+        inlineable: False
+        graphviz:
+          label: Download PDB File
+    (5, pdbfixer):
+      wic:
+        inlineable: False
+        graphviz:
+          label: Fix Protein Structure
+    (6, setup_pdb.yml):
+      wic:
+        inlineable: True
+        graphviz:
+          label: Setup PDB
+    (7, convert_mol2):
       wic:
         graphviz:
-          label: Smina Docking (flexible ligand - rigid protein docking) 
-    (8, rename_residues_pdb):
+          label: Convert Ligand\nsdf to mol2
+    (8, rename_residues_mol2):
+      wic:
+         graphviz:
+           label: Rename Ligand\nResidues to MOL
+    (9, convert_ligand_mol2_to_pdbqt_obabel.yml):
+      wic:
+        graphviz:
+          label: Rename Residues\nto MOL
+    (10, autodock_vina):
+      wic:
+        graphviz:
+          label: Docking
+    (11, extract_model_pdbqt):
+       wic:
+         graphviz:
+           label: Extract Best\nDocking Pose
+    (12, convert_pdb):
+      wic:
+        graphviz:
+          label: Convert to\npdb format
+    (13, rename_residues_pdb):
       wic:
         graphviz:
           label: Rename residues to LIG
-
-    (9, combine_pdb):
+    (14, combine_pdb):
       wic:
         graphviz:
           label: Combine Protein & Ligand\nPDB Structures
-    (10, onionnet_featurize):
+    (15, onionnet_featurize):
       wic:
         graphviz:
           label: Generate features for the Docking Poses
-    (11, onionnet_score):
+    (16, onionnet_score):
       wic:
         graphviz:
           label: Predict Binding Scores
-    (12, scatter_plot):
+    (17, scatter_plot):
       wic:
         graphviz:
           label: Plot Experimental\nvs Predicted Binding
-    (13, check_linear_fit):
+    (18, check_linear_fit):
       wic:
         graphviz:
           label: True if fitted slope is between slope_min and slope_max
