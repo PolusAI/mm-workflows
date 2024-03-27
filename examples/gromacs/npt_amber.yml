@@ -2,13 +2,13 @@ steps:
   - sander_mdrun:
       in:
         input_mdin_path: npt.mdin
-        output_log_path: '&amb_npt.log'
-#        input_crd_path: '*min.rst'
-#        output_rst_path: '&amb.rst'
+        output_log_path: !& {amb_npt.log:}
+#        input_crd_path: !* min.rst
+#        output_rst_path: !& {amb.rst:}
 #        output_traj_path: amb.crd
   - process_mdout:
       in:
-        input_log_path: '*amb_npt.log'
+        input_log_path: !* amb_npt.log
         config:
           terms: [DENSITY]
         output_dat_path: density.dat

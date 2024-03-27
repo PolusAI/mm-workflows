@@ -4,8 +4,8 @@ steps:
 # so we must emulate a vacuum by using a very large (1000 Angstrom) box.
   - editconf:
       in:
-        input_crd_path: '*complex_vac.pdb'
-        output_crd_path: '&complex_box.g96'
+        input_crd_path: !* complex_vac.pdb
+        output_crd_path: !& {complex_box.g96:}
         config:
           box_type: cubic
           distance_to_molecule: 100.0

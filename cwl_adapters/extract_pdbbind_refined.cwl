@@ -82,7 +82,7 @@ inputs:
       Type: string
       File type: input
       Accepted formats: pdb
-    type: string
+    type: string?
     format:
     - edam:format_1476 # pdb
 
@@ -93,7 +93,7 @@ inputs:
       Type: string
       File type: input
       Accepted formats: sdf
-    type: string
+    type: string?
     format:
     - edam:format_3814 # sdf
 

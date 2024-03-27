@@ -23,8 +23,8 @@ steps:
             comm-grps: system
   - mdrun:
       in:
-        output_crd_path: '&npt.gro'  # Explicitly specify for rmsd
-        #output_trr_path: '&npt.trr'
+        output_crd_path: !& {npt.gro:}  # Explicitly specify for rmsd
+        #output_trr_path: !& {npt.trr:}
         output_edr_path: 'npt.edr'
   - gmx_energy:
       in:

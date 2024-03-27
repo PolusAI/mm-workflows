@@ -33,14 +33,14 @@ steps:
   - pdb_fixer:
       in:
         input_pdb_path: ~input_pdb_path
-        output_pdb_path: '&protein_pdbfixer.pdb'
+        output_pdb_path: !& {protein_pdbfixer.pdb: protein_pdbfixer.pdb}
         add_atoms: heavy
         add_residues: True
         keep_heterogens: none
   - fix_amides:
       in:
-        input_pdb_path:  '*protein_pdbfixer.pdb'
-        output_pdb_path: '&protein_fix_amides.pdb'    
+        input_pdb_path: !* protein_pdbfixer.pdb
+        output_pdb_path: !& {protein_fix_amides.pdb: protein_fix_amides.pdb}
   #- structure_check:
   #    in:
   #      output_summary_path: structure_check_protein_fix_amides.json
@@ -49,28 +49,28 @@ steps:
   #       output_pdb_path: protein_fix_side_chain.pdb
   - pdb4amber_run: # NOTE: See comments below w.r.t. pdb2gmx
       in:
-        input_pdb_path: '*protein_fix_amides.pdb'
-        output_pdb_path: '&receptor_pdb4amber.pdb'
+        input_pdb_path: !* protein_fix_amides.pdb
+        output_pdb_path: !& {receptor_pdb4amber.pdb: receptor_pdb4amber.pdb}
   - str_check_add_hydrogens:
       in: # charges = True outputs in pdbqt format; mode = auto, list, ph (must use ph mode to set ph!)
-        input_structure_path: '*receptor_pdb4amber.pdb'
+        input_structure_path: !* receptor_pdb4amber.pdb
         config: {"charges": False, "mode": "auto", "ph": 7.4, "list": "", "keep_canonical_resnames": False}
-        output_structure_path: '&receptor_hydrogens_terminal.pdb'
+        output_structure_path: !& {receptor_hydrogens_terminal.pdb:}
   - python3_pdb_to_pdb:
       in:
         script: /remove_terminal_residue_name_prefixes.py # NOTE: Initial / required
-        input_pdb_path: '*receptor_hydrogens_terminal.pdb'
-        output_pdb_path: '&receptor_hydrogens.pdb'
+        input_pdb_path: !* receptor_hydrogens_terminal.pdb
+        output_pdb_path: !& {receptor_hydrogens.pdb:}
   - str_check_add_hydrogens:
       in: # charges = True outputs in pdbqt format; mode = auto, list, ph (must use ph mode to set ph!)
-        input_structure_path: '*receptor_pdb4amber.pdb'
+        input_structure_path: !* receptor_pdb4amber.pdb
         config: {"charges": True, "mode": "auto", "ph": 7.4, "list": "", "keep_canonical_resnames": False}
-        #output_structure_path: '&pdb.pdbqt'
+        #output_structure_path: !& {pdb.pdbqt: pdb.pdbqt}
         output_structure_path: ~pdb_path
   - convert_pdbqt:
       in:
-        input_path: '*receptor_pdb4amber.pdb'
-        output_pdb_path: '&receptor_rigid.pdbqt'
+        input_path: !* receptor_pdb4amber.pdb
+        output_pdb_path: !& {receptor_rigid.pdbqt:}
         # NOTE: Use the following pdbqt format-specific write options (see `obabel -Hpdbqt`):
         # r  Output as a rigid molecule (i.e. no branches or torsion tree)
         # Receptors *can* be flexible in autodock, but it is more complicated
@@ -81,13 +81,13 @@ steps:
   - config_tag_box:
       in:
         offset: ~box_buffer
-        output_config_string: '&config_tag_box'
+        output_config_string: !& {config_tag_box:}
   - box:
       in:
-        input_pdb_path: '*receptor_pdb4amber.pdb' # pdb, not pdbqt
-        #output_pdb_path: '&box.pdb'
+        input_pdb_path: !* receptor_pdb4amber.pdb # pdb, not pdbqt
+        #output_pdb_path: !& {box.pdb: box.pdb}
         output_pdb_path: ~box_path
-        config: '*config_tag_box'
+        config: !* config_tag_box
         #config: '{"offset": "20"}' # Default of 2 Angstroms can cause autodock to not find any solutions.
 
 # Molecular Dynamics setup
@@ -108,21 +108,22 @@ steps:
 # the number of atoms in the coordinate and topology files will not be the same!
 # The solution is to call pdb4amber first, which will fix the residue names.
         merge: False
-        output_config_string: '&config_tag_pdb2gmx'
+        output_config_string: !& {config_tag_pdb2gmx:}
   - pdb2gmx:
       in:
-        input_pdb_path: '*receptor_hydrogens.pdb'
-        output_crd_path: '&receptor.gro' # See comment below!
+        input_pdb_path: !* receptor_hydrogens.pdb
+        output_crd_path: !& {receptor.gro: receptor.gro} # See comment below!
         # Also note that using .g96 format does NOT sort the atoms (within each
         # residue) in the crd file, but atoms in the top file are always sorted.
         # Thus, grompp will warn you that the atom names do not match:
         # "Warning: atom name nnn in *.top and *.g96 does not match"
-        output_top_zip_path: '&receptor.zip'
-        config: '*config_tag_pdb2gmx'
+        output_top_zip_path: !& {receptor.zip:}
+        config: !* config_tag_pdb2gmx
   - convert_xyz:
       in:
-        input_path: '*receptor.gro'
-        output_xyz_path: '&receptor.xyz'
+        input_path: !* receptor.gro
+        output_xyz_path: !& {receptor.xyz: receptor.xyz}
+
 wic:
   graphviz:
     label: Receptor Modeling + Docking + Initial Topology Setup

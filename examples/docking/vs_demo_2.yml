@@ -8,9 +8,9 @@ steps:
       #pdb_id: 2rlf # Influenza A M2
 - setup_pdb.yml:
     in:
-      input_pdb_path: '*protein.pdb'
-      pdb_path: '&pdb.pdbqt'
-      box_path: '&box.pdb'
+      input_pdb_path: !* protein.pdb
+      pdb_path: !& {pdb.pdbqt: pdb.pdbqt}
+      box_path: !& {box.pdb: box.pdb}
       box_buffer: 20 # Angstroms
       water_type: spce
       forcefield: amber99sb-ildn
@@ -25,58 +25,58 @@ steps:
       smiles_column: SMILES
       binding_data_column: Standard Value
       convert_Kd_dG: True
-      output_txt_path: '&binding_data.txt'
+      output_txt_path: !& {binding_data.txt: binding_data.txt}
 
 - assign_partial_charges.yml:
     scatter: [input_path]
     in:
       # NOTE: input_path is currently only necessary
       # due to a limitation of the inlineing implementation.
-      input_path: '*ligand_conformers.sdf'
+      input_path: !* ligand_conformers.sdf
 # NOTE: cwltool uses the CLI args to determine caching. In batch mode, the
 # ligands are passed (as CLI args) to vina all at once. Thus, if you want to
 # incrementally increase the number of ligands, the previous results will NOT be cached!
 
 - autodock_vina_batch:
     in:
-      input_receptor_pdbqt_path: '*pdb.pdbqt'
-      input_box_path: '*box.pdb'
-      output_log_path: '&vina.log'
-      output_batch_pdbqt_path: '&ligand_decoys_1D.pdbqt'
+      input_receptor_pdbqt_path: !* pdb.pdbqt
+      input_box_path: !* box.pdb
+      output_log_path: !& {vina.log:}
+      output_batch_pdbqt_path: !& {ligand_decoys_1D.pdbqt:}
 
 - split_pdbqt:
     scatter: [input_path]
     in:
-      input_path: '*ligand_decoys_1D.pdbqt'
-      output_pdb_path: '&ligand_decoys_2D.pdbqt'
+      input_path: !* ligand_decoys_1D.pdbqt
+      output_pdb_path: !& {ligand_decoys_2D.pdbqt:}
 
 - duplicate:
     in:
-      input_pdbqt_singleton_path: '*pdb.pdbqt'
-      input_pdbqt_array_path: '*ligand_decoys_2D.pdbqt'
-      output_pdbqt_path: '&receptor_dup_2D.pdbqt'
+      input_pdbqt_singleton_path: !* pdb.pdbqt
+      input_pdbqt_array_path: !* ligand_decoys_2D.pdbqt
+      output_pdbqt_path: !& {receptor_dup_2D.pdbqt:}
     scatter: [input_pdbqt_array_path]
 
 - autodock_vina_filter:
     in:
-      input_ligand_pdbqt_path: '*ligand_decoys_2D.pdbqt'
-      output_ligand_pdbqt_path: '&ligand_filter.pdbqt'
-      input_receptor_pdbqt_path: '*receptor_dup_2D.pdbqt'
-      input_log_path: '*vina.log'
-      input_txt_path: '*binding_data.txt'
+      input_ligand_pdbqt_path: !* ligand_decoys_2D.pdbqt
+      output_ligand_pdbqt_path: !& {ligand_filter.pdbqt:}
+      input_receptor_pdbqt_path: !* receptor_dup_2D.pdbqt
+      input_log_path: !* vina.log
+      input_txt_path: !* binding_data.txt
       docking_score_cutoff: -1.0
       max_num_poses_per_ligand: 1
       max_num_poses_total: 1 #25 # Use 1 for CI
-      docking_scores: '&docking_scores'
-      experimental_dGs: '&dGs'
+      docking_scores: !& {docking_scores:}
+      experimental_dGs: !& {dGs:}
 
 - gen_topol_params.yml:
     in:
-      input_ligand_pdbqt_path: '*ligand_filter.pdbqt'
+      input_ligand_pdbqt_path: !* ligand_filter.pdbqt
       # NOTE: input_receptor_xyz_path and input_top_zip_path are currently only necessary
       # due to a limitation of the inlineing implementation.
-      input_receptor_xyz_path: '*receptor.xyz'
-      input_top_zip_path: '*receptor.zip'
+      input_receptor_xyz_path: !* receptor.xyz
+      input_top_zip_path: !* receptor.zip
     scatter: [input_ligand_pdbqt_path]
 
 - stability.yml:
@@ -85,8 +85,8 @@ steps:
     in:
       # NOTE: crd_path and top_zip_path are currently only necessary
       # due to a limitation of the inlineing implementation.
-      crd_path: '*complex_vac.pdb'
-      top_zip_path: '*complex_vac.zip'
+      crd_path: !* complex_vac.pdb
+      top_zip_path: !* complex_vac.zip
       nsteps: 100000
       dt: 0.002
       temperature: 298.0
@@ -97,14 +97,14 @@ steps:
     in:
       # NOTE: input_pdb_path is currently only necessary
       # due to a limitation of the inlineing implementation.
-      input_pdb_path: '*prod.pdb'
-      input_ligand_pdb_path: '*ligand_GMX.pdb'
+      input_pdb_path: !* prod.pdb
+      input_ligand_pdb_path: !* ligand_GMX.pdb
 
 - scatter_plot:
     in:
-      xs: '*dGs'
-      ys: '*docking_scores'
-      ys2: '*docking_rescores'
+      xs: !* dGs
+      ys: !* docking_scores
+      ys2: !* docking_rescores
 wic:
   graphviz:
     label: Virtual Screening Demo
@@ -151,7 +151,7 @@ wic:
               steps:
                 (4, genion):
                   in:
-                    output_top_zip_path: '&genion_complex.zip'
+                    output_top_zip_path: !& {genion_complex.zip:}
           (2, basic.yml):
             wic:
               steps:
@@ -160,10 +160,10 @@ wic:
                     steps:
                       (2, grompp):
                         in:
-                          input_top_zip_path: '*genion_complex.zip'
+                          input_top_zip_path: !* genion_complex.zip
                       (3, mdrun):
                         in:
-                          output_crd_path: '&prod_complex.gro'
+                          output_crd_path: !& {prod_complex.gro:}
                       (4, cwl_watcher_analysis.yml):
                         wic:
                           backend: complex

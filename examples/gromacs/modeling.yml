@@ -17,16 +17,16 @@ steps:
 
 - pdb_fixer:
     in:
-      input_pdb_path: '*protein.pdb'
-      output_pdb_path: '&protein_pdbfixer.pdb'
+      input_pdb_path: !* protein.pdb
+      output_pdb_path: !& {protein_pdbfixer.pdb: protein_pdbfixer.pdb}
       add_atoms: heavy
       add_residues: True
       replace_nonstandard: True
       keep_heterogens: none
 - fix_amides:
     in:
-      input_pdb_path: '*protein_pdbfixer.pdb'
-      output_pdb_path: '&protein_fix_amides.pdb'
+      input_pdb_path: !* protein_pdbfixer.pdb
+      output_pdb_path: !& {protein_fix_amides.pdb:}
 #- structure_check:
 #    in:
 #      output_summary_path: structure_check_protein_fix_amides.json
@@ -43,15 +43,15 @@ steps:
         mode: auto # mode = auto, list, ph (must use ph mode to set ph!)
         ph: 7.4
         keep_canonical_resnames: False
-      input_structure_path:  '*protein_fix_amides.pdb'
+      input_structure_path: !* protein_fix_amides.pdb
       output_structure_path: protein_hydrogens.pdb
 #- structure_check:
 #    in:
 #      output_summary_path: structure_check_protein_hydrogens.json
 - pdb2gmx:
     in:
-      output_crd_path: '&complex_vac.pdb'
-      output_top_zip_path: '&complex_vac.zip'
+      output_crd_path: !& {complex_vac.pdb:}
+      output_top_zip_path: !& {complex_vac.zip:}
       config:
         water_type: spce
         force_field: amber99sb-ildn
