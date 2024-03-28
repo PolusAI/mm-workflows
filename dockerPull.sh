@@ -19,7 +19,6 @@ docker pull jakefennick/mol2_to_pdbqt
 docker pull jakefennick/nmr4md
 docker pull jakefennick/openbabel
 docker pull jakefennick/remove_terminal_residue_name_prefixes
-docker pull jakefennick/rename_residues_mol
 docker pull ndonyapour/molgan
 docker pull cyangnyu/onionnet-sfct
 docker pull cyangnyu/smina
@@ -30,3 +29,6 @@ docker pull ndonyapour/pdbfixer
 docker pull ndonyapour/extract_protein
 docker pull ndonyapour/fix_pdb_atom_column
 docker pull ndonyapour/generate_conformers
+docker pull ndonyapour/onionnet
+docker pull ndonyapour/combine_pdb
+docker pull ndonyapour/rename_residues

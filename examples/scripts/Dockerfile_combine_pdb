@@ -1,0 +1,7 @@
+FROM condaforge/mambaforge
+# NOT mambaforge-pypy3 (mdanalysis is incompatible with pypy)
+
+RUN mamba install -c conda-forge mdanalysis
+
+ADD combine_pdb.py .
+ADD Dockerfile_combine_pdb .
