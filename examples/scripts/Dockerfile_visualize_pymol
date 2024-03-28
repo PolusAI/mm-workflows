@@ -1,0 +1,10 @@
+# docker build -f Dockerfile_visualize_pymol -t mrbrandonwalker/visualize_pymol .
+
+FROM condaforge/mambaforge
+# NOT mambaforge-pypy3 (pymol is incompatible with pypy)
+
+RUN apt-get update && apt-get install -y libgl1
+
+RUN mamba install pymol-open-source==2.5.0 --yes
+
+COPY visualize_pymol.py /.
