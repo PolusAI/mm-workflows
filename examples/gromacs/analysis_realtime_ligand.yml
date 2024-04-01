@@ -9,7 +9,8 @@ steps:
       in:
         input_structure_path: !* min.tpr
         config: '{"selection": "resname MOL"}'
-        output_ndx_path: !& {MOL.ndx:}
+      out:
+      - output_ndx_path: !& MOL.ndx
   - gmx_rms:
       in:
         input_structure_path: !* prod.tpr

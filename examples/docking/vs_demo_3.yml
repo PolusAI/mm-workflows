@@ -10,11 +10,14 @@ steps:
 - setup_pdb.yml:
     in:
       input_pdb_path: !* protein.pdb
-      pdb_path: !& {pdb.pdbqt: pdb.pdbqt}
-      box_path: !& {box.pdb: box.pdb}
+      pdb_path: pdb.pdbqt
+      box_path: box.pdb
       box_buffer: 20 # Angstroms
       water_type: spce
       forcefield: amber99sb-ildn
+    out:
+    - pdb_path: !& pdb.pdbqt
+    - box_path: !& box.pdb
 # For some reason, this step is not cached by --cachedir, but use it for the CI.
 #- download_ligand_database_xlsx:
 #    in:
@@ -28,7 +31,9 @@ steps:
       smiles_column: SMILES
       binding_data_column: Standard Value
       convert_Kd_dG: True
-      output_txt_path: !& {binding_data.txt: binding_data.txt}
+      output_txt_path: binding_data.txt
+    out:
+    - output_txt_path: !& binding_data.txt
 
 - ligand_modeling_docking.yml:
     scatter: [sdf_path]
@@ -38,11 +43,12 @@ steps:
       sdf_path: !* ligand_conformers.sdf
 
 - duplicate:
+    scatter: [input_pdbqt_array_path]
     in:
       input_pdbqt_singleton_path: !* pdb.pdbqt
       input_pdbqt_array_path: !* ligand_nested_split.pdbqt
-      output_pdbqt_path: !& {receptor_dup_2D.pdbqt:}
-    scatter: [input_pdbqt_array_path]
+    out:
+    - output_pdbqt_path: !& receptor_dup_2D.pdbqt
 
 - autodock_vina_filter:
     in:
@@ -52,10 +58,11 @@ steps:
       max_num_poses_per_ligand: 1
       max_num_poses_total: 1 #25 # Use 1 for CI
       input_ligand_pdbqt_path: !* ligand_nested_split.pdbqt # 2D Array type
-      output_ligand_pdbqt_path: !& {ligand_filter.pdbqt:}
       input_receptor_pdbqt_path: !* receptor_dup_2D.pdbqt
-      docking_scores: !& {docking_scores:} # NOTE: Not a filename, just an explicit edge
-      experimental_dGs: !& {dGs:} # NOTE: Not a filename, just an explicit edge
+    out:
+    - output_ligand_pdbqt_path: !& ligand_filter.pdbqt
+    - docking_scores: !& docking_scores
+    - experimental_dGs: !& dGs
 - gen_topol_params.yml:
     in:
       input_ligand_pdbqt_path: !* ligand_filter.pdbqt
@@ -128,8 +135,8 @@ wic:
             wic:
               steps:
                 (4, genion):
-                  in:
-                    output_top_zip_path: !& {genion_complex.zip:}
+                  out:
+                  - output_top_zip_path: !& genion_complex.zip
           (2, basic.yml):
             wic:
               steps:
@@ -140,8 +147,8 @@ wic:
                         in:
                           input_top_zip_path: !* genion_complex.zip
                       (3, mdrun):
-                        in:
-                          output_crd_path: !& {prod_complex.gro:}
+                        out:
+                        - output_crd_path: !& prod_complex.gro
                       (4, cwl_watcher_analysis.yml):
                         wic:
                           backend: complex

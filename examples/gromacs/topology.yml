@@ -5,10 +5,11 @@ steps:
   - editconf:
       in:
         input_crd_path: !* complex_vac.pdb
-        output_crd_path: !& {complex_box.g96:}
         config:
           box_type: cubic
           distance_to_molecule: 100.0
+      out:
+      - output_crd_path: !& complex_box.g96
 
 wic:
   graphviz:

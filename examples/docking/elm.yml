@@ -7,25 +7,30 @@ steps:
 - setup_pdb.yml:
     in:
       input_pdb_path: !* protein.pdb
-      pdb_path: !& {pdb.pdbqt: pdb.pdbqt}
-      box_path: !& {box.pdb: box.pdb}
+      pdb_path: pdb.pdbqt
+      box_path: box.pdb
       box_buffer: 20 # Angstroms
       water_type: spce
       forcefield: amber99sb-ildn
+    out:
+    - pdb_path: !& pdb.pdbqt
+    - box_path: !& box.pdb
 - download_ligand_database:
     in:
       database: /NCIOpen.sdf
 - extract_molecules_sdf:
     in:
-#      output_sdf_path: !& {ligands.sdf:}
       first_molecule: 1
       last_molecule: 1
+    # out:
+    # - output_sdf_path: !& ligands.sdf
 # NOTE: We need to extract the models first, before splitting them into separate files.
 # If we try to do both simultaneously, obabel ignores -f and -l and outputs ALL models.
 - split_sdf:
-    in:
+#    in:
 #      input_path: !* ligands.sdf
-      output_sdf_path: !& {ligand.sdf:} # Array type
+    out:
+    - output_sdf_path: !& ligand.sdf # Array type
 - docking_stability.yml:
     scatter: [sdf_path]
     in:

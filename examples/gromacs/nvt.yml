@@ -19,8 +19,8 @@ steps:
             comm-mode: Linear
             comm-grps: system
   - mdrun:
-      in:
-        output_edr_path: !& {nvt.edr:} # Explicit edge reference / anchor
+      out:
+      - output_edr_path: !& nvt.edr # Explicit edge reference / anchor
         # (This edge can be inferred, but made explicit for demonstration purposes.)
   - gmx_energy:
       in:
@@ -33,7 +33,7 @@ steps:
   # - cwl_watcher:
   #     in:
   #       #cachedir_path: /absolute/path/to/cachedir/ (automatically filled in by wic)
-  #       file_pattern: '*nvt.edr' # This * is a glob wildcard, NOT an explicit edge!
+  #       file_pattern: '*nvt.edr'
   #       cwl_tool: gmx_energy
   #       max_times: '5'
   #       config:

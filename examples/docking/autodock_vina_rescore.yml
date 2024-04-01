@@ -19,15 +19,17 @@ steps:
 - convert_mol2:
 - convert_pdbqt:
     in:
-      output_pdb_path: !& {protein_prod.pdbqt:}
       arg1: -xr # Receptor needs to be rigid
+    out:
+    - output_pdb_path: !& protein_prod.pdbqt
 - python_script:
     in:
       script: ../scripts/atomselect.py
       dockerPull: jakefennick/atomselect
       selection_string: resname MOL # Extract the ligand from the last timestep
       input_pdb_path: ~input_pdb_path # !* prod.pdb
-      # output_pdb_path: '&ligand_temp.pdbqt'
+    # out:
+    # - output_pdb_path: !& ligand_temp.pdbqt
 
 # It utilizes a helper PDB file to overwrite the atom element
 # types (last column) of the input PDB file 
@@ -43,16 +45,17 @@ steps:
 # Assign partial charges (ligand)
 - convert_mol2:
 - convert_pdbqt:
-    in:
-      output_pdb_path: !& {ligand_prod.pdbqt:}
+    out:
+    - output_pdb_path: !& ligand_prod.pdbqt
 - autodock_vina_rescore:
     in:
       input_ligand_pdbqt_path: !* ligand_prod.pdbqt
       input_receptor_pdbqt_path: !* protein_prod.pdbqt
       score_only: True
       #local_only: True
-      output_log_path: !& {vina_rescore.log:}
-      docking_score: !& {docking_rescores:} # NOTE: Not a filename, just an explicit edge
+    out:
+    - output_log_path: !& vina_rescore.log
+    - docking_score: !& docking_rescores
 
 wic:
   graphviz:

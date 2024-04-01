@@ -3,7 +3,8 @@ steps:
       in:
         input_structure_path: !* min.tpr
         #config: '{"selection": "group Protein"}'
-        output_ndx_path: !& {solute.ndx:}
+      out:
+      - output_ndx_path: !& solute.ndx
   - gmx_image:
       in:
         input_crd_path: !* prod.gro
@@ -21,7 +22,8 @@ steps:
         #  selection: System
         input_top_path: !* prod.tpr
         input_crd_path: !* prod.gro
-        output_str_path: !& {prod.pdb:}
+      out:
+      - output_str_path: !& prod.pdb
 
 wic:
   graphviz:

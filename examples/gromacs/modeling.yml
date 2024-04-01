@@ -18,15 +18,18 @@ steps:
 - pdb_fixer:
     in:
       input_pdb_path: !* protein.pdb
-      output_pdb_path: !& {protein_pdbfixer.pdb: protein_pdbfixer.pdb}
+      output_pdb_path: protein_pdbfixer.pdb
       add_atoms: heavy
       add_residues: True
       replace_nonstandard: True
       keep_heterogens: none
+    out:
+    - output_pdb_path: !& protein_pdbfixer.pdb
 - fix_amides:
     in:
       input_pdb_path: !* protein_pdbfixer.pdb
-      output_pdb_path: !& {protein_fix_amides.pdb:}
+    out:
+    - output_pdb_path: !& protein_fix_amides.pdb
 #- structure_check:
 #    in:
 #      output_summary_path: structure_check_protein_fix_amides.json
@@ -50,13 +53,14 @@ steps:
 #      output_summary_path: structure_check_protein_hydrogens.json
 - pdb2gmx:
     in:
-      output_crd_path: !& {complex_vac.pdb:}
-      output_top_zip_path: !& {complex_vac.zip:}
       config:
         water_type: spce
         force_field: amber99sb-ildn
         ignh: True
         merge: False
+    out:
+    - output_crd_path: !& complex_vac.pdb
+    - output_top_zip_path: !& complex_vac.zip
 
 wic:
   graphviz:

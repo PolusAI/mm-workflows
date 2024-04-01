@@ -23,9 +23,11 @@ steps:
             comm-grps: system
   - mdrun:
       in:
-        output_crd_path: !& {npt.gro:}  # Explicitly specify for rmsd
-        #output_trr_path: !& {npt.trr:}
         output_edr_path: 'npt.edr'
+        output_crd_path: npt.gro  # Explicitly specify for rmsd
+      out:
+      - output_crd_path: !& npt.gro
+      #- output_trr_path: !& npt.trr
   - gmx_energy:
       in:
         config:
@@ -34,7 +36,7 @@ steps:
   # - cwl_watcher:
   #     in:
   #       #cachedir_path: /absolute/path/to/cachedir/ (automatically filled in by wic)
-  #       file_pattern: '*npt.edr' # This * is a glob wildcard, NOT an explicit edge!
+  #       file_pattern: '*npt.edr'
   #       cwl_tool: gmx_energy
   #       max_times: '5'
   #       config:

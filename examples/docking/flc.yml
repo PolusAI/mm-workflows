@@ -17,11 +17,13 @@ steps:
         #  source: !* ligand.sdf
         # Adds hydrogens, minimizes, searches for the lowest energy conformer,
         # then minimizes again.
-#        output_sdf_path: !& {ligand_min.sdf:}
+#      out:
+#      - output_sdf_path: !& ligand_min.sdf
   - convert_mol2:
-      in:
+#      in:
 #        input_path: !* ligand_min.sdf
-        output_mol2_path: !& {ligand_min.mol2:}
+      out:
+      - output_mol2_path: !& ligand_min.mol2
 
 wic:
   graphviz:

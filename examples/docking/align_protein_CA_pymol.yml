@@ -7,7 +7,8 @@ steps:
         # It is only written after the final timestep and thus cannot possibly be used for realtime analysis!
         input_4_path: !* prod.trr
         # pymol only supports saving to pdb format which does not support storing the time of each frame.
-        output_file_path: !& {prod_align_protein_ca.pdb:}
+      out:
+      - output_file_path: !& prod_align_protein_ca.pdb
   - gmx_rms_nofit:
       in:
         input_structure_path: !* npt.gro # prod.tpr ?
@@ -15,11 +16,15 @@ steps:
         input_index_path: !* MOL.ndx
         # Which causes the first column of this file to be all zeros
         # (which ruins the timeseries plot, but not the histogram)
-        output_xvg_path: !& {rmsd_equil_ligand_notime.txt:} # Use .txt to avoid plotting
+        output_xvg_path: rmsd_equil_ligand_notime.txt # Use .txt to avoid plotting
+      out:
+      - output_xvg_path: !& rmsd_equil_ligand_notime
   - bash_xvg:
       in:
         script: /replace_first_column.sh # NOTE: Initial / required
         # But we can recover the time column by copying it from another xvg file.
-        input_xvg1_path: !* rmsd_equil_ligand_notime.txt
+        input_xvg1_path: !* rmsd_equil_ligand_notime
         input_xvg2_path: !* rmsd_equil_mainchain.xvg
-        output_xvg_path: !& {rmsd_equil_ligand_no_fit.xvg:}
+        output_xvg_path: rmsd_equil_ligand_no_fit.xvg
+      out:
+      - output_xvg_path: !& rmsd_equil_ligand_no_fit.xvg

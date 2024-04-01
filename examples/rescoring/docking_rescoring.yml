@@ -17,41 +17,49 @@ steps:
         # to obtain a broader experimental dGs
       max_row: 500 # first 500 rows selection.
       convert_Kd_dG: True
-      output_txt_path: !& {binding_data.txt:}
-      output_pdb_paths: !& {pdbbind_pdbs:}
-      output_sdf_paths: !& {pdbbind_sdfs:}
-      experimental_dGs: !& {exp_dGs:}
+      output_txt_path: binding_data.txt
+    out:
+    - output_txt_path: !& binding_data.txt
+    - output_pdb_paths: !& pdbbind_pdbs
+    - output_sdf_paths: !& pdbbind_sdfs
+    - experimental_dGs: !& exp_dGs
 
 - random_subset_rows:
     in:
       input_file: !* binding_data.txt
       num_of_samples: 8 # For performance reasons, we use a small number (8) for the CI.
       random_seed: 42
-      output_indices: !& {indices:}
+    out:
+    - output_indices: !& indices
 
 - array_indices:
     in:
       input_indices: !* indices
       input_array: !* pdbbind_pdbs
-      output_array: !& {pdbbind_filter_pdbs:}
+    out:
+    - output_array: !& pdbbind_filter_pdbs
 
 - array_indices:
     in:
       input_indices: !* indices
       input_array: !* pdbbind_sdfs
-      output_array: !& {pdbbind_filter_sdfs:}
+    out:
+    - output_array: !& pdbbind_filter_sdfs
 
 - array_indices:
     in:
       input_indices: !* indices
       input_array: !* exp_dGs
-      output_array: !& {pdbbind_filter_exp_dGs:}
+    out:
+    - output_array: !& pdbbind_filter_exp_dGs
 
 - fix_side_chain:
     scatter: [input_pdb_path]
     in:
       input_pdb_path: !* pdbbind_filter_pdbs
-      output_pdb_path: !& {pdbbind_pdbs.pdb:}
+      output_pdb_path: pdbbind_pdbs.pdb
+    out:
+    - output_pdb_path: !& pdbbind_pdbs.pdb
 
 - minimize_ligand_only.yml:
     scatter: [sdf_path]
@@ -65,9 +73,11 @@ steps:
       receptor_file: !* pdbbind_pdbs.pdb
       ligand_file: !* ligand_min.mol2
       ligand_box: !* ligand_min.mol2
-      scoring: 'vina'
-      output_dock_file: !& {docked_vina.pdb:}
+      scoring: vina
+      output_dock_file: docked_vina.pdb
       output_path: output
+    out:
+    - output_dock_file: !& docked_vina.pdb
 
 - onionnet-sfct:
     scatter: [receptor_path, ligand_path]
@@ -75,11 +85,13 @@ steps:
     in:
       receptor_path: !* pdbbind_pdbs.pdb
       ligand_path: !* docked_vina.pdb
-      pose_type: 'smina'
-      output_score_path: !& {sfct.txt:}
+      pose_type: smina
+      output_score_path: sfct.txt
       output_path: output
-      output_docking_score: !& {docking_scores:}
-      output_poses_rescore: !& {poses_rescores:}
+    out:
+    - output_score_path: !& sfct.txt
+    - output_docking_score: !& docking_scores
+    - output_poses_rescore: !& poses_rescores
 
 - scatter_plot:
     in:

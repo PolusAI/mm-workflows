@@ -9,11 +9,14 @@ steps:
 - setup_pdb.yml:
     in:
       input_pdb_path: !* protein.pdb
-      pdb_path: !& {pdb.pdbqt: pdb.pdbqt}
-      box_path: !& {box.pdb: box.pdb}
+      pdb_path: pdb.pdbqt
+      box_path: box.pdb
       box_buffer: 20 # Angstroms
       water_type: spce
       forcefield: amber99sb-ildn
+    out:
+    - pdb_path: !& pdb.pdbqt
+    - box_path: !& box.pdb
 
 - download_smiles_ligand_db.yml:
     in:
@@ -25,7 +28,9 @@ steps:
       smiles_column: SMILES
       binding_data_column: Standard Value
       convert_Kd_dG: True
-      output_txt_path: !& {binding_data.txt: binding_data.txt}
+      output_txt_path: binding_data.txt
+    out:
+    - output_txt_path: !& binding_data.txt
 
 - assign_partial_charges.yml:
     scatter: [input_path]
@@ -41,34 +46,38 @@ steps:
     in:
       input_receptor_pdbqt_path: !* pdb.pdbqt
       input_box_path: !* box.pdb
-      output_log_path: !& {vina.log:}
-      output_batch_pdbqt_path: !& {ligand_decoys_1D.pdbqt:}
+    out:
+    - output_log_path: !& vina.log
+    - output_batch_pdbqt_path: !& ligand_decoys_1D.pdbqt
 
 - split_pdbqt:
     scatter: [input_path]
     in:
       input_path: !* ligand_decoys_1D.pdbqt
-      output_pdb_path: !& {ligand_decoys_2D.pdbqt:}
+    out:
+    - output_pdb_path: !& ligand_decoys_2D.pdbqt
 
 - duplicate:
+    scatter: [input_pdbqt_array_path]
     in:
       input_pdbqt_singleton_path: !* pdb.pdbqt
       input_pdbqt_array_path: !* ligand_decoys_2D.pdbqt
-      output_pdbqt_path: !& {receptor_dup_2D.pdbqt:}
-    scatter: [input_pdbqt_array_path]
+    out:
+    - output_pdbqt_path: !& receptor_dup_2D.pdbqt
 
 - autodock_vina_filter:
     in:
       input_ligand_pdbqt_path: !* ligand_decoys_2D.pdbqt
-      output_ligand_pdbqt_path: !& {ligand_filter.pdbqt:}
       input_receptor_pdbqt_path: !* receptor_dup_2D.pdbqt
       input_log_path: !* vina.log
       input_txt_path: !* binding_data.txt
       docking_score_cutoff: -1.0
       max_num_poses_per_ligand: 1
       max_num_poses_total: 1 #25 # Use 1 for CI
-      docking_scores: !& {docking_scores:}
-      experimental_dGs: !& {dGs:}
+    out:
+    - output_ligand_pdbqt_path: !& ligand_filter.pdbqt
+    - docking_scores: !& docking_scores
+    - experimental_dGs: !& dGs
 
 - gen_topol_params.yml:
     in:
@@ -150,8 +159,8 @@ wic:
             wic:
               steps:
                 (4, genion):
-                  in:
-                    output_top_zip_path: !& {genion_complex.zip:}
+                  out:
+                  - output_top_zip_path: !& genion_complex.zip
           (2, basic.yml):
             wic:
               steps:
@@ -162,8 +171,8 @@ wic:
                         in:
                           input_top_zip_path: !* genion_complex.zip
                       (3, mdrun):
-                        in:
-                          output_crd_path: !& {prod_complex.gro:}
+                        out:
+                        - output_crd_path: !& prod_complex.gro
                       (4, cwl_watcher_analysis.yml):
                         wic:
                           backend: complex

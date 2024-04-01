@@ -9,7 +9,8 @@ steps:
     in:
       pdb_id: ~pdb_id
       #filter: "False" # False = do not 'clean' the pdb file.
-      output_config_string: !& {pdb_id_str:}
+    out:
+    - output_config_string: !& pdb_id_str
 - pdb:
     in:
       output_pdb_path: protein_models.pdb
@@ -39,14 +40,16 @@ steps:
     in:
       config:
         models: [1]
-      #output_structure_path: !& {protein.pdb:}
+    # out:
+    # - output_structure_path: !& protein.pdb
 - python_script:
     in:
       script: ../scripts/atomselect.py
       dockerPull: jakefennick/atomselect
       # Remove any unknown residues that weren't already 'cleaned' in the `pdb` step above.
       selection_string: not resname UNK
-      output_pdb_path: !& {protein.pdb:}
+    out:
+    - output_pdb_path: !& protein.pdb
 
 wic:
   graphviz:
