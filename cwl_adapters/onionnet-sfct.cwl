@@ -55,14 +55,9 @@ inputs:
       prefix: -o
     default: "sfct.txt"
 
+# Is this still necessary?
   output_path:
-    type: string?
-
-  output_docking_score:
-    type: string?
-
-  output_poses_rescore:
-    type: string?
+    type: string
 
 outputs:
 

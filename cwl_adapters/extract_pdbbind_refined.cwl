@@ -75,28 +75,6 @@ inputs:
       position: 5
     default: system.log
 
-  output_pdb_paths:
-    label: Path to the input file
-    doc: |-
-      Path to the input file
-      Type: string
-      File type: input
-      Accepted formats: pdb
-    type: string?
-    format:
-    - edam:format_1476 # pdb
-
-  output_sdf_paths:
-    label: Path to the input file
-    doc: |-
-      Path to the input file
-      Type: string
-      File type: input
-      Accepted formats: sdf
-    type: string?
-    format:
-    - edam:format_3814 # sdf
-
   min_row:
     label: The row min index
     doc: |-
@@ -132,21 +110,6 @@ inputs:
       position: 8
     default: False
 
-  experimental_dGs:
-    label: Experimental Free Energies of Binding
-    doc: |-
-      Experimental Free Energies of Binding
-    type: string?
-    format:
-    - edam:format_2330
-    
-  pdb_ids:
-    label: The PDBID of proteins
-    doc: |-
-      The PDBID of proteins
-    type: string?
-    format:
-    - edam:format_2330
 outputs:
 
   output_txt_path:

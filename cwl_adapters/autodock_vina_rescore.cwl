@@ -107,14 +107,6 @@ inputs:
     - edam:format_2330
     default: system.log
 
-  docking_score:
-    label: Estimated Free Energy of Binding
-    doc: |-
-      Estimated Free Energy of Binding
-    type: string?
-    format:
-    - edam:format_2330
-
 outputs:
   output_ligand_pdbqt_path:
     label: Path to the output PDBQT files

@@ -122,14 +122,6 @@ inputs:
       prefix: --convert_Kd_dG
     default: False
 
-  experimental_dGs:
-    label: Experimental Free Energies of Binding
-    doc: |-
-      Experimental Free Energies of Binding
-    type: string?
-    format:
-    - edam:format_2330
-
 outputs:
   output_txt_path:
     label: Path to the txt file

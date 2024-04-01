@@ -65,14 +65,6 @@ inputs:
       position: 4
     default: system.log
 
-  net_charge:
-    label: Calculated total charge
-    doc: |-
-      Calculated total charge
-    type: string
-    format:
-    - edam:format_2330
-
 outputs:
   output_log_path:
     label: Path to the log file

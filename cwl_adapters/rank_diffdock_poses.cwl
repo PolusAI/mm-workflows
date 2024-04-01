@@ -43,9 +43,6 @@ inputs:
     # set default to keep all poses
     default: 100
 
-  output_poses:
-    type: string?
-
 outputs:
 
   output_poses:

@@ -34,14 +34,6 @@ inputs:
 
 # TODO: his
 
-  output_config_string:
-    label: A dictionary of the given arguments as a JSON-encoded string.
-    doc: |-
-      A dictionary of the given arguments as a JSON-encoded string.
-    type: string?
-    format:
-    - edam:format_2330
-
 outputs:
   output_config_string:
     label: A dictionary of the given arguments as a JSON-encoded string.
