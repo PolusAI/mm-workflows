@@ -13,27 +13,28 @@ steps:
 # - editconf:
 #     in:
 #       input_crd_path: ~crd_path
-#       #input_crd_path: '*complex_vac.pdb'
+#       #input_crd_path: !* complex_vac.pdb
 #       config:
 #         box_type: cubic
 #         distance_to_molecule: 1.2
 - gmx_editconf:
     in:
       input_crd_path: ~crd_path
-      #input_crd_path: '*complex_vac.pdb'
+      #input_crd_path: !* complex_vac.pdb
       align_principal_axes: 0
       box_type: cubic
       distance_to_molecule: 1.2
 - solvate:
     in:
       input_top_zip_path: ~top_zip_path
-      #input_top_zip_path: '*complex_vac.zip'
-      output_crd_path: '&solvate.gro'
-      output_top_zip_path: '&solvate.zip'
+      #input_top_zip_path: !* complex_vac.zip
+    out:
+    - output_crd_path: !& solvate.gro
+    - output_top_zip_path: !& solvate.zip
 - grompp:
     in:
-      input_crd_path: '*solvate.gro'
-      input_top_zip_path: '*solvate.zip'
+      input_crd_path: !* solvate.gro
+      input_top_zip_path: !* solvate.zip
       config:
         # "Warning: atom name nnn in *.top and *.gro does not match"
         maxwarn: 1 # Be careful that this doesn't hide other errors!
@@ -47,15 +48,17 @@ steps:
       config:
         neutral: True
         concentration: 0.05 # mol/liter
-      output_top_zip_path: '&genion.zip'
-      output_crd_path: '&genion.gro'
+      output_crd_path: genion.gro
+    out:
+    - output_top_zip_path: !& genion.zip
+    - output_crd_path: !& genion.gro
 - gmx_trjconv_str:
     in:
       #config:
       #  selection: System
-      #input_top_path: '*prod.tpr'
-      input_crd_path: '*genion.gro'
-      output_str_path: 'genion.pdb'
+      #input_top_path: !* prod.tpr
+      # input_crd_path: !* genion.gro
+      output_str_path: genion.pdb
 
 wic:
   graphviz:

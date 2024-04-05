@@ -38,8 +38,8 @@ wic:
             wic:
               steps:
                 (1, grompp):
-                  in:
-                    output_tpr_path: '&min.tpr'
+                  out:
+                  - output_tpr_path: !& min.tpr
                 (2, mdrun):
-                  in:
-                    output_crd_path: '&min.gro'
+                  out:
+                  - output_crd_path: !& min.gro

@@ -39,19 +39,6 @@ inputs:
     format:
     - edam:format_1476
 
-  output_pdbqt_path:
-    label: Path to the output PDBQT files
-    doc: |-
-      Path to the output PDBQT files
-      Type: string
-      File type: output
-      Accepted formats: pdbqt
-      Example file: https://github.com/bioexcel/biobb_vs/raw/master/biobb_vs/test/reference/vina/ref_output_vina.pdbqt
-    type: string
-    format:
-    - edam:format_1476
-    default: .
-
 outputs:
   output_pdbqt_path:
     label: Path to the output PDBQT files

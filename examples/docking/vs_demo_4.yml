@@ -9,41 +9,50 @@ steps:
       query: '(Kd_Ki == "Kd") and (value < 0.001)'
       max_row: 1 #25 # Use 1 for CI
       convert_Kd_dG: True
-      output_txt_path: '&binding_data.txt'
-      output_pdb_paths: '&pdbbind_pdbs'
-      output_sdf_paths: '&pdbbind_sdfs'
-      experimental_dGs: '&exp_dGs'
-      pdb_ids: '&pdbids'
+      output_txt_path: binding_data.txt
+    out:
+    - output_txt_path: !& binding_data.txt
+    - output_pdb_paths: !& pdbbind_pdbs
+    - output_sdf_paths: !& pdbbind_sdfs
+    - experimental_dGs: !& exp_dGs
+    - pdb_ids: !& pdbids
       
 - config_tag_pdb:
     scatter: [pdb_id]
     in:
-      pdb_id: '*pdbids'
+      pdb_id: !* pdbids
       filter: "False"
-      output_config_string: '&pdb_id_str'
+    out:
+    - output_config_string: !& pdb_id_str
 - pdb:
     scatter: [config]
     in:
-      output_pdb_path: '&rcsb_protein.pdb'
-      config: '*pdb_id_str'
+      output_pdb_path: rcsb_protein.pdb
+      config: !* pdb_id_str
+    out:
+    - output_pdb_path: !& rcsb_protein.pdb
 
 - pdb_fixer:
     in:
-      input_pdb_path: '*pdbbind_pdbs'
-      input_helper_pdb_path: '*rcsb_protein.pdb' # Note: PDBFixer utilizes sequence information from this file
-      output_pdb_path: '&pdbbind_pdbfixer.pdb'
+      input_pdb_path: !* pdbbind_pdbs
+      input_helper_pdb_path: !* rcsb_protein.pdb # Note: PDBFixer utilizes sequence information from this file
+      output_pdb_path: pdbbind_pdbfixer.pdb
       add_atoms: heavy
       add_residues: True
       replace_nonstandard: True
       keep_heterogens: none
     scatter: [input_pdb_path, input_helper_pdb_path]
     scatterMethod: dotproduct
+    out:
+    - output_pdb_path: !& pdbbind_pdbfixer.pdb
 
 - extract_protein:
     scatter: [input_pdb_path]
     in:
-      input_pdb_path: '*pdbbind_pdbfixer.pdb'
-      output_pdb_path: '&protein.pdb'
+      input_pdb_path: !* pdbbind_pdbfixer.pdb
+      output_pdb_path: protein.pdb
+    out:
+    - output_pdb_path: !& protein.pdb
 
 # assign partial charges (ligand)
 - convert_pdbqt.yml:
@@ -52,60 +61,66 @@ steps:
     in:
       # NOTE: input_pdb_path and input_sdf_path are currently only necessary
       # due to a limitation of the inlineing implementation.
-      input_pdb_path: '*protein.pdb'
-      input_sdf_path: '*pdbbind_sdfs'
+      input_pdb_path: !* protein.pdb
+      input_sdf_path: !* pdbbind_sdfs
 
 # rescore protein ligand complexes
 - autodock_vina_rescore:
     in:
-      input_ligand_pdbqt_path: '*mol_prod.pdbqt'
-      input_receptor_pdbqt_path: '*receptor_prod.pdbqt'
+      input_ligand_pdbqt_path: !* mol_prod.pdbqt
+      input_receptor_pdbqt_path: !* receptor_prod.pdbqt
       score_only: True
       #local_only: True
-      output_log_path: '&vina_rescore_pdbind.log'
-      docking_score: '&rescoring_scores' # NOTE: Not a filename, just an explicit edge
-      output_ligand_pdbqt_path: '&ligand_rescore.pdbqt'
     scatter: [input_ligand_pdbqt_path, input_receptor_pdbqt_path]
     scatterMethod: dotproduct
+    out:
+    - output_log_path: !& vina_rescore_pdbind.log
+    - docking_score: !& rescoring_scores
+    - output_ligand_pdbqt_path: !& ligand_rescore.pdbqt
 
 - duplicate:
     in:
-      input_pdbqt_singleton_path: '*protein.pdb'
-      input_pdbqt_array_path: '*ligand_rescore.pdbqt'
-      output_pdbqt_path: '&receptor_dup_2D.pdb'
+      input_pdbqt_singleton_path: !* protein.pdb
+      input_pdbqt_array_path: !* ligand_rescore.pdbqt
     scatter: [input_pdbqt_singleton_path, input_pdbqt_array_path]
     scatterMethod: dotproduct
+    out:
+    - output_pdbqt_path: !& receptor_dup_2D.pdb
 
 - autodock_vina_filter:
     in:
-      input_log_paths: '*vina_rescore_pdbind.log'
-      input_txt_path: '*binding_data.txt'
+      input_log_paths: !* vina_rescore_pdbind.log
+      input_txt_path: !* binding_data.txt
       docking_score_cutoff: -1.0
       max_num_poses_per_ligand: 1
       max_num_poses_total: 1 #25 # Use 1 for CI same as max_row
       rescore: 'True'
-      input_ligand_pdbqt_path: '*ligand_rescore.pdbqt'
-      output_ligand_pdbqt_path: '&ligand_filter.pdbqt'
-      input_receptor_pdbqt_path: '*receptor_dup_2D.pdb'
-      output_receptor_pdbqt_path: '&receptor_filter.pdb'
-      docking_scores: '&docking_scores' # NOTE: Not a filename, just an explicit edge
-      experimental_dGs: '&dGs' # NOTE: Not a filename, just an explicit edge
+      input_ligand_pdbqt_path: !* ligand_rescore.pdbqt
+      input_receptor_pdbqt_path: !* receptor_dup_2D.pdb
+    out:
+    - output_ligand_pdbqt_path: !& ligand_filter.pdbqt
+    - output_receptor_pdbqt_path: !& receptor_filter.pdb
+    - docking_scores: !& docking_scores
+    - experimental_dGs: !& dGs
 
 - setup_pdb.yml:
     in:
-      input_pdb_path: '*receptor_filter.pdb'
-      pdb_path: '&pdb.pdbqt'
-      box_path: '&box.pdb'
+      input_pdb_path: !* receptor_filter.pdb
+      pdb_path: pdb.pdbqt
+      box_path: box.pdb
       box_buffer: 20 # Angstroms
       water_type: spce
       forcefield: amber99sb-ildn
     scatter: [input_pdb_path]
+    out:
+    - pdb_path: !& pdb.pdbqt
+    - box_path: !& box.pdb
 
 - gen_topol_params.yml:
     in:
-      input_ligand_pdbqt_path: '*ligand_filter.pdbqt'
-      input_top_zip_path: '*receptor.zip'
-      input_receptor_xyz_path: '*receptor.xyz'
+      input_ligand_pdbqt_path: !* ligand_filter.pdbqt
+      input_top_zip_path: !* receptor.zip
+      input_receptor_xyz_path: !* receptor.xyz
     scatter: [input_ligand_pdbqt_path, input_top_zip_path, input_receptor_xyz_path]
     scatterMethod: dotproduct
 
@@ -115,8 +130,8 @@ steps:
     in:
       # NOTE: crd_path and top_zip_path are currently only necessary
       # due to a limitation of the inlineing implementation.
-      crd_path: '*complex_vac.pdb'
-      top_zip_path: '*complex_vac.zip'
+      crd_path: !* complex_vac.pdb
+      top_zip_path: !* complex_vac.zip
       nsteps: 100000
       dt: 0.002
       temperature: 298.0
@@ -128,14 +143,14 @@ steps:
     in:
       # NOTE: input_pdb_path is currently only necessary
       # due to a limitation of the inlineing implementation.
-      input_pdb_path: '*prod.pdb'
-      input_ligand_pdb_path: '*ligand_GMX.pdb'
+      input_pdb_path: !* prod.pdb
+      input_ligand_pdb_path: !* ligand_GMX.pdb
 
 - scatter_plot:
     in:
-      xs: '*dGs'
-      ys: '*docking_scores'
-      ys2: '*docking_rescores'
+      xs: !* dGs
+      ys: !* docking_scores
+      ys2: !* docking_rescores
 
 wic:
   graphviz:
@@ -195,8 +210,8 @@ wic:
             wic:
               steps:
                 (4, genion):
-                  in:
-                    output_top_zip_path: '&genion_complex.zip'
+                  out:
+                  - output_top_zip_path: !& genion_complex.zip
           (2, basic.yml):
             wic:
               steps:
@@ -205,10 +220,10 @@ wic:
                     steps:
                       (2, grompp):
                         in:
-                          input_top_zip_path: '*genion_complex.zip'
+                          input_top_zip_path: !* genion_complex.zip
                       (3, mdrun):
-                        in:
-                          output_crd_path: '&prod_complex.gro'
+                        out:
+                        - output_crd_path: !& prod_complex.gro
                       (4, cwl_watcher_analysis.yml):
                         wic:
                           backend: complex

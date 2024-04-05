@@ -9,50 +9,57 @@ steps:
         query: '(Kd_Ki == "Kd") and (value < 0.001)'
         max_row: 1 #25 # Use 1 for CI
         convert_Kd_dG: True
-        output_pdb_paths: '&pdbbind_pdbs'
-        output_sdf_paths: '&pdbbind_sdfs'
-        experimental_dGs: '&exp_dGs'
+      out:
+      - output_pdb_paths: !& pdbbind_pdbs
+      - output_sdf_paths: !& pdbbind_sdfs
+      - experimental_dGs: !& exp_dGs
 
   - fix_side_chain:
       scatter: [input_pdb_path]
       in:
-        input_pdb_path: '*pdbbind_pdbs'
-        output_pdb_path: '&pdbbind_pdbs.pdb'
+        input_pdb_path: !* pdbbind_pdbs
+      out:
+      - output_pdb_path: !& pdbbind_pdbs.pdb
 
   - sanitize_ligand:
       scatter: [input_small_mol_ligand]
       in:
-        input_small_mol_ligand: "*pdbbind_sdfs"
-        output_ligand: "&sanitized_sdfs"
-        valid_ligand: "&valid_ligands"
+        input_small_mol_ligand: !* pdbbind_sdfs
+      out:
+      - output_ligand: !& sanitized_sdfs
+      - valid_ligand: !& valid_ligands
 
   - filter_array: # remove invalid ligands from sanitized_ligand, avoid using null
       in:
-        input_array: "*sanitized_sdfs"
-        input_bool_array: "*valid_ligands"
-        output_array: "&final_sanitized_sdfs"
+        input_array: !* sanitized_sdfs
+        input_bool_array: !* valid_ligands
+      out:
+      - output_array: !& final_sanitized_sdfs
 
   - filter_array: # remove proteins corresponding to invalid ligands from sanitized_ligand
       in:
-        input_array: "*pdbbind_pdbs.pdb"
-        input_bool_array: "*valid_ligands"
-        output_array: "&final_pdbbind_pdbs.pdb"
+        input_array: !* pdbbind_pdbs.pdb
+        input_bool_array: !* valid_ligands
+      out:
+      - output_array: !& final_pdbbind_pdbs.pdb
 
   - filter_array: # remove dGs corresponding to invalid ligands from sanitized_ligand
       in:
-        input_array: "*exp_dGs"
-        input_bool_array: "*valid_ligands"
-        output_array: "&final_exp_dGs"
+        input_array: !* exp_dGs
+        input_bool_array: !* valid_ligands
+      out:
+      - output_array: !& final_exp_dGs
 
   - diffdock:
       scatter: [protein_path, ligand_path]
       scatterMethod: dotproduct
       in:
-        protein_path: "*final_pdbbind_pdbs.pdb"
-        ligand_path: "*final_sanitized_sdfs"
+        protein_path: !* final_pdbbind_pdbs.pdb
+        ligand_path: !* final_sanitized_sdfs
         samples_per_complex: 20 # figure 3 left in DiffDock paper
         inference_steps: 20 # figure S11 in DiffDock paper
-        output_files: "&diffdock_poses"
+      out:
+      - output_files: !& diffdock_poses
 
   - rank_diffdock_poses:
       scatter: [diffdock_poses]
@@ -60,13 +67,14 @@ steps:
         top_n_confident: 1000 # if only using top_percent_confidence, then set top_n_confident to trivially high number
         # if only want to use top_n_confident, then set top_percent_confidence to 100
         top_percent_confidence: 33 # take top third of most confident poses, see figure 3 right in DiffDock paper
-        diffdock_poses: "*diffdock_poses"
-        output_poses: "&output_poses"
+        diffdock_poses: !* diffdock_poses
+      out:
+      - output_poses: !& output_poses
 
   - pose_cluster_filter:
       scatter: [predicted_poses]
       in:
-        predicted_poses: "*output_poses"
+        predicted_poses: !* output_poses
         centroid_cutoff: 5 # if centroid of all poses are within cutoff then only keep most confident pose, requires visual inspection
 
 wic:

@@ -87,8 +87,9 @@ inputs:
       prefix: -o
     default: "docked.pdb"
 
+# Is this still necessary?
   output_path:
-    type: string?
+    type: string
     
 outputs:
   

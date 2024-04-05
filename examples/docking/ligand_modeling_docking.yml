@@ -27,26 +27,27 @@ steps:
   - python3_mol2_to_mol2:
       in:
         script: /rename_residues_mol.py # NOTE: Initial / required
-        input_mol2_path: '*ligand_min.mol2'
-        output_mol2_path: '&conformer.mol2'
+        input_mol2_path: !* ligand_min.mol2
+      out:
+      - output_mol2_path: !& conformer.mol2
 
 # Docking
   - convert_ligand_mol2_to_pdbqt_obabel.yml:
 #  - convert_ligand_mol2_to_pdbqt_mdanalysis.yml: # generates ligand_rigid.pdbqt only
   - autodock_vina_run:
       in:
-        input_ligand_pdbqt_path: '*ligand_flex.pdbqt'
-        #input_ligand_pdbqt_path: '*ligand_rigid.pdbqt'
-        input_receptor_pdbqt_path: '*pdb.pdbqt'
-        input_box_path: '*box.pdb'
-#        output_pdbqt_path: '&poses_ligand.pdbqt'
-        output_log_path: '&vina.log'
+        input_ligand_pdbqt_path: !* ligand_flex.pdbqt
+        #input_ligand_pdbqt_path: !* ligand_rigid.pdbqt
+        input_receptor_pdbqt_path: !* pdb.pdbqt
+        input_box_path: !* box.pdb
+      out:
+#      - output_pdbqt_path: !& poses_ligand.pdbqt
+      - output_log_path: !& vina.log
   - split_pdbqt:
-      in:
-#        input_path: '*poses_ligand.pdbqt' # Scalar type
-        output_pdb_path: '&ligand_nested_split.pdbqt' # 1D Array type, but
-      #out:
-      #  output_pdb_path: # 2D Array type due to scattering
+#      in:
+#        input_path: !* poses_ligand.pdbqt # Scalar type
+      out:
+      - output_pdb_path: !& ligand_nested_split.pdbqt
 
 wic:
   graphviz:

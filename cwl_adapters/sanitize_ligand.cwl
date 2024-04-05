@@ -29,12 +29,6 @@ inputs:
     inputBinding:
       prefix: --input_small_mol_ligand
 
-  output_ligand:
-    type: string?
-
-  valid_ligand:
-    type: string?
-
 outputs:
 
   output_ligand:

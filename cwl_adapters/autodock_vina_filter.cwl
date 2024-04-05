@@ -182,30 +182,6 @@ inputs:
     - edam:format_1476
     default: .
 
-  docking_scores:
-    label: Estimated Free Energies of Binding
-    doc: |-
-      Estimated Free Energies of Binding
-    type: string?
-    format:
-    - edam:format_2330
-
-  experimental_binding_data:
-    label: Experimental binding data (if any)
-    doc: |-
-      Experimental binding data (if any)
-    type: string?
-    format:
-    - edam:format_2330
-
-  experimental_dGs:
-    label: Experimental binding free energy dG values (if any)
-    doc: |-
-      Experimental binding free energy dG values (if any)
-    type: string?
-    format:
-    - edam:format_2330
-
 outputs:
 # NOTE: If docking_score_cutoff is too negative and filters out all of the files,
 # you will get the following runtime error message:

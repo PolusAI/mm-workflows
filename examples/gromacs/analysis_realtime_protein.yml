@@ -7,33 +7,33 @@
 steps:
   - gmx_rms:
       in:
-        input_traj_path: '*prod.trr'
+        input_traj_path: !* prod.trr
         config:
           selection: MainChain
         output_xvg_path: 'rmsd_equil_mainchain.xvg'
   - gmx_rms:
       in:
-        input_traj_path: '*prod.trr'
+        input_traj_path: !* prod.trr
         config:
           selection: SideChain
         output_xvg_path: 'rmsd_equil_sidechain.xvg'
   - gmx_rms:
       in:
-        input_traj_path: '*prod.trr'
+        input_traj_path: !* prod.trr
         config:
           selection: MainChain
         output_xvg_path: 'rmsd_xray_mainchain.xvg'
-        input_structure_path: '*min.tpr'
+        input_structure_path: !* min.tpr
   - gmx_rgyr:
       in:
-        input_traj_path: '*prod.trr'
+        input_traj_path: !* prod.trr
         config:
           selection: MainChain
         output_xvg_path: 'radius_gyration.xvg'
-        input_structure_path: '*min.tpr'
+        input_structure_path: !* min.tpr
   - gmx_energy:
       in:
-        input_energy_path: '*prod.edr'
+        input_energy_path: !* prod.edr
         config:
           terms: [Total-Energy]
         output_xvg_path: 'energy_total.xvg'

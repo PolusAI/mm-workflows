@@ -33,19 +33,23 @@ steps:
             compressibility: 4.5e-5
             comm-mode: Linear
             comm-grps: system
-        output_config_string: '&config_tag_mdp_prod'
+      out:
+      - output_config_string: !& config_tag_mdp_prod
   - grompp:
       in:
-        config: '*config_tag_mdp_prod'
-        output_tpr_path: '&prod.tpr'
-        input_top_zip_path: '*genion.zip'  # Use the original topology file so
+        config: !* config_tag_mdp_prod
+        input_top_zip_path: !* genion.zip  # Use the original topology file so
 # we don't have to question whether the topology gets messed up after file format conversions.
 # (In fact, it is not exactly identical!)
+      out:
+      - output_tpr_path: !& prod.tpr
   - mdrun:
       in:
-        output_crd_path: '&prod.gro'
-        output_trr_path: '&prod.trr' # Explicitly specify for cwl_watcher
-        output_edr_path: '&prod.edr'
+        output_trr_path: prod.trr # Explicitly specify for cwl_watcher
+      out:
+      - output_crd_path: !& prod.gro
+      - output_trr_path: !& prod.trr
+      - output_edr_path: !& prod.edr
   # - cwl_watcher_analysis.yml:
 
 wic:

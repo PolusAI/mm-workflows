@@ -33,9 +33,10 @@ steps:
       smiles_column: ~smiles_column #SMILES
       binding_data_column: ~binding_data_column #Standard Value
       convert_Kd_dG: ~convert_Kd_dG #'True'
-      output_txt_path: ~output_txt_path # '&binding_data.txt'
-      output_sdf_path: '&ligand_conformers.sdf'
-
+      output_txt_path: ~output_txt_path
+      output_sdf_path: ligand_conformers.sdf
+    out:
+    - output_sdf_path: !& ligand_conformers.sdf
 
 wic:
   graphviz:

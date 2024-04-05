@@ -81,12 +81,6 @@ inputs:
       prefix: --complex_name
     default:  outputs
 
-  output_files:
-    type: string?
-
-  max_confident_pose:
-    type: string?
-
 outputs:
 
   max_confident_pose:

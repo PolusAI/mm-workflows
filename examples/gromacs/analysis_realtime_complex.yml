@@ -7,44 +7,48 @@
 steps:
   - gmxselect: # NOTE: make_ndx does NOT work! (It erroneously selects all of the atoms.)
       in:
-        input_structure_path: '*min.tpr'
+        input_structure_path: !* min.tpr
         config: '{"selection": "resname MOL"}'
-        output_ndx_path: '&MOL.ndx'
+      out:
+      - output_ndx_path: !& MOL.ndx
   - gmx_rms:
       in:
-        input_structure_path: '*prod.tpr'
-        input_traj_path: '*prod.trr'
+        input_structure_path: !* prod.tpr
+        input_traj_path: !* prod.trr
         config:
           selection: resname_MOL
-        input_index_path: '*MOL.ndx'
+        input_index_path: !* MOL.ndx
         output_xvg_path: 'rmsd_equil_ligand_fit.xvg'
   - gmx_rms:
       in:
-        input_structure_path: '*prod.tpr'
-        input_traj_path: '*prod.trr'
+        input_structure_path: !* prod.tpr
+        input_traj_path: !* prod.trr
         config:
           selection: MainChain
         output_xvg_path: 'rmsd_equil_mainchain.xvg'
   - gmx_rms:
       in:
-        input_structure_path: '*min.tpr'
-        input_traj_path: '*prod.trr'
+        input_structure_path: !* min.tpr
+        input_traj_path: !* prod.trr
         config:
           selection: MainChain
-        output_xvg_path: '&rmsd_xray_mainchain.xvg'
+      out:
+      - output_xvg_path: !& rmsd_xray_mainchain.xvg
 # Align the trajectory with MDAnalysis.
   - python3_align_protein_ca:
       in:
         script: /align_protein_ca_mda.py # NOTE: Initial / required
-        input_gro_path: '*npt.gro'
-        input_trr_path: '*prod.trr'
-        output_trr_path: '&prod_align_protein_ca.trr'
+        input_gro_path: !* npt.gro
+        input_trr_path: !* prod.trr
+      out:
+      - output_trr_path: !& prod_align_protein_ca.trr
   - gmx_rms_nofit:
       in:
-        input_structure_path: '*npt.gro' # '*prod.tpr' ?
-        input_traj_path: '*prod_align_protein_ca.trr'
-        input_index_path: '*MOL.ndx'
-        output_xvg_path: '&rmsd_equil_ligand_no_fit.xvg'
+        input_structure_path: !* npt.gro  # prod.tpr ?
+        input_traj_path: !* prod_align_protein_ca.trr
+        input_index_path: !* MOL.ndx
+      out:
+      - output_xvg_path: !& rmsd_equil_ligand_no_fit.xvg
 # We can also align the trajectory with pymol, but it currently has an O(N^2) performance issue.
 # However, pymol's alignment algorithm rejects outliers, which may be useful for
 # flexible protein targets with floppy tails.

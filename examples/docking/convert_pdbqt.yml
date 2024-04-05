@@ -14,8 +14,8 @@ steps:
       input_path: ~input_sdf_path
 
 - convert_pdbqt:
-    in:
-      output_pdb_path: '&mol_prod.pdbqt'
+    out:
+    - output_pdb_path: !& mol_prod.pdbqt
 
 - convert_mol2:
     in:
@@ -23,8 +23,9 @@ steps:
 
 - convert_pdbqt:
     in:
-      output_pdb_path: '&receptor_prod.pdbqt'
       arg1: -xr # Receptor needs to be rigid
+    out:
+    - output_pdb_path: !& receptor_prod.pdbqt
 wic:
   graphviz:
     label: Assign Partial\nCharges
