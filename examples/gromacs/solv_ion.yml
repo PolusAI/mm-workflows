@@ -1,7 +1,7 @@
 steps:
   - editconf:
       in:
-        config:
+        config: !ii
           box_type: cubic
           distance_to_molecule: 1.0
   - solvate:
@@ -14,13 +14,13 @@ steps:
       in:
         input_crd_path: !* solvate.gro
         input_top_zip_path: !* solvate.zip
-        config:
+        config: !ii
           maxwarn: 1 # net charge != 0
           mdp:
             integrator: steep
   - genion:
       in:
-        config:
+        config: !ii
           neutral: True
       out:
       - output_top_zip_path: !& genion.zip

@@ -12,7 +12,7 @@ steps:
   # arg2: -p 7.4
   - generate_conformers_sdf:
       in:
-        input_path: ~sdf_path
+        input_path: sdf_path
         #input_path:
         #  source: !* ligand.sdf
         # Adds hydrogens, minimizes, searches for the lowest energy conformer,

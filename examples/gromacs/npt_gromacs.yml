@@ -1,7 +1,7 @@
 steps:
   - grompp:
       in:
-        config:
+        config: !ii
           mdp:
             integrator: md  # Use md for performance so we can update coordinates on GPU. Use sd for proper statistical properties.
             rvdw: 1.0
@@ -23,28 +23,28 @@ steps:
             comm-grps: system
   - mdrun:
       in:
-        output_edr_path: 'npt.edr'
-        output_crd_path: npt.gro  # Explicitly specify for rmsd
+        output_edr_path: !ii npt.edr
+        output_crd_path: !ii npt.gro  # Explicitly specify for rmsd
       out:
       - output_crd_path: !& npt.gro
       #- output_trr_path: !& npt.trr
   - gmx_energy:
       in:
-        config:
+        config: !ii
           terms: [Density]
-        output_xvg_path: 'density.xvg'
+        output_xvg_path: !ii density.xvg
   # - cwl_watcher:
   #     in:
   #       #cachedir_path: /absolute/path/to/cachedir/ (automatically filled in by wic)
-  #       file_pattern: '*npt.edr'
-  #       cwl_tool: gmx_energy
-  #       max_times: '5'
-  #       config:
+  #       file_pattern: !ii '*npt.edr'
+  #       cwl_tool: !ii gmx_energy
+  #       max_times: !ii '5'
+  #       config: !ii
   #         in:
-  #           input_energy_path: npt.edr
-  #           config:
+  #           input_energy_path: !ii npt.edr
+  #           config: !ii
   #             terms: [Density]
-  #           output_xvg_path: density.xvg
+  #           output_xvg_path: !ii density.xvg
 
 wic:
   graphviz:

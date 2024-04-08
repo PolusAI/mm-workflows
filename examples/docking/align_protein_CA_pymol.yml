@@ -16,15 +16,15 @@ steps:
         input_index_path: !* MOL.ndx
         # Which causes the first column of this file to be all zeros
         # (which ruins the timeseries plot, but not the histogram)
-        output_xvg_path: rmsd_equil_ligand_notime.txt # Use .txt to avoid plotting
+        output_xvg_path: !ii rmsd_equil_ligand_notime.txt # Use .txt to avoid plotting
       out:
       - output_xvg_path: !& rmsd_equil_ligand_notime
   - bash_xvg:
       in:
-        script: /replace_first_column.sh # NOTE: Initial / required
+        script: !ii /replace_first_column.sh # NOTE: Initial / required
         # But we can recover the time column by copying it from another xvg file.
         input_xvg1_path: !* rmsd_equil_ligand_notime
         input_xvg2_path: !* rmsd_equil_mainchain.xvg
-        output_xvg_path: rmsd_equil_ligand_no_fit.xvg
+        output_xvg_path: !ii rmsd_equil_ligand_no_fit.xvg
       out:
       - output_xvg_path: !& rmsd_equil_ligand_no_fit.xvg

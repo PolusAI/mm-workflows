@@ -5,7 +5,7 @@ steps:
   - editconf:
       in:
         input_crd_path: !* complex_vac.pdb
-        config:
+        config: !ii
           box_type: cubic
           distance_to_molecule: 100.0
       out:

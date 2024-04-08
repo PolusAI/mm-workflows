@@ -8,4 +8,4 @@ wic:
         steps:
           (1, extract_pdbbind_refined):
             in:
-              max_row: 16 # Override default 1
+              max_row: !ii 16 # Override default 1

@@ -6,9 +6,9 @@ steps:
         # "The query() method uses a slightly modified Python syntax by default.
         # For example, the & and | (bitwise) operators have the precedence of their boolean cousins, and and or.
         # This is syntactically valid Python, however the semantics are different."
-        query: '(Kd_Ki == "Kd") and (value < 0.001)'
-        max_row: 1 #25 # Use 1 for CI
-        convert_Kd_dG: True
+        query: !ii '(Kd_Ki == "Kd") and (value < 0.001)'
+        max_row: !ii 1 #25 # Use 1 for CI
+        convert_Kd_dG: !ii True
       out:
       - output_pdb_paths: !& pdbbind_pdbs
       - output_sdf_paths: !& pdbbind_sdfs
@@ -56,17 +56,17 @@ steps:
       in:
         protein_path: !* final_pdbbind_pdbs.pdb
         ligand_path: !* final_sanitized_sdfs
-        samples_per_complex: 20 # figure 3 left in DiffDock paper
-        inference_steps: 20 # figure S11 in DiffDock paper
+        samples_per_complex: !ii 20 # figure 3 left in DiffDock paper
+        inference_steps: !ii 20 # figure S11 in DiffDock paper
       out:
       - output_files: !& diffdock_poses
 
   - rank_diffdock_poses:
       scatter: [diffdock_poses]
       in:
-        top_n_confident: 1000 # if only using top_percent_confidence, then set top_n_confident to trivially high number
+        top_n_confident: !ii 1000 # if only using top_percent_confidence, then set top_n_confident to trivially high number
         # if only want to use top_n_confident, then set top_percent_confidence to 100
-        top_percent_confidence: 33 # take top third of most confident poses, see figure 3 right in DiffDock paper
+        top_percent_confidence: !ii 33 # take top third of most confident poses, see figure 3 right in DiffDock paper
         diffdock_poses: !* diffdock_poses
       out:
       - output_poses: !& output_poses
@@ -75,7 +75,7 @@ steps:
       scatter: [predicted_poses]
       in:
         predicted_poses: !* output_poses
-        centroid_cutoff: 5 # if centroid of all poses are within cutoff then only keep most confident pose, requires visual inspection
+        centroid_cutoff: !ii 5 # if centroid of all poses are within cutoff then only keep most confident pose, requires visual inspection
 
 wic:
   graphviz:

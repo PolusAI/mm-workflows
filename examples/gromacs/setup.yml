@@ -12,21 +12,21 @@ inputs:
 steps:
 # - editconf:
 #     in:
-#       input_crd_path: ~crd_path
+#       input_crd_path: crd_path
 #       #input_crd_path: !* complex_vac.pdb
-#       config:
+#       config: !ii
 #         box_type: cubic
 #         distance_to_molecule: 1.2
 - gmx_editconf:
     in:
-      input_crd_path: ~crd_path
+      input_crd_path: crd_path
       #input_crd_path: !* complex_vac.pdb
-      align_principal_axes: 0
-      box_type: cubic
-      distance_to_molecule: 1.2
+      align_principal_axes: !ii 0
+      box_type: !ii cubic
+      distance_to_molecule: !ii 1.2
 - solvate:
     in:
-      input_top_zip_path: ~top_zip_path
+      input_top_zip_path: top_zip_path
       #input_top_zip_path: !* complex_vac.zip
     out:
     - output_crd_path: !& solvate.gro
@@ -35,7 +35,7 @@ steps:
     in:
       input_crd_path: !* solvate.gro
       input_top_zip_path: !* solvate.zip
-      config:
+      config: !ii
         # "Warning: atom name nnn in *.top and *.gro does not match"
         maxwarn: 1 # Be careful that this doesn't hide other errors!
         mdp:
@@ -45,20 +45,20 @@ steps:
       # pH 7.0 = 0.05 concentration, pH 3.6 = 1.50 concentration, pH 2.5 = 4.50 concentration
       # NOTE: At higher salt concentrations, you may need to increase nsteps of
       # steepest descent minimization from 200 to around 300.
-      config:
+      config: !ii
         neutral: True
         concentration: 0.05 # mol/liter
-      output_crd_path: genion.gro
+      output_crd_path: !ii genion.gro
     out:
     - output_top_zip_path: !& genion.zip
     - output_crd_path: !& genion.gro
 - gmx_trjconv_str:
     in:
-      #config:
+      #config: !ii
       #  selection: System
       #input_top_path: !* prod.tpr
       # input_crd_path: !* genion.gro
-      output_str_path: genion.pdb
+      output_str_path: !ii genion.pdb
 
 wic:
   graphviz:

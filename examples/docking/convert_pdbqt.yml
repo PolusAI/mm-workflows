@@ -11,7 +11,7 @@ inputs:
 steps:
 - convert_mol2:
     in:
-      input_path: ~input_sdf_path
+      input_path: input_sdf_path
 
 - convert_pdbqt:
     out:
@@ -19,11 +19,11 @@ steps:
 
 - convert_mol2:
     in:
-      input_path: ~input_pdb_path
+      input_path: input_pdb_path
 
 - convert_pdbqt:
     in:
-      arg1: -xr # Receptor needs to be rigid
+      arg1: !ii -xr # Receptor needs to be rigid
     out:
     - output_pdb_path: !& receptor_prod.pdbqt
 wic:

@@ -9,25 +9,25 @@ inputs:
 steps:
 - python_script:
     in:
-      script: ../scripts/atomselect.py
-      dockerPull: jakefennick/atomselect
-      selection_string: protein # Extract the protein from the last timestep
-      input_pdb_path: ~input_pdb_path # !* prod.pdb
+      script: !ii ../scripts/atomselect.py
+      dockerPull: !ii jakefennick/atomselect
+      selection_string: !ii protein # Extract the protein from the last timestep
+      input_pdb_path: input_pdb_path # !* prod.pdb
 # Assign partial charges (protein)
 # NOTE: Although we only start off with one protein, the final coordinates
 # after doing MD with different ligands will be different; hence scatter
 - convert_mol2:
 - convert_pdbqt:
     in:
-      arg1: -xr # Receptor needs to be rigid
+      arg1: !ii -xr # Receptor needs to be rigid
     out:
     - output_pdb_path: !& protein_prod.pdbqt
 - python_script:
     in:
-      script: ../scripts/atomselect.py
-      dockerPull: jakefennick/atomselect
-      selection_string: resname MOL # Extract the ligand from the last timestep
-      input_pdb_path: ~input_pdb_path # !* prod.pdb
+      script: !ii ../scripts/atomselect.py
+      dockerPull: !ii jakefennick/atomselect
+      selection_string: !ii resname MOL # Extract the ligand from the last timestep
+      input_pdb_path: input_pdb_path # !* prod.pdb
     # out:
     # - output_pdb_path: !& ligand_temp.pdbqt
 
@@ -41,7 +41,7 @@ steps:
 # ATOM     53   BR MOL Z   1     -14.786 -32.819  20.524  1.00  0.00          BR
 - fix_pdb_atom_column:
     in:
-      input_helper_structure_path: ~input_ligand_pdb_path
+      input_helper_structure_path: input_ligand_pdb_path
 # Assign partial charges (ligand)
 - convert_mol2:
 - convert_pdbqt:
@@ -51,8 +51,8 @@ steps:
     in:
       input_ligand_pdbqt_path: !* ligand_prod.pdbqt
       input_receptor_pdbqt_path: !* protein_prod.pdbqt
-      score_only: True
-      #local_only: True
+      score_only: !ii True
+      #local_only: !ii True
     out:
     - output_log_path: !& vina_rescore.log
     - docking_score: !& docking_rescores

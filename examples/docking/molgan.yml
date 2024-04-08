@@ -1,8 +1,8 @@
 steps:
   - download_gdb9_database:
       in:
-        output_NP_Score_path: NP_score.pkl.gz
-        output_SA_Score_path: SA_score.pkl.gz
+        output_NP_Score_path: !ii NP_score.pkl.gz
+        output_SA_Score_path: !ii SA_score.pkl.gz
       out:
       - output_sdf_path: !& gdb9.sdf
       - output_NP_Score_path: !& NP_score.pkl.gz
@@ -19,11 +19,11 @@ steps:
         input_data_path: !* data.pkl
         input_NP_Score_path: !* NP_score.pkl.gz
         input_SA_Score_path: !* SA_score.pkl.gz
-        output_log_path: training_log
-        output_model_dir: models
-        validation_metrics: 'validity,sas'
-        num_epochs: 2
-        save_frequency: 1
+        output_log_path: !ii training_log
+        output_model_dir: !ii models
+        validation_metrics: !ii 'validity,sas'
+        num_epochs: !ii 2
+        save_frequency: !ii 1
       out:
       - output_model_dir: !& models
 
@@ -33,8 +33,8 @@ steps:
         input_NP_Score_path: !* NP_score.pkl.gz
         input_SA_Score_path: !* SA_score.pkl.gz
         input_model_dir: !* models
-        output_sdf_path: generated_mols.sdf
-        output_log_path: test_log
+        output_sdf_path: !ii generated_mols.sdf
+        output_log_path: !ii test_log
 
 wic:
   graphviz:

@@ -11,7 +11,7 @@ steps:
 # to weaken the binding free energy! (as reported by autodock vina)
   - flc.yml:
       in:
-        sdf_path: ~sdf_path
+        sdf_path: sdf_path
 #  - minimize_ligand_only.yml:
 
 # NOTE: We converted to mol2 format above because it allows explicit charges.
@@ -24,7 +24,7 @@ steps:
 # "ERROR: more than one residue detected '{'UNL', 'MOL'}'"
   - python3_mol2_to_mol2:
       in:
-        script: /rename_residues_mol.py # NOTE: Initial / required
+        script: !ii /rename_residues_mol.py # NOTE: Initial / required
         input_mol2_path: !* ligand_min.mol2
       out:
       - output_mol2_path: !& conformer.mol2
@@ -51,7 +51,7 @@ steps:
 # NOTE: acpype doesn't add forcefield or water topology #include lines.
   - bash_top:
       in:
-        script: /gmx_add_topology_includes.sh # NOTE: Initial / required
+        script: !ii /gmx_add_topology_includes.sh # NOTE: Initial / required
         input_top_path: !* ligand_GMX.top
       out:
       - output_top_path: !& ligand_GMX_includes.top
@@ -78,15 +78,15 @@ steps:
   - extract_model_pdbqt:
       in:
         input_pdbqt_path: !* poses_ligand.pdbqt
-        output_pdbqt_path: pose_ligand.pdbqt
-        config:
+        output_pdbqt_path: !ii pose_ligand.pdbqt
+        config: !ii
           model: 1 # NOTE: score, rmsd l.b., rmsd u.b. stored in REMARK lines
       out:
       - output_pdbqt_path: !& pose_ligand.pdbqt
   - convert_xyz:
       in:
         input_path: !* pose_ligand.pdbqt
-        output_xyz_path: pose_ligand.xyz
+        output_xyz_path: !ii pose_ligand.xyz
       out:
       - output_xyz_path: !& pose_ligand.xyz
 # Molecular Dynamics combine receptor & ligand
