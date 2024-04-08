@@ -17,7 +17,7 @@ wic:
   steps:
     (2, stability.yml):
       wic:
-        inlineable: True
+        inlineable: False
         steps:
           (2, basic.yml):
             wic:

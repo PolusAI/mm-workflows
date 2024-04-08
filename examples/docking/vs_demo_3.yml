@@ -103,7 +103,7 @@ wic:
   steps:
     (1, download_pdb.yml):
       wic:
-        inlineable: True
+        inlineable: False
 
     (2, setup_pdb.yml):
       wic:

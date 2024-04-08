@@ -71,7 +71,7 @@ wic:
   steps:
     (1, download_pdb.yml):
       wic:
-        inlineable: True
+        inlineable: False
         graphviz:
           label: 'Download\nProtein Model'
 #    (2, structure_check):
