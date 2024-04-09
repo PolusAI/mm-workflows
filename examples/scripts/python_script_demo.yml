@@ -8,16 +8,16 @@
 steps:
 - download_pdb.yml:
     in:
-      pdb_id: 1BTY
+      pdb_id: !ii 1BTY
 - python_script:
     in:
-      script: ../scripts/atomselect.py
-      dockerPull: jakefennick/atomselect
-      selection_string: backbone and name CA
+      script: !ii ../scripts/atomselect.py
+      dockerPull: !ii jakefennick/atomselect
+      selection_string: !ii backbone and name CA
       #input_pdb_path inferred!
 
 wic:
   steps:
     (1, download_pdb.yml):
       wic:
-        inlineable: True
+        inlineable: False

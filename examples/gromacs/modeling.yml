@@ -3,26 +3,26 @@
 steps:
 - download_pdb.yml:
     in:
-      pdb_id: 1aki
+      pdb_id: !ii 1aki
 #- structure_check:
 #    in:
-#      output_summary_path: structure_check_protein.json
+#      output_summary_path: !ii structure_check_protein.json
 # Requires modeller license
 #- fix_backbone:
 #    in:
-#      output_pdb_path: protein_fix_backbone.pdb
+#      output_pdb_path: !ii protein_fix_backbone.pdb
 #- structure_check:
 #    in:
-#      output_summary_path: structure_check_protein_fix_backbone.json
+#      output_summary_path: !ii structure_check_protein_fix_backbone.json
 
 - pdb_fixer:
     in:
       input_pdb_path: !* protein.pdb
-      output_pdb_path: protein_pdbfixer.pdb
-      add_atoms: heavy
-      add_residues: True
-      replace_nonstandard: True
-      keep_heterogens: none
+      output_pdb_path: !ii protein_pdbfixer.pdb
+      add_atoms: !ii heavy
+      add_residues: !ii True
+      replace_nonstandard: !ii True
+      keep_heterogens: !ii none
     out:
     - output_pdb_path: !& protein_pdbfixer.pdb
 - fix_amides:
@@ -32,28 +32,28 @@ steps:
     - output_pdb_path: !& protein_fix_amides.pdb
 #- structure_check:
 #    in:
-#      output_summary_path: structure_check_protein_fix_amides.json
+#      output_summary_path: !ii structure_check_protein_fix_amides.json
 # - fix_side_chain:
 #     in:
-#       output_pdb_path: protein_fix_side_chain.pdb
+#       output_pdb_path: !ii protein_fix_side_chain.pdb
 #- structure_check:
 #    in:
-#      output_summary_path: structure_check_protein_fix_side_chain.json
+#      output_summary_path: !ii structure_check_protein_fix_side_chain.json
 - str_check_add_hydrogens:
     in:
-      config:
+      config: !ii
         charges: False # charges = True outputs in pdbqt format
         mode: auto # mode = auto, list, ph (must use ph mode to set ph!)
         ph: 7.4
         keep_canonical_resnames: False
       input_structure_path: !* protein_fix_amides.pdb
-      output_structure_path: protein_hydrogens.pdb
+      output_structure_path: !ii protein_hydrogens.pdb
 #- structure_check:
 #    in:
-#      output_summary_path: structure_check_protein_hydrogens.json
+#      output_summary_path: !ii structure_check_protein_hydrogens.json
 - pdb2gmx:
     in:
-      config:
+      config: !ii
         water_type: spce
         force_field: amber99sb-ildn
         ignh: True
@@ -71,7 +71,7 @@ wic:
   steps:
     (1, download_pdb.yml):
       wic:
-        inlineable: True
+        inlineable: False
         graphviz:
           label: 'Download\nProtein Model'
 #    (2, structure_check):

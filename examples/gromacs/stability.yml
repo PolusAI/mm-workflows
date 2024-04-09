@@ -20,14 +20,14 @@ inputs:
 steps:
   - setup.yml:
       in:
-        crd_path: ~crd_path
-        top_zip_path: ~top_zip_path
+        crd_path: crd_path
+        top_zip_path: top_zip_path
   - basic.yml:
       in:
-        nsteps: ~nsteps
-        dt: ~dt
-        ref-t: ~temperature
-        ref-p: ~pressure
+        nsteps: nsteps
+        dt: dt
+        ref-t: temperature
+        ref-p: pressure
   - analysis.yml:
 
 wic:

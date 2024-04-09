@@ -8,17 +8,17 @@ steps:
   - gmxselect: # NOTE: make_ndx does NOT work! (It erroneously selects all of the atoms.)
       in:
         input_structure_path: !* min.tpr
-        config: '{"selection": "resname MOL"}'
+        config: !ii {"selection": "resname MOL"}
       out:
       - output_ndx_path: !& MOL.ndx
   - gmx_rms:
       in:
         input_structure_path: !* prod.tpr
         input_traj_path: !* prod.trr
-        config:
+        config: !ii
           selection: resname_MOL
         input_index_path: !* MOL.ndx
-        output_xvg_path: 'rmsd_equil_ligand_fit.xvg'
+        output_xvg_path: !ii rmsd_equil_ligand_fit.xvg
 
 wic:
   graphviz:

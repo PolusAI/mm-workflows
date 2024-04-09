@@ -19,10 +19,10 @@ steps:
   - equil.yml:
   - prod.yml:
       in:
-        nsteps: ~nsteps
-        dt: ~dt
-        ref-t: ~ref-t
-        ref-p: ~ref-p
+        nsteps: nsteps
+        dt: dt
+        ref-t: ref-t
+        ref-p: ref-p
 
 # Pass the CWL `in` tag as a parameter through BOTH of the yml DSL tags cg.yml and grompp.
 # Use (1-based) indexing to uniquely reference (step_number, step_name).

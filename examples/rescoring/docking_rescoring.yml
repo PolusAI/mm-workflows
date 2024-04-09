@@ -13,11 +13,11 @@ steps:
       # "The query() method uses a slightly modified Python syntax by default.
       # For example, the & and | (bitwise) operators have the precedence of their boolean cousins, and and or.
       # This is syntactically valid Python, however the semantics are different."
-      query: '(Kd_Ki == "Kd") and ((value < 0.0001) or ((0.08 < value) and ( value < 0.1)) or ((8 < value) and ( value < 10)) or (1000 < value))'
+      query: !ii '(Kd_Ki == "Kd") and ((value < 0.0001) or ((0.08 < value) and ( value < 0.1)) or ((8 < value) and ( value < 10)) or (1000 < value))'
         # to obtain a broader experimental dGs
-      max_row: 500 # first 500 rows selection.
-      convert_Kd_dG: True
-      output_txt_path: binding_data.txt
+      max_row: !ii 500 # first 500 rows selection.
+      convert_Kd_dG: !ii True
+      output_txt_path: !ii binding_data.txt
     out:
     - output_txt_path: !& binding_data.txt
     - output_pdb_paths: !& pdbbind_pdbs
@@ -27,8 +27,8 @@ steps:
 - random_subset_rows:
     in:
       input_file: !* binding_data.txt
-      num_of_samples: 8 # For performance reasons, we use a small number (8) for the CI.
-      random_seed: 42
+      num_of_samples: !ii 8 # For performance reasons, we use a small number (8) for the CI.
+      random_seed: !ii 42
     out:
     - output_indices: !& indices
 
@@ -57,7 +57,7 @@ steps:
     scatter: [input_pdb_path]
     in:
       input_pdb_path: !* pdbbind_filter_pdbs
-      output_pdb_path: pdbbind_pdbs.pdb
+      output_pdb_path: !ii pdbbind_pdbs.pdb
     out:
     - output_pdb_path: !& pdbbind_pdbs.pdb
 
@@ -73,9 +73,9 @@ steps:
       receptor_file: !* pdbbind_pdbs.pdb
       ligand_file: !* ligand_min.mol2
       ligand_box: !* ligand_min.mol2
-      scoring: vina
-      output_dock_file: docked_vina.pdb
-      output_path: output
+      scoring: !ii vina
+      output_dock_file: !ii docked_vina.pdb
+      output_path: !ii output
     out:
     - output_dock_file: !& docked_vina.pdb
 
@@ -85,9 +85,9 @@ steps:
     in:
       receptor_path: !* pdbbind_pdbs.pdb
       ligand_path: !* docked_vina.pdb
-      pose_type: smina
-      output_score_path: sfct.txt
-      output_path: output
+      pose_type: !ii smina
+      output_score_path: !ii sfct.txt
+      output_path: !ii output
     out:
     - output_score_path: !& sfct.txt
     - output_docking_score: !& docking_scores
@@ -104,9 +104,9 @@ steps:
       xs: !* pdbbind_filter_exp_dGs
       ys: !* docking_scores
       # Use massive tolerances because the re-docking performance of classical scoring functions (Vina) are unreliable.
-      tol_quad: 0.18
-      slope_min: -10
-      slope_max: 10
+      tol_quad: !ii 0.18
+      slope_min: !ii -10
+      slope_max: !ii 10
 
 wic:
   graphviz:

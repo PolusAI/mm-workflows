@@ -23,18 +23,18 @@ outputs:
 steps:
 - wget_xlsx:
     in:
-      url: ~path
+      url: path
 - generate_conformers:
     in:
       #input_excel_path: # inferred
       # query syntax: `column name` 'column value'
-      query: ~query #"`Standard Type` == 'Kd' and `duplicate-type-classifier` == 'unique'"
-      max_row: ~max_row #1 #25 # Use 1 for CI
-      smiles_column: ~smiles_column #SMILES
-      binding_data_column: ~binding_data_column #Standard Value
-      convert_Kd_dG: ~convert_Kd_dG #'True'
-      output_txt_path: ~output_txt_path
-      output_sdf_path: ligand_conformers.sdf
+      query: query #"`Standard Type` == 'Kd' and `duplicate-type-classifier` == 'unique'"
+      max_row: max_row #1 #25 # Use 1 for CI
+      smiles_column: smiles_column #SMILES
+      binding_data_column: binding_data_column #Standard Value
+      convert_Kd_dG: convert_Kd_dG #'True'
+      output_txt_path: output_txt_path
+      output_sdf_path: !ii ligand_conformers.sdf
     out:
     - output_sdf_path: !& ligand_conformers.sdf
 

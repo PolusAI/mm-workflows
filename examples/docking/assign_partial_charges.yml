@@ -8,7 +8,7 @@ inputs:
 steps:
 - convert_mol2:
     in:
-      input_path: ~input_path #!* ligand_min.sdf
+      input_path: input_path #!* ligand_min.sdf
 #   out:
 #   - output_mol2_path: !& ligand_min.mol2
 # NOTE: If we directly convert from sdf to pdbqt, openbabel will NOT add

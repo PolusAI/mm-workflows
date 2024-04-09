@@ -13,11 +13,11 @@ inputs:
 steps:
   - config_tag_mdp:
       in:
-        nsteps: ~nsteps #10000
-        dt: ~dt #0.002
-        ref-t: ~ref-t #298.0
-        ref-p: ~ref-p #1.0
-        config:
+        nsteps: nsteps #10000
+        dt: dt #0.002
+        ref-t: ref-t #298.0
+        ref-p: ref-p #1.0
+        config: !ii
           mdp:
             integrator: md  # Use md for performance so we can update coordinates on GPU. Use sd for proper statistical properties.
             rvdw: 1.0
@@ -45,7 +45,7 @@ steps:
       - output_tpr_path: !& prod.tpr
   - mdrun:
       in:
-        output_trr_path: prod.trr # Explicitly specify for cwl_watcher
+        output_trr_path: !ii prod.trr # Explicitly specify for cwl_watcher
       out:
       - output_crd_path: !& prod.gro
       - output_trr_path: !& prod.trr

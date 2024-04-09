@@ -14,13 +14,13 @@ inputs:
 steps:
 - convert_mol2:
     in:
-      input_path: ~input_ligand_pdbqt_path
+      input_path: input_ligand_pdbqt_path
 #      input_path: !* ligand.pdbqt
 #    out:
 #    - output_mol2_path: !& pose.mol2
 - python3_mol2_to_mol2:
     in:
-      script: /rename_residues_mol.py # NOTE: Initial / required
+      script: !ii /rename_residues_mol.py # NOTE: Initial / required
 #      input_mol2_path: !* pose.mol2
 #    out:
 #    - output_mol2_path: !& pose_mol.mol2
@@ -34,7 +34,7 @@ steps:
   # we have the choice of using charges from the mol2 file.
     in:
 #      input_path: !* pose_mol.mol2 # Do NOT use pose_ligand.pdb
-      charge_method: user # take charges from mol2 file
+      charge_method: !ii user # take charges from mol2 file
     out:
     - output_itp_path: !& ligand_GMX.itp
       # NOTE: Although we don't need the *.itp topology file yet, we
@@ -47,7 +47,7 @@ steps:
 # NOTE: acpype doesn't add forcefield or water topology #include lines.
 - bash_top:
     in:
-      script: /gmx_add_topology_includes.sh # NOTE: Initial / required
+      script: !ii /gmx_add_topology_includes.sh # NOTE: Initial / required
 #      input_top_path: !* ligand_GMX.top
 #    out:
 #    - output_top_path: !& ligand_GMX_includes.top
@@ -65,18 +65,18 @@ steps:
       # https://open-babel.readthedocs.io/en/latest/FileFormats/GRO_format.html#
       # For example if you use the gro format and have a BR (Bromine) atom "1  MOL   BR   53  -1.479  -3.282   2.052"
       # it will be converted to Boron (B) in the output xyz file "B        -14.79000      -32.82000       20.52000"
-      output_xyz_path: pose_ligand.xyz
+      output_xyz_path: !ii pose_ligand.xyz
     out:
     - output_xyz_path: !& pose_ligand.xyz
 - append_ligand:
     in:
 #      input_itp_path: !* ligand_GMX.itp
-      input_top_zip_path: ~input_top_zip_path # !*receptor.zip
+      input_top_zip_path: input_top_zip_path # !*receptor.zip
     out:
     - output_top_zip_path: !& complex_vac.zip
 - combine_structure:
     in:
-      input_structure1: ~input_receptor_xyz_path
+      input_structure1: input_receptor_xyz_path
       input_structure2: !* pose_ligand.xyz
     out:
     - output_structure_path: !& complex_vac.pdb

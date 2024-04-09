@@ -6,10 +6,10 @@ steps:
       # For example, the & and | (bitwise) operators have the precedence of their
       # boolean cousins, and and or. This is syntactically valid Python, however
       # the semantics are different.
-      query: '(Kd_Ki == "Kd") and (value < 0.001)'
-      max_row: 1 #25 # Use 1 for CI
-      convert_Kd_dG: True
-      output_txt_path: binding_data.txt
+      query: !ii '(Kd_Ki == "Kd") and (value < 0.001)'
+      max_row: !ii 1 #25 # Use 1 for CI
+      convert_Kd_dG: !ii True
+      output_txt_path: !ii binding_data.txt
     out:
     - output_txt_path: !& binding_data.txt
     - output_pdb_paths: !& pdbbind_pdbs
@@ -21,13 +21,13 @@ steps:
     scatter: [pdb_id]
     in:
       pdb_id: !* pdbids
-      filter: "False"
+      filter: !ii "False"
     out:
     - output_config_string: !& pdb_id_str
 - pdb:
     scatter: [config]
     in:
-      output_pdb_path: rcsb_protein.pdb
+      output_pdb_path: !ii rcsb_protein.pdb
       config: !* pdb_id_str
     out:
     - output_pdb_path: !& rcsb_protein.pdb
@@ -36,11 +36,11 @@ steps:
     in:
       input_pdb_path: !* pdbbind_pdbs
       input_helper_pdb_path: !* rcsb_protein.pdb # Note: PDBFixer utilizes sequence information from this file
-      output_pdb_path: pdbbind_pdbfixer.pdb
-      add_atoms: heavy
-      add_residues: True
-      replace_nonstandard: True
-      keep_heterogens: none
+      output_pdb_path: !ii pdbbind_pdbfixer.pdb
+      add_atoms: !ii heavy
+      add_residues: !ii True
+      replace_nonstandard: !ii True
+      keep_heterogens: !ii none
     scatter: [input_pdb_path, input_helper_pdb_path]
     scatterMethod: dotproduct
     out:
@@ -50,7 +50,7 @@ steps:
     scatter: [input_pdb_path]
     in:
       input_pdb_path: !* pdbbind_pdbfixer.pdb
-      output_pdb_path: protein.pdb
+      output_pdb_path: !ii protein.pdb
     out:
     - output_pdb_path: !& protein.pdb
 
@@ -69,8 +69,8 @@ steps:
     in:
       input_ligand_pdbqt_path: !* mol_prod.pdbqt
       input_receptor_pdbqt_path: !* receptor_prod.pdbqt
-      score_only: True
-      #local_only: True
+      score_only: !ii True
+      #local_only: !ii True
     scatter: [input_ligand_pdbqt_path, input_receptor_pdbqt_path]
     scatterMethod: dotproduct
     out:
@@ -91,10 +91,10 @@ steps:
     in:
       input_log_paths: !* vina_rescore_pdbind.log
       input_txt_path: !* binding_data.txt
-      docking_score_cutoff: -1.0
-      max_num_poses_per_ligand: 1
-      max_num_poses_total: 1 #25 # Use 1 for CI same as max_row
-      rescore: 'True'
+      docking_score_cutoff: !ii -1.0
+      max_num_poses_per_ligand: !ii 1
+      max_num_poses_total: !ii 1 #25 # Use 1 for CI same as max_row
+      rescore: !ii 'True'
       input_ligand_pdbqt_path: !* ligand_rescore.pdbqt
       input_receptor_pdbqt_path: !* receptor_dup_2D.pdb
     out:
@@ -106,11 +106,11 @@ steps:
 - setup_pdb.yml:
     in:
       input_pdb_path: !* receptor_filter.pdb
-      pdb_path: pdb.pdbqt
-      box_path: box.pdb
-      box_buffer: 20 # Angstroms
-      water_type: spce
-      forcefield: amber99sb-ildn
+      pdb_path: !ii pdb.pdbqt
+      box_path: !ii box.pdb
+      box_buffer: !ii 20 # Angstroms
+      water_type: !ii spce
+      forcefield: !ii amber99sb-ildn
     scatter: [input_pdb_path]
     out:
     - pdb_path: !& pdb.pdbqt
@@ -132,10 +132,10 @@ steps:
       # due to a limitation of the inlineing implementation.
       crd_path: !* complex_vac.pdb
       top_zip_path: !* complex_vac.zip
-      nsteps: 100000
-      dt: 0.002
-      temperature: 298.0
-      pressure: 1.0
+      nsteps: !ii 100000
+      dt: !ii 0.002
+      temperature: !ii 298.0
+      pressure: !ii 1.0
 
 - autodock_vina_rescore.yml:
     scatter: [input_pdb_path, input_ligand_pdb_path]

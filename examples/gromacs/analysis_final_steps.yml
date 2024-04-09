@@ -2,7 +2,7 @@ steps:
   - gmxselect: # NOTE: make_ndx does NOT work! (It erroneously selects all of the atoms.)
       in:
         input_structure_path: !* min.tpr
-        #config: '{"selection": "group Protein"}'
+        #config: !ii {"selection": "group Protein"}
       out:
       - output_ndx_path: !& solute.ndx
   - gmx_image:
@@ -12,13 +12,13 @@ steps:
         # NOTE: If you use an index file, it removes the default System selection.
         # Thus, you must specify all three selections (either explicitly here, or via overloading).
         input_index_path: !* solute.ndx
-        #config:
+        #config: !ii
         #  fit_selection: Protein
         #  center_selection: Protein
         #  output_selection: Protein
   - gmx_trjconv_str:
       in:
-        #config:
+        #config: !ii
         #  selection: System
         input_top_path: !* prod.tpr
         input_crd_path: !* prod.gro

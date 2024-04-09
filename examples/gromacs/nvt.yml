@@ -1,7 +1,7 @@
 steps:
   - grompp:
       in:
-        config:
+        config: !ii
           mdp:
             integrator: md  # Use md for performance so we can update coordinates on GPU. Use sd for proper statistical properties.
             rvdw: 1.0
@@ -25,23 +25,23 @@ steps:
   - gmx_energy:
       in:
         input_energy_path: !* nvt.edr # Explicit edge dereference / alias
-        config:
+        config: !ii
           terms: [Temperature]
-        output_xvg_path: temperature.xvg
+        output_xvg_path: !ii temperature.xvg
 # NOTE: explicit edges are not supported with cwl_watcher, and all filenames
 # must be globally unique!
   # - cwl_watcher:
   #     in:
   #       #cachedir_path: /absolute/path/to/cachedir/ (automatically filled in by wic)
-  #       file_pattern: '*nvt.edr'
-  #       cwl_tool: gmx_energy
-  #       max_times: '5'
-  #       config:
+  #       file_pattern: !ii '*nvt.edr'
+  #       cwl_tool: !ii gmx_energy
+  #       max_times: !ii '5'
+  #       config: !ii
   #         in:
-  #           input_energy_path: '*nvt.edr' # This * is automatically removed.
-  #           config:
+  #           input_energy_path: !ii '*nvt.edr' # This * is automatically removed.
+  #           config: !ii
   #             terms: [Temperature]
-  #           output_xvg_path: temperature.xvg
+  #           output_xvg_path: !ii temperature.xvg
 
 wic:
   graphviz:

@@ -1,12 +1,12 @@
 steps:        
   - load_trained_molgan_model:
       in:
-        input_data_path: /MolGAN/data/data.pkl
-        input_NP_Score_path: /MolGAN/data/NP_score.pkl.gz
-        input_SA_Score_path: /MolGAN/data/SA_score.pkl.gz
-        input_model_dir: /MolGAN/trained_models
-        output_sdf_path: generated_mols.sdf
-        output_log_path: test_log
+        input_data_path: !ii /MolGAN/data/data.pkl
+        input_NP_Score_path: !ii /MolGAN/data/NP_score.pkl.gz
+        input_SA_Score_path: !ii /MolGAN/data/SA_score.pkl.gz
+        input_model_dir: !ii /MolGAN/trained_models
+        output_sdf_path: !ii generated_mols.sdf
+        output_log_path: !ii test_log
 
 wic:
   graphviz:

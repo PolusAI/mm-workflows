@@ -8,8 +8,8 @@ wic:
         steps:
           (1, extract_pdbbind_refined):
             in:
-              max_row: 16 # Override default 1
+              max_row: !ii 16 # Override default 1
           (9, autodock_vina_filter):
             in:
-              max_num_poses_per_ligand: 2 # Override default 1
-              max_num_poses_total: 16 # Override default 1
+              max_num_poses_per_ligand: !ii 2 # Override default 1
+              max_num_poses_total: !ii 16 # Override default 1

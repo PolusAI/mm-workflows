@@ -1,28 +1,28 @@
 steps:
   - sander_mdrun:
       in:
-        input_mdin_path: npt.mdin
+        input_mdin_path: !ii npt.mdin
 #        input_crd_path: !* min.rst
-#        output_traj_path: amb.crd
+#        output_traj_path: !ii amb.crd
       out:
       - output_log_path: !& amb_npt.log
 #      - output_rst_path: !& amb.rst
   - process_mdout:
       in:
         input_log_path: !* amb_npt.log
-        config:
+        config: !ii
           terms: [DENSITY]
-        output_dat_path: density.dat
+        output_dat_path: !ii density.dat
   - cwl_watcher:
       in:
         #cachedir_path: /absolute/path/to/cachedir/ (automatically filled in by wic)
-        file_pattern: '*amb_npt.log'
-        cwl_tool: process_mdout
-        max_times: '20'
-        config:
+        file_pattern: !ii '*amb_npt.log'
+        cwl_tool: !ii process_mdout
+        max_times: !ii '20'
+        config: !ii
           in:
             input_log_path: amb_npt.log
-            config:
+            config: !ii
               terms: [DENSITY]
             output_dat_path: density.dat
 

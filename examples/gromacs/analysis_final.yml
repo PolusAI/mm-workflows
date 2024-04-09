@@ -11,10 +11,10 @@ wic:
               steps:
                 (1, gmxselect):
                   in:
-                    config: '{"selection": "group Protein"}'
+                    config: !ii {"selection": "group Protein"}
                 (2, gmx_image):
                   in:
-                    config:
+                    config: !ii
                       fit_selection: Protein
                       center_selection: Protein
                       output_selection: Protein
@@ -28,11 +28,11 @@ wic:
               steps:
                 (1, gmxselect):
                   in:
-                    config: '{"selection": "resname MOL"}'
+                    config: !ii {"selection": "resname MOL"}
                 (2, gmx_image):
                   in:
                     input_crd_path: !* prod_ligand.gro
-                    config:
+                    config: !ii
                       fit_selection: resname_MOL
                       center_selection: resname_MOL
                       output_selection: resname_MOL
@@ -49,11 +49,11 @@ wic:
               steps:
                 (1, gmxselect):
                   in:
-                    config: '{"selection": "(group Protein) or (resname MOL)"}'
+                    config: !ii {"selection": "(group Protein) or (resname MOL)"}
                 (2, gmx_image):
                   in:
                     input_crd_path: !* prod_complex.gro
-                    config:
+                    config: !ii
                       fit_selection: (group_Protein)_or_(resname_MOL)
                       center_selection: (group_Protein)_or_(resname_MOL)
                       output_selection: (group_Protein)_or_(resname_MOL)
