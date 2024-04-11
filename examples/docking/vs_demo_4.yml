@@ -21,7 +21,7 @@ steps:
     scatter: [pdb_id]
     in:
       pdb_id: !* pdbids
-      filter: !ii "False"
+      filter: !ii "'False'"
     out:
     - output_config_string: !& pdb_id_str
 - pdb:
@@ -94,7 +94,7 @@ steps:
       docking_score_cutoff: !ii -1.0
       max_num_poses_per_ligand: !ii 1
       max_num_poses_total: !ii 1 #25 # Use 1 for CI same as max_row
-      rescore: !ii 'True'
+      rescore: !ii "'True'"
       input_ligand_pdbqt_path: !* ligand_rescore.pdbqt
       input_receptor_pdbqt_path: !* receptor_dup_2D.pdb
     out:
