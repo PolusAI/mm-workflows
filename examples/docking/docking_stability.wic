@@ -1,0 +1,48 @@
+inputs:
+  sdf_path:
+    type: File
+    format:
+    - edam:format_3814
+
+steps:
+- docking.wic:
+    in:
+      # NOTE: sdf_path is currently only necessary
+      # due to a limitation of the inlineing implementation.
+      sdf_path: sdf_path
+- stability.wic:
+    in:
+      # NOTE: crd_path and top_zip_path are currently only necessary
+      # due to a limitation of the inlineing implementation.
+      crd_path: !* complex_vac.pdb
+      top_zip_path: !* complex_vac.zip
+      nsteps: !ii 100000
+      dt: !ii 0.002
+      temperature: !ii 298.0
+      pressure: !ii 1.0
+wic:
+  graphviz:
+    label: Docking + MD Stability Analysis
+  steps:
+    (1, docking.wic):
+      wic:
+        inlineable: True
+    (2, stability.wic):
+      wic:
+        inlineable: False
+        steps:
+          (2, basic.wic):
+            wic:
+              steps:
+                (3, prod.wic):
+                  wic:
+                    steps:
+                      (4, cwl_watcher_analysis.wic):
+                        wic:
+                          backend: complex
+          (3, analysis.wic):
+            wic:
+              steps:
+                (1, analysis_realtime.wic):
+                  wic:
+                    backend: complex

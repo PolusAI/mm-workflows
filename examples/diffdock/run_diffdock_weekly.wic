@@ -1,0 +1,11 @@
+steps:
+- run_diffdock.wic:
+
+wic:
+  steps:
+    (1, run_diffdock.wic):
+      wic:
+        steps:
+          (1, extract_pdbbind_refined):
+            in:
+              max_row: !ii 16 # Override default 1
