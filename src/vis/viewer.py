@@ -17,7 +17,7 @@ except:
 from ipytree import Tree, Node
 from ipywidgets import HBox
 
-from wic import utils
+from . import utils
 from . import filewatcher
 
 
