@@ -1,0 +1,159 @@
+## Protein-ligand docking and docking poses re-ranking
+##
+## input: pdb structures from PDBbind refined dataset
+## output:
+##    1. docking poses
+##    2. scoring file (vina score, sfct correction, combined_score for re-ranking docking poses)
+
+steps:
+#
+- extract_pdbbind_refined:
+    in:
+      # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.query.html
+      # "The query() method uses a slightly modified Python syntax by default.
+      # For example, the & and | (bitwise) operators have the precedence of their boolean cousins, and and or.
+      # This is syntactically valid Python, however the semantics are different."
+      query: !ii '(Kd_Ki == "Kd") and ((value < 0.0001) or ((0.08 < value) and ( value < 0.1)) or ((8 < value) and ( value < 10)) or (1000 < value))'
+        # to obtain a broader experimental dGs
+      max_row: !ii 500 # first 500 rows selection.
+      convert_Kd_dG: !ii True
+      output_txt_path: !ii binding_data.txt
+    out:
+    - output_txt_path: !& binding_data.txt
+    - output_pdb_paths: !& pdbbind_pdbs
+    - output_sdf_paths: !& pdbbind_sdfs
+    - experimental_dGs: !& exp_dGs
+
+- random_subset_rows:
+    in:
+      input_file: !* binding_data.txt
+      num_of_samples: !ii 8 # For performance reasons, we use a small number (8) for the CI.
+      random_seed: !ii 42
+    out:
+    - output_indices: !& indices
+
+- array_indices:
+    in:
+      input_indices: !* indices
+      input_array: !* pdbbind_pdbs
+    out:
+    - output_array: !& pdbbind_filter_pdbs
+
+- array_indices:
+    in:
+      input_indices: !* indices
+      input_array: !* pdbbind_sdfs
+    out:
+    - output_array: !& pdbbind_filter_sdfs
+
+- array_indices:
+    in:
+      input_indices: !* indices
+      input_array: !* exp_dGs
+    out:
+    - output_array: !& pdbbind_filter_exp_dGs
+
+- fix_side_chain:
+    scatter: [input_pdb_path]
+    in:
+      input_pdb_path: !* pdbbind_filter_pdbs
+      output_pdb_path: !ii pdbbind_pdbs.pdb
+    out:
+    - output_pdb_path: !& pdbbind_pdbs.pdb
+
+- minimize_ligand_only.wic:
+    scatter: [sdf_path]
+    in:
+      sdf_path: !* pdbbind_filter_sdfs
+
+- smina_docking:
+    scatter: [receptor_file, ligand_file, ligand_box]
+    scatterMethod: dotproduct
+    in:
+      receptor_file: !* pdbbind_pdbs.pdb
+      ligand_file: !* ligand_min.mol2
+      ligand_box: !* ligand_min.mol2
+      scoring: !ii vina
+      output_dock_file: !ii docked_vina.pdb
+      output_path: !ii output
+    out:
+    - output_dock_file: !& docked_vina.pdb
+
+- onionnet-sfct:
+    scatter: [receptor_path, ligand_path]
+    scatterMethod: dotproduct
+    in:
+      receptor_path: !* pdbbind_pdbs.pdb
+      ligand_path: !* docked_vina.pdb
+      pose_type: !ii smina
+      output_score_path: !ii sfct.txt
+      output_path: !ii output
+    out:
+    - output_score_path: !& sfct.txt
+    - output_docking_score: !& docking_scores
+    - output_poses_rescore: !& poses_rescores
+
+- scatter_plot:
+    in:
+      xs: !* pdbbind_filter_exp_dGs
+      ys: !* docking_scores
+      ys2: !* poses_rescores
+
+- check_linear_fit:
+    in:
+      xs: !* pdbbind_filter_exp_dGs
+      ys: !* docking_scores
+      # Use massive tolerances because the re-docking performance of classical scoring functions (Vina) are unreliable.
+      tol_quad: !ii 0.18
+      slope_min: !ii -10
+      slope_max: !ii 10
+
+wic:
+  graphviz:
+    label: Protein-ligand docking (Smina) and docking poses re-ranking (OnionNet-sfct)
+  steps:
+    (1, extract_pdbbind_refined):
+      wic:
+        graphviz:
+          label: extract protein-ligand structure (protein.pdb and ligand.sdf) from pdbbind_refined dataset
+    (2, random_subset_rows):
+      wic:
+        graphviz:
+          label: select subset indices using a random seed.
+    (3, array_indices):
+      wic:
+        graphviz:
+          label: curate a subset of receptor PDBs based on the sampled indices
+    (4, array_indices):
+      wic:
+        graphviz:
+          label: curate a subset of ligand SDFs based on the sampled indices
+    (5, array_indices):
+      wic:
+        graphviz:
+          label: curate a subset of experimental dGs based on the sampled indices
+    (6, fix_side_chain):
+      wic:
+        graphviz:
+          label: fix_side_chain of protein structure.
+    (7, minimize_ligand_only.wic):
+      wic:
+        inlineable: False
+        graphviz:
+          label: minimize (obminimize) ligand structure.
+    (8, smina_docking):
+      wic:
+        graphviz:
+          label: Smina docking (flexible ligand - rigid protein docking)
+    (9, onionnetsfct):
+      wic:
+        graphviz:
+          label: onionnect-sfct re-rank docking poses.
+    (10, scatter_plot):
+      wic:
+        graphviz:
+          label: Plot Experimental\nvs Predicted Binding
+    (11, check_linear_fit):
+      wic:
+        graphviz:
+          label: true if fitted slope is between slope_min and slope_max

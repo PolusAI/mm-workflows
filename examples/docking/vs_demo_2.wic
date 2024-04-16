@@ -1,0 +1,199 @@
+steps:
+- download_pdb.wic:
+    in:
+      #pdb_id: !ii 1r4l # ACE2
+      #pdb_id: !ii 1ntp # trypsin
+      pdb_id: !ii 1uao # chignolin (for speed)
+      #pdb_id: !ii 6us9 # Influenza A M2
+      #pdb_id: !ii 2rlf # Influenza A M2
+- setup_pdb.wic:
+    in:
+      input_pdb_path: !* protein.pdb
+      pdb_path: !ii pdb.pdbqt
+      box_path: !ii box.pdb
+      box_buffer: !ii 20 # Angstroms
+      water_type: !ii spce
+      forcefield: !ii amber99sb-ildn
+    out:
+    - pdb_path: !& pdb.pdbqt
+    - box_path: !& box.pdb
+
+- download_smiles_ligand_db.wic:
+    in:
+      path: !ii https://smacc.mml.unc.edu/ncats_target_based_curated.xlsx
+      # query syntax: `column name` 'column value'
+      query: !ii "`Standard Type` == 'Kd' and `duplicate-type-classifier` == 'unique'"
+      #query: !ii "`Standard Type` == 'Kd' and `Target` == 'Matrix protein 2' and `Outcome` == 'Active'"
+      max_row: !ii 1 #25 # Use 1 for CI
+      smiles_column: !ii SMILES
+      binding_data_column: !ii Standard Value
+      convert_Kd_dG: !ii True
+      output_txt_path: !ii binding_data.txt
+    out:
+    - output_txt_path: !& binding_data.txt
+
+- assign_partial_charges.wic:
+    scatter: [input_path]
+    in:
+      # NOTE: input_path is currently only necessary
+      # due to a limitation of the inlineing implementation.
+      input_path: !* ligand_conformers.sdf
+# NOTE: cwltool uses the CLI args to determine caching. In batch mode, the
+# ligands are passed (as CLI args) to vina all at once. Thus, if you want to
+# incrementally increase the number of ligands, the previous results will NOT be cached!
+
+- autodock_vina_batch:
+    in:
+      input_receptor_pdbqt_path: !* pdb.pdbqt
+      input_box_path: !* box.pdb
+    out:
+    - output_log_path: !& vina.log
+    - output_batch_pdbqt_path: !& ligand_decoys_1D.pdbqt
+
+- split_pdbqt:
+    scatter: [input_path]
+    in:
+      input_path: !* ligand_decoys_1D.pdbqt
+    out:
+    - output_pdb_path: !& ligand_decoys_2D.pdbqt
+
+- duplicate:
+    scatter: [input_pdbqt_array_path]
+    in:
+      input_pdbqt_singleton_path: !* pdb.pdbqt
+      input_pdbqt_array_path: !* ligand_decoys_2D.pdbqt
+    out:
+    - output_pdbqt_path: !& receptor_dup_2D.pdbqt
+
+- autodock_vina_filter:
+    in:
+      input_ligand_pdbqt_path: !* ligand_decoys_2D.pdbqt
+      input_receptor_pdbqt_path: !* receptor_dup_2D.pdbqt
+      input_log_path: !* vina.log
+      input_txt_path: !* binding_data.txt
+      docking_score_cutoff: !ii -1.0
+      max_num_poses_per_ligand: !ii 1
+      max_num_poses_total: !ii 1 #25 # Use 1 for CI
+    out:
+    - output_ligand_pdbqt_path: !& ligand_filter.pdbqt
+    - docking_scores: !& docking_scores
+    - experimental_dGs: !& dGs
+
+- gen_topol_params.wic:
+    in:
+      input_ligand_pdbqt_path: !* ligand_filter.pdbqt
+      # NOTE: input_receptor_xyz_path and input_top_zip_path are currently only necessary
+      # due to a limitation of the inlineing implementation.
+      input_receptor_xyz_path: !* receptor.xyz
+      input_top_zip_path: !* receptor.zip
+    scatter: [input_ligand_pdbqt_path]
+
+- stability.wic:
+    scatter: [crd_path, top_zip_path]
+    scatterMethod: dotproduct
+    in:
+      # NOTE: crd_path and top_zip_path are currently only necessary
+      # due to a limitation of the inlineing implementation.
+      crd_path: !* complex_vac.pdb
+      top_zip_path: !* complex_vac.zip
+      nsteps: !ii 100000
+      dt: !ii 0.002
+      temperature: !ii 298.0
+      pressure: !ii 1.0
+- autodock_vina_rescore.wic:
+    scatter: [input_pdb_path, input_ligand_pdb_path]
+    scatterMethod: dotproduct
+    in:
+      # NOTE: input_pdb_path is currently only necessary
+      # due to a limitation of the inlineing implementation.
+      input_pdb_path: !* prod.pdb
+      input_ligand_pdb_path: !* ligand_GMX.pdb
+
+- scatter_plot:
+    in:
+      xs: !* dGs
+      ys: !* docking_scores
+      ys2: !* docking_rescores
+wic:
+  graphviz:
+    label: Virtual Screening Demo
+  steps:
+    (1, download_pdb.wic):
+      wic:
+        inlineable: False
+    (2, setup_pdb.wic):
+      wic:
+        inlineable: True
+        graphviz:
+          label: Setup PDB
+    (3, download_smiles_ligand_db.wic):
+      wic:
+        inlineable: True
+    (4, assign_partial_charges.wic):
+      wic:
+        inlineable: False
+    (5, autodock_vina_batch):
+      wic:
+        graphviz:
+          label: Docking
+    (6, split_pdbqt):
+      wic:
+        graphviz:
+          label: Extract Docking\nPoses
+    (7, duplicate):
+      wic:
+        graphviz:
+          label: Duplicate Receptor PDBQT
+    (8, autodock_vina_filter):
+      wic:
+        graphviz:
+          label: Apply Docking\nScore Cutoff
+    (9, gen_topol_params.wic):
+      wic:
+        inlineable: False
+    (10, stability.wic):
+      wic:
+        inlineable: False
+        steps:
+          (1, setup.wic):
+            wic:
+              steps:
+                (4, genion):
+                  out:
+                  - output_top_zip_path: !& genion_complex.zip
+          (2, basic.wic):
+            wic:
+              steps:
+                (3, prod.wic):
+                  wic:
+                    steps:
+                      (2, grompp):
+                        in:
+                          input_top_zip_path: !* genion_complex.zip
+                      (3, mdrun):
+                      # NOTE: If there are multiple anchors / multiple outputs
+                      # in the original source file, you must overload ALL of them.
+                      # (because the entire list gets replaced)
+                        out:
+                        - output_crd_path: !& prod_complex.gro  # overload prod.gro
+                        - output_trr_path: !& prod.trr
+                        - output_edr_path: !& prod.edr
+                      (4, cwl_watcher_analysis.wic):
+                        wic:
+                          backend: complex
+          (3, analysis.wic):
+            wic:
+              steps:
+                (1, analysis_realtime.wic):
+                  wic:
+                    backend: complex
+                (2, analysis_final.wic):
+                  wic:
+                    backend: complex
+    (11, autodock_vina_rescore.wic):
+      wic:
+        inlineable: False
+    (12, scatter_plot):
+      wic:
+        graphviz:
+          label: Plot Experimental\nvs Predicted Binding

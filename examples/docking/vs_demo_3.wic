@@ -1,0 +1,175 @@
+steps:
+- download_pdb.wic:
+    in:
+      #pdb_id: !ii 1r4l # ACE2
+      #pdb_id: !ii 1ntp # trypsin
+      pdb_id: !ii 1uao # chignolin (for speed)
+      #pdb_id: !ii 6us9 # Influenza A M2
+      #pdb_id: !ii 2rlf # Influenza A M2
+
+- setup_pdb.wic:
+    in:
+      input_pdb_path: !* protein.pdb
+      pdb_path: !ii pdb.pdbqt
+      box_path: !ii box.pdb
+      box_buffer: !ii 20 # Angstroms
+      water_type: !ii spce
+      forcefield: !ii amber99sb-ildn
+    out:
+    - pdb_path: !& pdb.pdbqt
+    - box_path: !& box.pdb
+# For some reason, this step is not cached by --cachedir, but use it for the CI.
+#- download_ligand_database_xlsx:
+#    in:
+#      database: !ii /ncats_target_based_curated.xlsx # SMACC ligand database
+- download_smiles_ligand_db.wic:
+    in:
+      path: !ii https://smacc.mml.unc.edu/ncats_target_based_curated.xlsx
+      # query syntax: `column name` 'column value'
+      query: !ii "`Standard Type` == 'Kd' and `duplicate-type-classifier` == 'unique'"
+      max_row: !ii 1 #25 # Use 1 for CI
+      smiles_column: !ii SMILES
+      binding_data_column: !ii Standard Value
+      convert_Kd_dG: !ii True
+      output_txt_path: !ii binding_data.txt
+    out:
+    - output_txt_path: !& binding_data.txt
+
+- ligand_modeling_docking.wic:
+    scatter: [sdf_path]
+    in:
+      # NOTE: sdf_path is currently only necessary
+      # due to a limitation of the inlineing implementation.
+      sdf_path: !* ligand_conformers.sdf
+
+- duplicate:
+    scatter: [input_pdbqt_array_path]
+    in:
+      input_pdbqt_singleton_path: !* pdb.pdbqt
+      input_pdbqt_array_path: !* ligand_nested_split.pdbqt
+    out:
+    - output_pdbqt_path: !& receptor_dup_2D.pdbqt
+
+- autodock_vina_filter:
+    in:
+      input_log_paths: !* vina.log # NOTE: plural
+      input_txt_path: !* binding_data.txt
+      docking_score_cutoff: !ii -1.0
+      max_num_poses_per_ligand: !ii 1
+      max_num_poses_total: !ii 1 #25 # Use 1 for CI
+      input_ligand_pdbqt_path: !* ligand_nested_split.pdbqt # 2D Array type
+      input_receptor_pdbqt_path: !* receptor_dup_2D.pdbqt
+    out:
+    - output_ligand_pdbqt_path: !& ligand_filter.pdbqt
+    - docking_scores: !& docking_scores
+    - experimental_dGs: !& dGs
+- gen_topol_params.wic:
+    in:
+      input_ligand_pdbqt_path: !* ligand_filter.pdbqt
+      # NOTE: input_receptor_xyz_path and input_top_zip_path are currently only necessary
+      # due to a limitation of the inlineing implementation.
+      input_receptor_xyz_path: !* receptor.xyz
+      input_top_zip_path: !* receptor.zip
+    scatter: [input_ligand_pdbqt_path]
+- stability.wic:
+    scatter: [crd_path, top_zip_path]
+    scatterMethod: dotproduct
+    in:
+      # NOTE: crd_path and top_zip_path are currently only necessary
+      # due to a limitation of the inlineing implementation.
+      crd_path: !* complex_vac.pdb
+      top_zip_path: !* complex_vac.zip
+      nsteps: !ii 100000
+      dt: !ii 0.002
+      temperature: !ii 298.0
+      pressure: !ii 1.0
+- autodock_vina_rescore.wic:
+    scatter: [input_pdb_path, input_ligand_pdb_path]
+    scatterMethod: dotproduct
+    in:
+      # NOTE: input_pdb_path is currently only necessary
+      # due to a limitation of the inlineing implementation.
+      input_pdb_path: !* prod.pdb
+      input_ligand_pdb_path: !* ligand_GMX.pdb
+- scatter_plot:
+    in:
+      xs: !* dGs
+      ys: !* docking_scores
+      ys2: !* docking_rescores
+
+wic:
+  graphviz:
+    label: Virtual Screening Demo
+  steps:
+    (1, download_pdb.wic):
+      wic:
+        inlineable: False
+
+    (2, setup_pdb.wic):
+      wic:
+        inlineable: True
+        graphviz:
+          label: Setup PDB
+    (3, download_smiles_ligand_db.wic):
+      wic:
+        inlineable: True
+    (4, ligand_modeling_docking.wic):
+      wic:
+        inlineable: False
+    (5, duplicate):
+      wic:
+        graphviz:
+          label: Duplicate Receptor PDBQT
+    (6, autodock_vina_filter):
+      wic:
+        graphviz:
+          label: Apply Docking\nScore Cutoff
+    (7, gen_topol_params.wic):
+      wic:
+        inlineable: False
+    (8, stability.wic):
+      wic:
+        inlineable: False
+        steps:
+          (1, setup.wic):
+            wic:
+              steps:
+                (4, genion):
+                  out:
+                  - output_top_zip_path: !& genion_complex.zip
+          (2, basic.wic):
+            wic:
+              steps:
+                (3, prod.wic):
+                  wic:
+                    steps:
+                      (2, grompp):
+                        in:
+                          input_top_zip_path: !* genion_complex.zip
+                      (3, mdrun):
+                      # NOTE: If there are multiple anchors / multiple outputs
+                      # in the original source file, you must overload ALL of them.
+                      # (because the entire list gets replaced)
+                        out:
+                        - output_crd_path: !& prod_complex.gro  # overload prod.gro
+                        - output_trr_path: !& prod.trr
+                        - output_edr_path: !& prod.edr
+                      (4, cwl_watcher_analysis.wic):
+                        wic:
+                          backend: complex
+          (3, analysis.wic):
+            wic:
+              steps:
+                (1, analysis_realtime.wic):
+                  wic:
+                    backend: complex
+                (2, analysis_final.wic):
+                  wic:
+                    backend: complex
+    (9, autodock_vina_rescore.wic):
+      wic:
+        inlineable: False
+    (10, scatter_plot):
+      wic:
+        graphviz:
+          label: Plot Experimental\nvs Predicted Binding

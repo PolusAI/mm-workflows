@@ -1,0 +1,39 @@
+inputs:
+  nsteps:
+    type: int
+  dt:
+    type: float
+  temperature:
+    type: float
+  pressure:
+    type: float
+  crd_path:
+    type: File
+    format:
+    - edam:format_1476
+    - edam:format_2033
+  top_zip_path:
+    type: File
+    format:
+    - edam:format_3987
+
+steps:
+  - setup.wic:
+      in:
+        crd_path: crd_path
+        top_zip_path: top_zip_path
+  - basic.wic:
+      in:
+        nsteps: nsteps
+        dt: dt
+        ref-t: temperature
+        ref-p: pressure
+  - analysis.wic:
+
+wic:
+  graphviz:
+    label: Molecular Dynamics Stability Analysis
+  steps:
+    (2, basic.wic):
+      wic:
+        inlineable: False  # due to renaming ref-t and ref-p
