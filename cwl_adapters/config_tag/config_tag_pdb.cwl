@@ -16,9 +16,10 @@ inputs:
     type: string
     format:
     - edam:format_2330
-
+  # Note: Even though the "filter" argument has a boolean type, it cannot accept the value True.
+  # https://biobb-io.readthedocs.io/en/latest/api.html#module-api.pdb
   filter:
-    type: string?
+    type: ["null", boolean, {"type": "array", "items": "string"}]
 
 outputs:
   output_config_string:
@@ -32,12 +33,11 @@ outputs:
         ${
           var config = {};
           config["pdb_code"] = inputs.pdb_id;
-          if (inputs.filter == "False") {
-            config["filter"] = false;
-          } else if (inputs.filter == "None") {
-            config["filter"] = null;
-          } else if (inputs.filter) {
-            config["filter"] = inputs.filter;
+          if (inputs.filter == true) {
+            throw new Error("Error! filter doesn't accept True value");
+          }
+          else {
+          config["filter"] = inputs.filter;
           }
           return JSON.stringify(config);
         }
