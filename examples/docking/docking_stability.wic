@@ -37,7 +37,7 @@ wic:
                 (3, prod.wic):
                   wic:
                     steps:
-                      (4, cwl_watcher_analysis.wic):
+                      (4, cwl_subinterpreter_analysis.wic):
                         wic:
                           implementation: complex
           (3, analysis.wic):

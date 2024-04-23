@@ -37,7 +37,7 @@ This will override the default implementation of `gromacs` and use `amber`. This
 
 ## Subinterpreters
 
-A portion of [`examples/gromacs/nvt.wic`](https://github.com/PolusAI/mm-workflows/blob/main/examples/gromacs/nvt.wic) in `mm-workflows` is shown below. You can see that the `in:` tag of gmx_energy is identical to the `config:` tag of cwl_watcher. This currently needs to be manually copy & pasted (and indented), but it should be possible to automatically do this in the future.
+A portion of [`examples/gromacs/nvt.wic`](https://github.com/PolusAI/mm-workflows/blob/main/examples/gromacs/nvt.wic) in `mm-workflows` is shown below. You can see that the `in:` tag of gmx_energy is identical to the `config:` tag of cwl_subinterpreter. This currently needs to be manually copy & pasted (and indented), but it should be possible to automatically do this in the future.
 
 ```yaml
 ...
@@ -51,9 +51,9 @@ A portion of [`examples/gromacs/nvt.wic`](https://github.com/PolusAI/mm-workflow
         config: !ii
           terms: [Temperature]
         output_xvg_path: temperature.xvg
-# NOTE: explicit edges are not supported with cwl_watcher, and all filenames
+# NOTE: explicit edges are not supported with cwl_subinterpreter, and all filenames
 # must be globally unique!
-  - cwl_watcher:
+  - cwl_subinterpreter:
       in:
         #cachedir_path: /absolute/path/to/cachedir/ (automatically filled in by wic)
         file_pattern: '*nvt.edr'  # Any strings that start with & or * need to be escaped in quotes
@@ -68,13 +68,13 @@ A portion of [`examples/gromacs/nvt.wic`](https://github.com/PolusAI/mm-workflow
 ...
 ```
 
-Note that although gmx_energy appears before cwl_watcher in the YAML file, gmx_energy is independent of cwl_watcher in the DAG and thus not considered to be a previous step. We include gmx_energy simply to guarantee that the analysis gets run one more time in the main workflow, when all the files are known to be in their final state.
+Note that although gmx_energy appears before cwl_subinterpreter in the YAML file, gmx_energy is independent of cwl_subinterpreter in the DAG and thus not considered to be a previous step. We include gmx_energy simply to guarantee that the analysis gets run one more time in the main workflow, when all the files are known to be in their final state.
 
 ### Known Issues
 
 Since the two runtimes are not linked, there is not currently a reliable way to determine if the previous steps have finished. Thus, to guarantee termination of the second runtime, we simply execute `cwl_tool` upto `max_times`. We also waive any guarantees about the files, so the subworkflow in the second runtime may of course fail for any number of reasons. Thus, we do not propagate speculative failures up to the main workflow.
 
-The runtime system intentionally hides the working sub-directories of each step. Thus, we are forced to use a file watcher (hence the name cwl_watcher) recursively starting from `cachedir_path`. This is why all filenames used with cwl_watcher must be globally unique. (Actually, for technical reasons we cannot use a file watching library; we simply use a good old fashioned polling loop.)
+The runtime system intentionally hides the working sub-directories of each step. Thus, we are forced to use a file watcher recursively starting from `cachedir_path`. This is why all filenames used with cwl_subinterpreter must be globally unique. (Actually, for technical reasons we cannot use a file watching library; we simply use a good old fashioned polling loop.)
 
 ## Real-time plots
 

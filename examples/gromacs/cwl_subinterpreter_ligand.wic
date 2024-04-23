@@ -1,5 +1,5 @@
 steps:
-  - cwl_watcher:
+  - cwl_subinterpreter:
       in:
         #cachedir_path: /absolute/path/to/cachedir/ (automatically filled in by wic)
         file_pattern: !ii '*prod.trr'
@@ -11,7 +11,7 @@ steps:
 
 wic:
   steps:
-    (1, cwl_watcher):
+    (1, cwl_subinterpreter):
       wic:
         graphviz:
           style: invis # Make this node invisible

@@ -178,7 +178,7 @@ wic:
                         - output_crd_path: !& prod_complex.gro  # overload prod.gro
                         - output_trr_path: !& prod.trr
                         - output_edr_path: !& prod.edr
-                      (4, cwl_watcher_analysis.wic):
+                      (4, cwl_subinterpreter_analysis.wic):
                         wic:
                           implementation: complex
           (3, analysis.wic):

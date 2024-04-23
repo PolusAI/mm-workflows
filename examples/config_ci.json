@@ -65,10 +65,10 @@
         "cg",
         "yank",
         // These (currently) always return success, so no point in running them.
-        "cwl_watcher_analysis",
-        "cwl_watcher_complex",
-        "cwl_watcher_ligand",
-        "cwl_watcher_protein",
+        "cwl_subinterpreter_analysis",
+        "cwl_subinterpreter_complex",
+        "cwl_subinterpreter_ligand",
+        "cwl_subinterpreter_protein",
         // Skip vs_demo_4 and run_diffdock so we don't accidentally DOS pdbbind.org.cn
         "vs_demo_4",
         "run_diffdock"

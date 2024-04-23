@@ -33,7 +33,7 @@ steps:
         config: !ii
           terms: [Density]
         output_xvg_path: !ii density.xvg
-  # - cwl_watcher:
+  # - cwl_subinterpreter:
   #     in:
   #       #cachedir_path: /absolute/path/to/cachedir/ (automatically filled in by wic)
   #       file_pattern: !ii '*npt.edr'
@@ -64,7 +64,7 @@ wic:
       wic:
         graphviz:
           label: 'Analyze & Plot\nDensity\nTimeseries'
-    (4, cwl_watcher):
+    (4, cwl_subinterpreter):
       wic:
         graphviz:
           #label: 'Real-time\nAnalysis'
