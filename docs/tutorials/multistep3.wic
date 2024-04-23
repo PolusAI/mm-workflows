@@ -1,0 +1,11 @@
+steps:
+- pdb:
+    in:
+      config: !ii
+        pdb_code: 1aki
+- fix_protein.wic:
+- extract_model:
+    in:
+      config: !ii
+        models: [1]
+      output_structure_path: !ii protein_model_1.pdb

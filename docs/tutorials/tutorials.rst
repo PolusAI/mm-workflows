@@ -5,4 +5,5 @@ Tutorials
    :maxdepth: 2
    :caption: Contents:
 
-   molecular_modeling.md
+   multistep.md
+   subworkflows.md

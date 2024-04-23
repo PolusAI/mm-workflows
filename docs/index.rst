@@ -9,6 +9,7 @@ Molecular Modeling Workflows documentation
    installguide.md
    tutorials/tutorials.rst
    userguide.md
+   advanced.md
    dev/api.rst
 
 Indices and tables
