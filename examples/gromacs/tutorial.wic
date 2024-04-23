@@ -27,10 +27,10 @@ wic:
                     steps:
                       (4, cwl_watcher_analysis.wic):
                         wic:
-                          backend: protein
+                          implementation: protein
           (3, analysis.wic):
             wic:
               steps:
                 (1, analysis_realtime.wic):
                   wic:
-                    backend:  protein
+                    implementation:  protein

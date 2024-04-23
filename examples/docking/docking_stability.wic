@@ -39,10 +39,10 @@ wic:
                     steps:
                       (4, cwl_watcher_analysis.wic):
                         wic:
-                          backend: complex
+                          implementation: complex
           (3, analysis.wic):
             wic:
               steps:
                 (1, analysis_realtime.wic):
                   wic:
-                    backend: complex
+                    implementation: complex

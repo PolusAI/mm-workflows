@@ -6,8 +6,8 @@ Here is an example that shows how to swap out constant pressure implementations.
 
 ```yaml
 wic:
-  default_backend: gromacs
-  backends:
+  default_implementation: gromacs
+  implementations:
     gromacs:
       steps:
         - npt_gromacs.wic:
@@ -31,7 +31,7 @@ wic:
   steps:
     (2, npt.wic):
       wic:
-        backend: amber
+        implementation: amber
 ```
 This will override the default implementation of `gromacs` and use `amber`. This really just means that `npt_amber.wic` is called instead of `npt_gromacs.wic` (If `--insert_steps_automatically` is enabled, the compiler will attempt to automatically insert the necessary file format conversions as determined below.)
 

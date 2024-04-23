@@ -71,7 +71,7 @@ wic:
           label: 'Molecular\nDynamics'
     (4, cwl_watcher_analysis.wic):
       wic:
-        backend: protein
+        implementation: protein
         graphviz:
           label: 'Real-time\nAnalysis'
           style: invis # Make this node invisible

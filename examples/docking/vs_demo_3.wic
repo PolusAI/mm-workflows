@@ -156,16 +156,16 @@ wic:
                         - output_edr_path: !& prod.edr
                       (4, cwl_watcher_analysis.wic):
                         wic:
-                          backend: complex
+                          implementation: complex
           (3, analysis.wic):
             wic:
               steps:
                 (1, analysis_realtime.wic):
                   wic:
-                    backend: complex
+                    implementation: complex
                 (2, analysis_final.wic):
                   wic:
-                    backend: complex
+                    implementation: complex
     (9, autodock_vina_rescore.wic):
       wic:
         inlineable: False

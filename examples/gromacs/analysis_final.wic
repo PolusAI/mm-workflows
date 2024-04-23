@@ -1,6 +1,6 @@
 wic:
-  default_backend: protein
-  backends:
+  default_implementation: protein
+  implementations:
     protein:
       steps:
         - analysis_final_steps.wic:
