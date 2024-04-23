@@ -13,7 +13,7 @@ steps:
         config: !ii
           terms: [DENSITY]
         output_dat_path: !ii density.dat
-  - cwl_watcher:
+  - cwl_subinterpreter:
       in:
         #cachedir_path: /absolute/path/to/cachedir/ (automatically filled in by wic)
         file_pattern: !ii '*amb_npt.log'
@@ -38,7 +38,7 @@ wic:
       wic:
         graphviz:
           label: 'Analyze & Plot\nDensity\nTimeseries'
-    (3, cwl_watcher):
+    (3, cwl_subinterpreter):
       wic:
         graphviz:
           label: 'Real-time\nAnalysis'

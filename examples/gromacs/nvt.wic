@@ -28,9 +28,9 @@ steps:
         config: !ii
           terms: [Temperature]
         output_xvg_path: !ii temperature.xvg
-# NOTE: explicit edges are not supported with cwl_watcher, and all filenames
+# NOTE: explicit edges are not supported with cwl_subinterpreter, and all filenames
 # must be globally unique!
-  # - cwl_watcher:
+  # - cwl_subinterpreter:
   #     in:
   #       #cachedir_path: /absolute/path/to/cachedir/ (automatically filled in by wic)
   #       file_pattern: !ii '*nvt.edr'
@@ -60,7 +60,7 @@ wic:
       wic:
         graphviz:
           label: 'Analyze & Plot\nTemperature\nTimeseries'
-    (4, cwl_watcher):
+    (4, cwl_subinterpreter):
       wic:
         graphviz:
           label: 'Real-time\nAnalysis'

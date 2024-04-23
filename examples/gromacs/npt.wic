@@ -1,6 +1,6 @@
 wic:
-  default_backend: gromacs
-  backends:
+  default_implementation: gromacs
+  implementations:
     gromacs:
       steps:
         - npt_gromacs.wic:

@@ -1,15 +1,15 @@
 wic:
-  default_backend: protein
-  backends:
+  default_implementation: protein
+  implementations:
     protein:
       steps:
-        - cwl_watcher_protein.wic:
+        - cwl_subinterpreter_protein.wic:
     ligand:
       steps:
-        - cwl_watcher_ligand.wic:
+        - cwl_subinterpreter_ligand.wic:
     complex:
       steps:
-        - cwl_watcher_complex.wic:
+        - cwl_subinterpreter_complex.wic:
   graphviz:
     label: 'Real-time\nAnalysis'
     style: invis # Make this graph (and all subgraphs) invisible

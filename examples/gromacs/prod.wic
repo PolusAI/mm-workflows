@@ -45,12 +45,12 @@ steps:
       - output_tpr_path: !& prod.tpr
   - mdrun:
       in:
-        output_trr_path: !ii prod.trr # Explicitly specify for cwl_watcher
+        output_trr_path: !ii prod.trr # Explicitly specify for cwl_subinterpreter
       out:
       - output_crd_path: !& prod.gro
       - output_trr_path: !& prod.trr
       - output_edr_path: !& prod.edr
-  # - cwl_watcher_analysis.wic:
+  # - cwl_subinterpreter_analysis.wic:
 
 wic:
   graphviz:
@@ -69,9 +69,9 @@ wic:
         namespace: gpu  # To run MD on GPU
         graphviz:
           label: 'Molecular\nDynamics'
-    (4, cwl_watcher_analysis.wic):
+    (4, cwl_subinterpreter_analysis.wic):
       wic:
-        backend: protein
+        implementation: protein
         graphviz:
           label: 'Real-time\nAnalysis'
           style: invis # Make this node invisible

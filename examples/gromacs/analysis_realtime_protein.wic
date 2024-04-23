@@ -3,7 +3,7 @@
 # This causes the rmsd w.r.t. the last equil timestep to start at exactly zero,
 # which distorts the comparison between the xray and equil cases.
 # NOTE: Most paths can be inferred, but explicitly specify them anyway because
-# for cwl_watcher and so we can re-order steps in analysis.
+# for cwl_subinterpreter and so we can re-order steps in analysis.
 steps:
   - gmx_rms:
       in:

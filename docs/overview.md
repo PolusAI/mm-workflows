@@ -4,13 +4,13 @@
 
 Subworkflows are used extensively to create reusable building blocks.
 
-For example, a basic molecular dynamics workflow is composed of minimization, equilibration, and production steps, the equilibration step is composed of constant volume (NVT) and constant pressure (NPT) steps, and each of those are composed of primitive backend-specific steps. If we then want to do a stability analysis, we should be able to incorporate the molecular dynamics workflow as a black box, and we should only have to append the stability analysis subworkflow. See [here](https://github.com/PolusAI/mm-workflows/blob/main/examples/gromacs/tutorial.wic)!
+For example, a basic molecular dynamics workflow is composed of minimization, equilibration, and production steps, the equilibration step is composed of constant volume (NVT) and constant pressure (NPT) steps, and each of those are composed of primitive implementation-specific steps. If we then want to do a stability analysis, we should be able to incorporate the molecular dynamics workflow as a black box, and we should only have to append the stability analysis subworkflow. See [here](https://github.com/PolusAI/mm-workflows/blob/main/examples/gromacs/tutorial.wic)!
 
-* Multiple backends
+* Multiple implementations
 
-There are often several backend engines that implement the same algorithm (e.g. amber / gromacs / namd). In principle, each backend ought to be exactly interchangeable, but in practice backends may randomly crash, etc. For this reason, we want the ability to arbitrarily switch backends at any step. Moreover, different users may be familiar with different backends, but we still want to compose together their workflows.
+There are often several implementation engines that implement the same algorithm (e.g. amber / gromacs / namd). In principle, each implementation ought to be exactly interchangeable, but in practice implementations may randomly crash, etc. For this reason, we want the ability to arbitrarily switch implementations at any step. Moreover, different users may be familiar with different implementations, but we still want to compose together their workflows.
 
-For example, we should be able to compose system setup using amber/tleap, equilibration using namd, and metadynamics using gromacs. File format conversions should be automatically inserted between steps. This is not possible with other 'backend-independent' software packages which require a single backend to be fixed at the beginning and used throughout.
+For example, we should be able to compose system setup using amber/tleap, equilibration using namd, and metadynamics using gromacs. File format conversions should be automatically inserted between steps. This is not possible with other 'implementation-independent' software packages which require a single implementation to be fixed at the beginning and used throughout.
 
 See [static dispatch](advanced.md#static-dispatch)
 
