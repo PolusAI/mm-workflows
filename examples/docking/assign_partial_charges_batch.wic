@@ -1,5 +1,5 @@
 steps:
-- convert_mol2:
+  convert_mol2:
 #    in:
 #      input_path: !* ligand_min.sdf
 #    out:
@@ -7,7 +7,7 @@ steps:
 # NOTE: If we directly convert from sdf to pdbqt, openbabel will NOT add
 # partial charges! We have to factor through mol2 format to trigger the
 # partial charge heuristics code path. This does affect the docking scores!
-- convert_pdbqt:
+  convert_pdbqt:
 #    in:
 #      input_path: !* ligand_min.mol2  # conformer.mol2
 #    out:

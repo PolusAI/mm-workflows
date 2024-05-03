@@ -9,10 +9,10 @@ steps:
 # NOTE: Searching for conformers tends to cause the ligand to curl up into a ball.
 # Although this lowers its energy in isolation, the decreased surface area tends
 # to weaken the binding free energy! (as reported by autodock vina)
-  - flc.wic:
+    flc.wic:
       in:
         sdf_path: sdf_path
-#  - minimize_ligand_only.wic:
+#    minimize_ligand_only.wic:
 #      in:
 #        sdf_path: sdf_path
 
@@ -24,7 +24,7 @@ steps:
 
 # NOTE: Rename all residues to MOL before calling acpypye. Otherwise, acpype crashes with:
 # "ERROR: more than one residue detected '{'UNL', 'MOL'}'"
-  - python3_mol2_to_mol2:
+    python3_mol2_to_mol2:
       in:
         script: !ii /rename_residues_mol.py # NOTE: Initial / required
         input_mol2_path: !* ligand_min.mol2
@@ -32,9 +32,9 @@ steps:
       - output_mol2_path: !& conformer.mol2
 
 # Docking
-  - convert_ligand_mol2_to_pdbqt_obabel.wic:
-#  - convert_ligand_mol2_to_pdbqt_mdanalysis.wic: # generates ligand_rigid.pdbqt only
-  - autodock_vina_run:
+    convert_ligand_mol2_to_pdbqt_obabel.wic:
+#    convert_ligand_mol2_to_pdbqt_mdanalysis.wic: # generates ligand_rigid.pdbqt only
+    autodock_vina_run:
       in:
         input_ligand_pdbqt_path: !* ligand_flex.pdbqt
         #input_ligand_pdbqt_path: !* ligand_rigid.pdbqt
@@ -43,7 +43,7 @@ steps:
       out:
 #      - output_pdbqt_path: !& poses_ligand.pdbqt
       - output_log_path: !& vina.log
-  - split_pdbqt:
+    split_pdbqt:
 #      in:
 #        input_path: !* poses_ligand.pdbqt # Scalar type
       out:

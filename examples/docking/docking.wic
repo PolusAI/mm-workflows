@@ -9,10 +9,10 @@ steps:
 # NOTE: Searching for conformers tends to cause the ligand to curl up into a ball.
 # Although this lowers its energy in isolation, the decreased surface area tends
 # to weaken the binding free energy! (as reported by autodock vina)
-  - flc.wic:
+    flc.wic:
       in:
         sdf_path: sdf_path
-#  - minimize_ligand_only.wic:
+#    minimize_ligand_only.wic:
 
 # NOTE: We converted to mol2 format above because it allows explicit charges.
 # Thus, if we only infer charges once and then preserve them, we don't have to
@@ -22,7 +22,7 @@ steps:
 
 # NOTE: Rename all residues to MOL before calling acpypye. Otherwise, acpype crashes with:
 # "ERROR: more than one residue detected '{'UNL', 'MOL'}'"
-  - python3_mol2_to_mol2:
+    python3_mol2_to_mol2:
       in:
         script: !ii /rename_residues_mol.py # NOTE: Initial / required
         input_mol2_path: !* ligand_min.mol2
@@ -34,7 +34,7 @@ steps:
 # Close contact of 1.418311 angstroms between .R<UNL 1>.A<CG 8> and .R<UNL 1>.A<HD2 30>
 # and 2. acpype doesn't complain about 'ERROR: Atoms TOO alone (> 3.0 Ang.)'
 # (acpype suggests using --force, but it's better to just minimize.)
-  - acpype:
+    acpype:
     # NOTE: We are using our own acpypye CWL adapter (NOT the biobb version) so
     # we have the choice of using charges from the mol2 file.
       in:
@@ -49,13 +49,13 @@ steps:
       - output_top_path: !& ligand_GMX.top
         #charge_method: user # take charges from mol2 file
 # NOTE: acpype doesn't add forcefield or water topology #include lines.
-  - bash_top:
+    bash_top:
       in:
         script: !ii /gmx_add_topology_includes.sh # NOTE: Initial / required
         input_top_path: !* ligand_GMX.top
       out:
       - output_top_path: !& ligand_GMX_includes.top
-  - zip_top:
+    zip_top:
       in:
         input_top_path: !* ligand_GMX_includes.top
         input_itp_path: !* ligand_GMX.itp
@@ -63,10 +63,10 @@ steps:
       - output_top_zip_path: !& ligand_GMX.zip
 
 # Docking
-  - convert_ligand_mol2_to_pdbqt_obabel.wic:
-#  - convert_ligand_mol2_to_pdbqt_mdanalysis.wic: # generates ligand_rigid.pdbqt only
+    convert_ligand_mol2_to_pdbqt_obabel.wic:
+#    convert_ligand_mol2_to_pdbqt_mdanalysis.wic: # generates ligand_rigid.pdbqt only
 
-  - autodock_vina_run:
+    autodock_vina_run:
       in:
         input_ligand_pdbqt_path: !* ligand_flex.pdbqt
         #input_ligand_pdbqt_path: !* ligand_rigid.pdbqt
@@ -75,7 +75,7 @@ steps:
       out:
       - output_pdbqt_path: !& poses_ligand.pdbqt
       - output_log_path: !& vina.log
-  - extract_model_pdbqt:
+    extract_model_pdbqt:
       in:
         input_pdbqt_path: !* poses_ligand.pdbqt
         output_pdbqt_path: !ii pose_ligand.pdbqt
@@ -83,20 +83,20 @@ steps:
           model: 1 # NOTE: score, rmsd l.b., rmsd u.b. stored in REMARK lines
       out:
       - output_pdbqt_path: !& pose_ligand.pdbqt
-  - convert_xyz:
+    convert_xyz:
       in:
         input_path: !* pose_ligand.pdbqt
         output_xyz_path: !ii pose_ligand.xyz
       out:
       - output_xyz_path: !& pose_ligand.xyz
 # Molecular Dynamics combine receptor & ligand
-  - append_ligand:
+    append_ligand:
       in:
         input_itp_path: !* ligand_GMX.itp
         input_top_zip_path: !* receptor.zip
       out:
       - output_top_zip_path: !& complex_vac.zip
-  - combine_structure:
+    combine_structure:
       in:
         input_structure1: !* receptor.xyz  # receptor_hydrogens.pdb
         input_structure2: !* pose_ligand.xyz

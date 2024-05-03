@@ -18,17 +18,17 @@ inputs:
     - edam:format_3987
 
 steps:
-  - setup.wic:
+    setup.wic:
       in:
         crd_path: crd_path
         top_zip_path: top_zip_path
-  - basic.wic:
+    basic.wic:
       in:
         nsteps: nsteps
         dt: dt
         ref-t: temperature
         ref-p: pressure
-  - analysis.wic:
+    analysis.wic:
 
 wic:
   graphviz:

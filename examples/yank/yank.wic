@@ -1,47 +1,47 @@
 # TODO: auto-generate the multiple phases
 steps:
 # NOTE: We do not need a setup_only phase; we already did the setup.
- - yank_trailblaze:
-     in:
-       phase: !ii trailblaze
-       # input_dir_path: !ii []  # temporarily comment out due to validation failure
-       yaml: !ii ../yank/yank_config_template.yaml
-       input_complex_top_zip_path: !* genion_complex.zip
-       input_complex_crd_path: !* prod_complex.gro
-       input_ligand_top_zip_path: !* genion_ligand.zip
-       input_ligand_crd_path: !* prod_ligand.gro
- - yank_equil_prod:
-     in:
-       phase: !ii equilibration
-       yaml: !ii ../yank/yank_config_template.yaml
-       input_complex_top_zip_path: !* genion_complex.zip
-       input_complex_crd_path: !* prod_complex.gro
-       input_ligand_top_zip_path: !* genion_ligand.zip
-       input_ligand_crd_path: !* prod_ligand.gro
- - yank_equil_prod:
-     in:
-       phase: !ii production
-       yaml: !ii ../yank/yank_config_template.yaml
-       input_complex_top_zip_path: !* genion_complex.zip
-       input_complex_crd_path: !* prod_complex.gro
-       input_ligand_top_zip_path: !* genion_ligand.zip
-       input_ligand_crd_path: !* prod_ligand.gro
- - yank_analyze:
-     in:
-       phase: !ii analyze
-       yaml: !ii ../yank/yank_config_template.yaml
-       input_complex_top_zip_path: !* genion_complex.zip
-       input_complex_crd_path: !* prod_complex.gro
-       input_ligand_top_zip_path: !* genion_ligand.zip
-       input_ligand_crd_path: !* prod_ligand.gro
- - yank_analyze_report:
-     in:
-       phase: !ii report
-       yaml: !ii ../yank/yank_config_template.yaml
-       input_complex_top_zip_path: !* genion_complex.zip
-       input_complex_crd_path: !* prod_complex.gro
-       input_ligand_top_zip_path: !* genion_ligand.zip
-       input_ligand_crd_path: !* prod_ligand.gro
+- id: yank_trailblaze
+  in:
+    phase: !ii trailblaze
+    # input_dir_path: !ii []  # temporarily comment out due to validation failure
+    yaml: !ii ../yank/yank_config_template.yaml
+    input_complex_top_zip_path: !* genion_complex.zip
+    input_complex_crd_path: !* prod_complex.gro
+    input_ligand_top_zip_path: !* genion_ligand.zip
+    input_ligand_crd_path: !* prod_ligand.gro
+- id: yank_equil_prod
+  in:
+    phase: !ii equilibration
+    yaml: !ii ../yank/yank_config_template.yaml
+    input_complex_top_zip_path: !* genion_complex.zip
+    input_complex_crd_path: !* prod_complex.gro
+    input_ligand_top_zip_path: !* genion_ligand.zip
+    input_ligand_crd_path: !* prod_ligand.gro
+- id: yank_equil_prod
+  in:
+    phase: !ii production
+    yaml: !ii ../yank/yank_config_template.yaml
+    input_complex_top_zip_path: !* genion_complex.zip
+    input_complex_crd_path: !* prod_complex.gro
+    input_ligand_top_zip_path: !* genion_ligand.zip
+    input_ligand_crd_path: !* prod_ligand.gro
+- id: yank_analyze
+  in:
+    phase: !ii analyze
+    yaml: !ii ../yank/yank_config_template.yaml
+    input_complex_top_zip_path: !* genion_complex.zip
+    input_complex_crd_path: !* prod_complex.gro
+    input_ligand_top_zip_path: !* genion_ligand.zip
+    input_ligand_crd_path: !* prod_ligand.gro
+- id: yank_analyze_report
+  in:
+    phase: !ii report
+    yaml: !ii ../yank/yank_config_template.yaml
+    input_complex_top_zip_path: !* genion_complex.zip
+    input_complex_crd_path: !* prod_complex.gro
+    input_ligand_top_zip_path: !* genion_ligand.zip
+    input_ligand_crd_path: !* prod_ligand.gro
 
 wic:
   graphviz:

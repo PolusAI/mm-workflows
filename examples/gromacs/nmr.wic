@@ -1,6 +1,6 @@
 steps:
-  - tutorial.wic:
-  - python_script:
+    tutorial.wic:
+    python_script:
       in:
         script: !ii ../scripts/nmr4md.py
         dockerPull: !ii jakefennick/nmr4md

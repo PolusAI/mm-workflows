@@ -1,11 +1,11 @@
 steps:
-  - gmxselect: # NOTE: make_ndx does NOT work! (It erroneously selects all of the atoms.)
+    gmxselect: # NOTE: make_ndx does NOT work! (It erroneously selects all of the atoms.)
       in:
         input_structure_path: !* min.tpr
         #config: !ii {"selection": "group Protein"}
       out:
       - output_ndx_path: !& solute.ndx
-  - gmx_image:
+    gmx_image:
       in:
         input_crd_path: !* prod.gro
         input_top_path: !* prod.tpr
@@ -16,7 +16,7 @@ steps:
         #  fit_selection: Protein
         #  center_selection: Protein
         #  output_selection: Protein
-  - gmx_trjconv_str:
+    gmx_trjconv_str:
       in:
         #config: !ii
         #  selection: System

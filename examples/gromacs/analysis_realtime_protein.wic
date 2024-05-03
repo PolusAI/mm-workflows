@@ -5,38 +5,38 @@
 # NOTE: Most paths can be inferred, but explicitly specify them anyway because
 # for cwl_subinterpreter and so we can re-order steps in analysis.
 steps:
-  - gmx_rms:
-      in:
-        input_traj_path: !* prod.trr
-        config: !ii
-          selection: MainChain
-        output_xvg_path: !ii rmsd_equil_mainchain.xvg
-  - gmx_rms:
-      in:
-        input_traj_path: !* prod.trr
-        config: !ii
-          selection: SideChain
-        output_xvg_path: !ii rmsd_equil_sidechain.xvg
-  - gmx_rms:
-      in:
-        input_traj_path: !* prod.trr
-        config: !ii
-          selection: MainChain
-        output_xvg_path: !ii rmsd_xray_mainchain.xvg
-        input_structure_path: !* min.tpr
-  - gmx_rgyr:
-      in:
-        input_traj_path: !* prod.trr
-        config: !ii
-          selection: MainChain
-        output_xvg_path: !ii radius_gyration.xvg
-        input_structure_path: !* min.tpr
-  - gmx_energy:
-      in:
-        input_energy_path: !* prod.edr
-        config: !ii
-          terms: [Total-Energy]
-        output_xvg_path: !ii energy_total.xvg
+  - id: gmx_rms
+    in:
+      input_traj_path: !* prod.trr
+      config: !ii
+        selection: MainChain
+      output_xvg_path: !ii rmsd_equil_mainchain.xvg
+  - id: gmx_rms
+    in:
+      input_traj_path: !* prod.trr
+      config: !ii
+        selection: SideChain
+      output_xvg_path: !ii rmsd_equil_sidechain.xvg
+  - id: gmx_rms
+    in:
+      input_traj_path: !* prod.trr
+      config: !ii
+        selection: MainChain
+      output_xvg_path: !ii rmsd_xray_mainchain.xvg
+      input_structure_path: !* min.tpr
+  - id: gmx_rgyr
+    in:
+      input_traj_path: !* prod.trr
+      config: !ii
+        selection: MainChain
+      output_xvg_path: !ii radius_gyration.xvg
+      input_structure_path: !* min.tpr
+  - id: gmx_energy
+    in:
+      input_energy_path: !* prod.edr
+      config: !ii
+        terms: [Total-Energy]
+      output_xvg_path: !ii energy_total.xvg
 
 wic:
   graphviz:

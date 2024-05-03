@@ -3,10 +3,10 @@ wic:
   implementations:
     gromacs:
       steps:
-        - npt_gromacs.wic:
+          npt_gromacs.wic:
     amber:
       steps:
-        - npt_amber.wic:
+          npt_amber.wic:
   graphviz:
     label: Constant\nPressure
     #style: invis # Do NOT make this graph invisible, because

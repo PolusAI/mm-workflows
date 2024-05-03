@@ -5,13 +5,13 @@ inputs:
     - edam:format_1476
 
 steps:
-- config_tag_pdb:
+  config_tag_pdb:
     in:
       pdb_id: pdb_id
       #filter: "False" # False = do not 'clean' the pdb file.
     out:
     - output_config_string: !& pdb_id_str
-- pdb:
+  pdb:
     in:
       output_pdb_path: !ii protein_models.pdb
       config: !* pdb_id_str
@@ -36,13 +36,13 @@ steps:
       #config: !ii {pdb_code: 1trn} # Dimer. This does not download residue 151, but residue 151 is in the pdb file if you download it using a web browser! ???
       #config: !ii {pdb_code: 1ntp}
       #config: !ii {pdb_code: 1bty} # "IndexError: list index out of range" in str_check_add_hydrogens
-- extract_model:
+  extract_model:
     in:
       config: !ii
         models: [1]
     # out:
     # - output_structure_path: !& protein.pdb
-- python_script:
+  python_script:
     in:
       script: !ii ../scripts/atomselect.py
       dockerPull: !ii jakefennick/atomselect

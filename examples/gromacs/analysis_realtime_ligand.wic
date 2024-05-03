@@ -5,13 +5,13 @@
 # NOTE: Most paths can be inferred, but explicitly specify them anyway because
 # for cwl_subinterpreter and so we can re-order steps in analysis.
 steps:
-  - gmxselect: # NOTE: make_ndx does NOT work! (It erroneously selects all of the atoms.)
+    gmxselect: # NOTE: make_ndx does NOT work! (It erroneously selects all of the atoms.)
       in:
         input_structure_path: !* min.tpr
         config: !ii {"selection": "resname MOL"}
       out:
       - output_ndx_path: !& MOL.ndx
-  - gmx_rms:
+    gmx_rms:
       in:
         input_structure_path: !* prod.tpr
         input_traj_path: !* prod.trr

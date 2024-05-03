@@ -1,5 +1,5 @@
 steps:
-  - grompp:
+    grompp:
       in:
         config: !ii
           maxwarn: 1
@@ -12,8 +12,8 @@ steps:
             emtol: 10
             nstenergy: 1
 #        input_mdp_path: l-bfgs.mdp
-  - mdrun:
-  - gmx_energy:
+    mdrun:
+    gmx_energy:
       in:
         config: !ii
           terms: [Potential]

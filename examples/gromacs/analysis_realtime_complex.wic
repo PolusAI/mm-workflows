@@ -5,54 +5,54 @@
 # NOTE: Most paths can be inferred, but explicitly specify them anyway because
 # for cwl_subinterpreter and so we can re-order steps in analysis.
 steps:
-  - gmxselect: # NOTE: make_ndx does NOT work! (It erroneously selects all of the atoms.)
-      in:
-        input_structure_path: !* min.tpr
-        config: !ii {"selection": "resname MOL"}
-      out:
-      - output_ndx_path: !& MOL.ndx
-  - gmx_rms:
-      in:
-        input_structure_path: !* prod.tpr
-        input_traj_path: !* prod.trr
-        config: !ii
-          selection: resname_MOL
-        input_index_path: !* MOL.ndx
-        output_xvg_path: !ii rmsd_equil_ligand_fit.xvg
-  - gmx_rms:
-      in:
-        input_structure_path: !* prod.tpr
-        input_traj_path: !* prod.trr
-        config: !ii
-          selection: MainChain
-        output_xvg_path: !ii rmsd_equil_mainchain.xvg
-  - gmx_rms:
-      in:
-        input_structure_path: !* min.tpr
-        input_traj_path: !* prod.trr
-        config: !ii
-          selection: MainChain
-      out:
-      - output_xvg_path: !& rmsd_xray_mainchain.xvg
+  - id: gmxselect # NOTE: make_ndx does NOT work! (It erroneously selects all of the atoms.)
+    in:
+      input_structure_path: !* min.tpr
+      config: !ii {"selection": "resname MOL"}
+    out:
+    - output_ndx_path: !& MOL.ndx
+  - id: gmx_rms
+    in:
+      input_structure_path: !* prod.tpr
+      input_traj_path: !* prod.trr
+      config: !ii
+        selection: resname_MOL
+      input_index_path: !* MOL.ndx
+      output_xvg_path: !ii rmsd_equil_ligand_fit.xvg
+  - id: gmx_rms
+    in:
+      input_structure_path: !* prod.tpr
+      input_traj_path: !* prod.trr
+      config: !ii
+        selection: MainChain
+      output_xvg_path: !ii rmsd_equil_mainchain.xvg
+  - id: gmx_rms
+    in:
+      input_structure_path: !* min.tpr
+      input_traj_path: !* prod.trr
+      config: !ii
+        selection: MainChain
+    out:
+    - output_xvg_path: !& rmsd_xray_mainchain.xvg
 # Align the trajectory with MDAnalysis.
-  - python3_align_protein_ca:
-      in:
-        script: !ii /align_protein_ca_mda.py # NOTE: Initial / required
-        input_gro_path: !* npt.gro
-        input_trr_path: !* prod.trr
-      out:
-      - output_trr_path: !& prod_align_protein_ca.trr
-  - gmx_rms_nofit:
-      in:
-        input_structure_path: !* npt.gro  # prod.tpr ?
-        input_traj_path: !* prod_align_protein_ca.trr
-        input_index_path: !* MOL.ndx
-      out:
-      - output_xvg_path: !& rmsd_equil_ligand_no_fit.xvg
+  - id: python3_align_protein_ca
+    in:
+      script: !ii /align_protein_ca_mda.py # NOTE: Initial / required
+      input_gro_path: !* npt.gro
+      input_trr_path: !* prod.trr
+    out:
+    - output_trr_path: !& prod_align_protein_ca.trr
+  - id: gmx_rms_nofit
+    in:
+      input_structure_path: !* npt.gro  # prod.tpr ?
+      input_traj_path: !* prod_align_protein_ca.trr
+      input_index_path: !* MOL.ndx
+    out:
+    - output_xvg_path: !& rmsd_equil_ligand_no_fit.xvg
 # We can also align the trajectory with pymol, but it currently has an O(N^2) performance issue.
 # However, pymol's alignment algorithm rejects outliers, which may be useful for
 # flexible protein targets with floppy tails.
-#  - align_protein_ca_pymol.wic:
+#  - id: align_protein_ca_pymol.wic
 
 wic:
   graphviz:

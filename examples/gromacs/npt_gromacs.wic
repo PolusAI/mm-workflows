@@ -1,5 +1,5 @@
 steps:
-  - grompp:
+    grompp:
       in:
         config: !ii
           mdp:
@@ -21,14 +21,14 @@ steps:
             compressibility: 4.5e-5
             comm-mode: Linear
             comm-grps: system
-  - mdrun:
+    mdrun:
       in:
         output_edr_path: !ii npt.edr
         output_crd_path: !ii npt.gro  # Explicitly specify for rmsd
       out:
       - output_crd_path: !& npt.gro
       #- output_trr_path: !& npt.trr
-  - gmx_energy:
+    gmx_energy:
       in:
         config: !ii
           terms: [Density]

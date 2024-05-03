@@ -1,5 +1,5 @@
 steps:
-- run_diffdock.wic:
+  run_diffdock.wic:
 
 wic:
   steps:
