@@ -3,7 +3,7 @@ wic:
   implementations:
     protein:
       steps:
-        - analysis_final_steps.wic:
+          analysis_final_steps.wic:
       wic:
         steps:
           (1, analysis_final_steps.wic):
@@ -20,7 +20,7 @@ wic:
                       output_selection: Protein
     ligand:
       steps:
-        - analysis_final_steps.wic:
+          analysis_final_steps.wic:
       wic:
         steps:
           (1, analysis_final_steps.wic):
@@ -41,7 +41,7 @@ wic:
                     input_crd_path: !* prod_ligand.gro
     complex:
       steps:
-        - analysis_final_steps.wic:
+          analysis_final_steps.wic:
       wic:
         steps:
           (1, analysis_final_steps.wic):

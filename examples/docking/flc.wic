@@ -10,7 +10,7 @@ steps:
   # better to explicitly add hydrogens in obabel or let generate_conformers_sdf do it.
   # arg2: -h
   # arg2: -p 7.4
-  - generate_conformers_sdf:
+    generate_conformers_sdf:
       in:
         input_path: sdf_path
         #input_path:
@@ -19,7 +19,7 @@ steps:
         # then minimizes again.
 #      out:
 #      - output_sdf_path: !& ligand_min.sdf
-  - convert_mol2:
+    convert_mol2:
 #      in:
 #        input_path: !* ligand_min.sdf
       out:

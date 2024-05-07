@@ -1,5 +1,5 @@
 steps:
-  - cwl_subinterpreter:
+    cwl_subinterpreter:
       in:
         #cachedir_path: /absolute/path/to/cachedir/ (automatically filled in by wic)
         file_pattern: !ii '*prod.trr'

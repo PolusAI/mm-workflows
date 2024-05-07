@@ -1,5 +1,5 @@
 steps:
-- extract_pdbbind_refined:
+  extract_pdbbind_refined:
     in:
       # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.query.html
       # The query() method uses a slightly modified Python syntax by default.
@@ -16,15 +16,15 @@ steps:
     - output_sdf_paths: !& pdbbind_sdfs
     - experimental_dGs: !& exp_dGs
     - pdb_ids: !& pdbids
-      
-- config_tag_pdb:
+
+  config_tag_pdb:
     scatter: [pdb_id]
     in:
       pdb_id: !* pdbids
       filter: !ii "False"
     out:
     - output_config_string: !& pdb_id_str
-- pdb:
+  pdb:
     scatter: [config]
     in:
       output_pdb_path: !ii rcsb_protein.pdb
@@ -32,7 +32,7 @@ steps:
     out:
     - output_pdb_path: !& rcsb_protein.pdb
 
-- pdb_fixer:
+  pdb_fixer:
     in:
       input_pdb_path: !* pdbbind_pdbs
       input_helper_pdb_path: !* rcsb_protein.pdb # Note: PDBFixer utilizes sequence information from this file
@@ -46,7 +46,7 @@ steps:
     out:
     - output_pdb_path: !& pdbbind_pdbfixer.pdb
 
-- extract_protein:
+  extract_protein:
     scatter: [input_pdb_path]
     in:
       input_pdb_path: !* pdbbind_pdbfixer.pdb
@@ -55,7 +55,7 @@ steps:
     - output_pdb_path: !& protein.pdb
 
 # assign partial charges (ligand)
-- convert_pdbqt.wic:
+  convert_pdbqt.wic:
     scatter: [input_pdb_path, input_sdf_path]
     scatterMethod: dotproduct
     in:
@@ -65,7 +65,7 @@ steps:
       input_sdf_path: !* pdbbind_sdfs
 
 # rescore protein ligand complexes
-- autodock_vina_rescore:
+  autodock_vina_rescore:
     in:
       input_ligand_pdbqt_path: !* mol_prod.pdbqt
       input_receptor_pdbqt_path: !* receptor_prod.pdbqt
@@ -78,7 +78,7 @@ steps:
     - docking_score: !& rescoring_scores
     - output_ligand_pdbqt_path: !& ligand_rescore.pdbqt
 
-- duplicate:
+  duplicate:
     in:
       input_pdbqt_singleton_path: !* protein.pdb
       input_pdbqt_array_path: !* ligand_rescore.pdbqt
@@ -87,7 +87,7 @@ steps:
     out:
     - output_pdbqt_path: !& receptor_dup_2D.pdb
 
-- autodock_vina_filter:
+  autodock_vina_filter:
     in:
       input_log_paths: !* vina_rescore_pdbind.log
       input_txt_path: !* binding_data.txt
@@ -103,7 +103,7 @@ steps:
     - docking_scores: !& docking_scores
     - experimental_dGs: !& dGs
 
-- setup_pdb.wic:
+  setup_pdb.wic:
     in:
       input_pdb_path: !* receptor_filter.pdb
       pdb_path: !ii pdb.pdbqt
@@ -116,7 +116,7 @@ steps:
     - pdb_path: !& pdb.pdbqt
     - box_path: !& box.pdb
 
-- gen_topol_params.wic:
+  gen_topol_params.wic:
     in:
       input_ligand_pdbqt_path: !* ligand_filter.pdbqt
       input_top_zip_path: !* receptor.zip
@@ -124,7 +124,7 @@ steps:
     scatter: [input_ligand_pdbqt_path, input_top_zip_path, input_receptor_xyz_path]
     scatterMethod: dotproduct
 
-- stability.wic:
+  stability.wic:
     scatter: [crd_path, top_zip_path]
     scatterMethod: dotproduct
     in:
@@ -137,7 +137,7 @@ steps:
       temperature: !ii 298.0
       pressure: !ii 1.0
 
-- autodock_vina_rescore.wic:
+  autodock_vina_rescore.wic:
     scatter: [input_pdb_path, input_ligand_pdb_path]
     scatterMethod: dotproduct
     in:
@@ -146,7 +146,7 @@ steps:
       input_pdb_path: !* prod.pdb
       input_ligand_pdb_path: !* ligand_GMX.pdb
 
-- scatter_plot:
+  scatter_plot:
     in:
       xs: !* dGs
       ys: !* docking_scores

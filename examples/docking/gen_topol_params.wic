@@ -12,13 +12,13 @@ inputs:
     format:
     - edam:format_3987
 steps:
-- convert_mol2:
+  convert_mol2:
     in:
       input_path: input_ligand_pdbqt_path
 #      input_path: !* ligand.pdbqt
 #    out:
 #    - output_mol2_path: !& pose.mol2
-- python3_mol2_to_mol2:
+  python3_mol2_to_mol2:
     in:
       script: !ii /rename_residues_mol.py # NOTE: Initial / required
 #      input_mol2_path: !* pose.mol2
@@ -29,7 +29,7 @@ steps:
 # Close contact of 1.418311 angstroms between .R<UNL 1>.A<CG 8> and .R<UNL 1>.A<HD2 30>
 # and 2. acpype doesn't complain about 'ERROR: Atoms TOO alone (> 3.0 Ang.)'
 # (acpype suggests using --force, but it's better to just minimize.)
-- acpype:
+  acpype:
   # NOTE: We are using our own acpypye CWL adapter (NOT the biobb version) so
   # we have the choice of using charges from the mol2 file.
     in:
@@ -45,36 +45,36 @@ steps:
 #    - output_top_path: !& ligand_GMX.top
     - output_pdb_path: !& ligand_GMX.pdb
 # NOTE: acpype doesn't add forcefield or water topology #include lines.
-- bash_top:
+  bash_top:
     in:
       script: !ii /gmx_add_topology_includes.sh # NOTE: Initial / required
 #      input_top_path: !* ligand_GMX.top
 #    out:
 #    - output_top_path: !& ligand_GMX_includes.top
-- zip_top:
+  zip_top:
     in:
 #      input_top_path: !* ligand_GMX_includes.top
       input_itp_path: !* ligand_GMX.itp
 #    out:
 #    - output_top_zip_path: !& ligand_GMX.zip
-- convert_xyz:
+  convert_xyz:
     in:
-      input_path: !* ligand_GMX.pdb # Need .pdb, otherwise: issues, such as 
+      input_path: !* ligand_GMX.pdb # Need .pdb, otherwise: issues, such as
       # the conversion of one atom type to another, can happen.
-      # Because Openbabel doesn't work for gro files 
+      # Because Openbabel doesn't work for gro files
       # https://open-babel.readthedocs.io/en/latest/FileFormats/GRO_format.html#
       # For example if you use the gro format and have a BR (Bromine) atom "1  MOL   BR   53  -1.479  -3.282   2.052"
       # it will be converted to Boron (B) in the output xyz file "B        -14.79000      -32.82000       20.52000"
       output_xyz_path: !ii pose_ligand.xyz
     out:
     - output_xyz_path: !& pose_ligand.xyz
-- append_ligand:
+  append_ligand:
     in:
 #      input_itp_path: !* ligand_GMX.itp
       input_top_zip_path: input_top_zip_path # !*receptor.zip
     out:
     - output_top_zip_path: !& complex_vac.zip
-- combine_structure:
+  combine_structure:
     in:
       input_structure1: input_receptor_xyz_path
       input_structure2: !* pose_ligand.xyz

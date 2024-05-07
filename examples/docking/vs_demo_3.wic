@@ -1,5 +1,5 @@
 steps:
-- download_pdb.wic:
+  download_pdb.wic:
     in:
       #pdb_id: !ii 1r4l # ACE2
       #pdb_id: !ii 1ntp # trypsin
@@ -7,7 +7,7 @@ steps:
       #pdb_id: !ii 6us9 # Influenza A M2
       #pdb_id: !ii 2rlf # Influenza A M2
 
-- setup_pdb.wic:
+  setup_pdb.wic:
     in:
       input_pdb_path: !* protein.pdb
       pdb_path: !ii pdb.pdbqt
@@ -22,7 +22,7 @@ steps:
 #- download_ligand_database_xlsx:
 #    in:
 #      database: !ii /ncats_target_based_curated.xlsx # SMACC ligand database
-- download_smiles_ligand_db.wic:
+  download_smiles_ligand_db.wic:
     in:
       path: !ii https://smacc.mml.unc.edu/ncats_target_based_curated.xlsx
       # query syntax: `column name` 'column value'
@@ -35,14 +35,14 @@ steps:
     out:
     - output_txt_path: !& binding_data.txt
 
-- ligand_modeling_docking.wic:
+  ligand_modeling_docking.wic:
     scatter: [sdf_path]
     in:
       # NOTE: sdf_path is currently only necessary
       # due to a limitation of the inlineing implementation.
       sdf_path: !* ligand_conformers.sdf
 
-- duplicate:
+  duplicate:
     scatter: [input_pdbqt_array_path]
     in:
       input_pdbqt_singleton_path: !* pdb.pdbqt
@@ -50,7 +50,7 @@ steps:
     out:
     - output_pdbqt_path: !& receptor_dup_2D.pdbqt
 
-- autodock_vina_filter:
+  autodock_vina_filter:
     in:
       input_log_paths: !* vina.log # NOTE: plural
       input_txt_path: !* binding_data.txt
@@ -63,7 +63,7 @@ steps:
     - output_ligand_pdbqt_path: !& ligand_filter.pdbqt
     - docking_scores: !& docking_scores
     - experimental_dGs: !& dGs
-- gen_topol_params.wic:
+  gen_topol_params.wic:
     in:
       input_ligand_pdbqt_path: !* ligand_filter.pdbqt
       # NOTE: input_receptor_xyz_path and input_top_zip_path are currently only necessary
@@ -71,7 +71,7 @@ steps:
       input_receptor_xyz_path: !* receptor.xyz
       input_top_zip_path: !* receptor.zip
     scatter: [input_ligand_pdbqt_path]
-- stability.wic:
+  stability.wic:
     scatter: [crd_path, top_zip_path]
     scatterMethod: dotproduct
     in:
@@ -83,7 +83,7 @@ steps:
       dt: !ii 0.002
       temperature: !ii 298.0
       pressure: !ii 1.0
-- autodock_vina_rescore.wic:
+  autodock_vina_rescore.wic:
     scatter: [input_pdb_path, input_ligand_pdb_path]
     scatterMethod: dotproduct
     in:
@@ -91,7 +91,7 @@ steps:
       # due to a limitation of the inlineing implementation.
       input_pdb_path: !* prod.pdb
       input_ligand_pdb_path: !* ligand_GMX.pdb
-- scatter_plot:
+  scatter_plot:
     in:
       xs: !* dGs
       ys: !* docking_scores

@@ -15,9 +15,9 @@ steps:
 # (i.e. immediately before molecular dynamics) so we can extract &min.tpr
 # to this level and use the following syntax to pass it to only one call site.
 # (Moreover, the former will create multiple definitions of &min.tpr, which is not allowed.)
-  - min.wic:
-  - equil.wic:
-  - prod.wic:
+    min.wic:
+    equil.wic:
+    prod.wic:
       in:
         nsteps: nsteps
         dt: dt

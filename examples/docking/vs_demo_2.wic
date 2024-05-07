@@ -1,12 +1,12 @@
 steps:
-- download_pdb.wic:
+  download_pdb.wic:
     in:
       #pdb_id: !ii 1r4l # ACE2
       #pdb_id: !ii 1ntp # trypsin
       pdb_id: !ii 1uao # chignolin (for speed)
       #pdb_id: !ii 6us9 # Influenza A M2
       #pdb_id: !ii 2rlf # Influenza A M2
-- setup_pdb.wic:
+  setup_pdb.wic:
     in:
       input_pdb_path: !* protein.pdb
       pdb_path: !ii pdb.pdbqt
@@ -18,7 +18,7 @@ steps:
     - pdb_path: !& pdb.pdbqt
     - box_path: !& box.pdb
 
-- download_smiles_ligand_db.wic:
+  download_smiles_ligand_db.wic:
     in:
       path: !ii https://smacc.mml.unc.edu/ncats_target_based_curated.xlsx
       # query syntax: `column name` 'column value'
@@ -32,7 +32,7 @@ steps:
     out:
     - output_txt_path: !& binding_data.txt
 
-- assign_partial_charges.wic:
+  assign_partial_charges.wic:
     scatter: [input_path]
     in:
       # NOTE: input_path is currently only necessary
@@ -42,7 +42,7 @@ steps:
 # ligands are passed (as CLI args) to vina all at once. Thus, if you want to
 # incrementally increase the number of ligands, the previous results will NOT be cached!
 
-- autodock_vina_batch:
+  autodock_vina_batch:
     in:
       input_receptor_pdbqt_path: !* pdb.pdbqt
       input_box_path: !* box.pdb
@@ -50,14 +50,14 @@ steps:
     - output_log_path: !& vina.log
     - output_batch_pdbqt_path: !& ligand_decoys_1D.pdbqt
 
-- split_pdbqt:
+  split_pdbqt:
     scatter: [input_path]
     in:
       input_path: !* ligand_decoys_1D.pdbqt
     out:
     - output_pdb_path: !& ligand_decoys_2D.pdbqt
 
-- duplicate:
+  duplicate:
     scatter: [input_pdbqt_array_path]
     in:
       input_pdbqt_singleton_path: !* pdb.pdbqt
@@ -65,7 +65,7 @@ steps:
     out:
     - output_pdbqt_path: !& receptor_dup_2D.pdbqt
 
-- autodock_vina_filter:
+  autodock_vina_filter:
     in:
       input_ligand_pdbqt_path: !* ligand_decoys_2D.pdbqt
       input_receptor_pdbqt_path: !* receptor_dup_2D.pdbqt
@@ -79,7 +79,7 @@ steps:
     - docking_scores: !& docking_scores
     - experimental_dGs: !& dGs
 
-- gen_topol_params.wic:
+  gen_topol_params.wic:
     in:
       input_ligand_pdbqt_path: !* ligand_filter.pdbqt
       # NOTE: input_receptor_xyz_path and input_top_zip_path are currently only necessary
@@ -88,7 +88,7 @@ steps:
       input_top_zip_path: !* receptor.zip
     scatter: [input_ligand_pdbqt_path]
 
-- stability.wic:
+  stability.wic:
     scatter: [crd_path, top_zip_path]
     scatterMethod: dotproduct
     in:
@@ -100,7 +100,7 @@ steps:
       dt: !ii 0.002
       temperature: !ii 298.0
       pressure: !ii 1.0
-- autodock_vina_rescore.wic:
+  autodock_vina_rescore.wic:
     scatter: [input_pdb_path, input_ligand_pdb_path]
     scatterMethod: dotproduct
     in:
@@ -109,7 +109,7 @@ steps:
       input_pdb_path: !* prod.pdb
       input_ligand_pdb_path: !* ligand_GMX.pdb
 
-- scatter_plot:
+  scatter_plot:
     in:
       xs: !* dGs
       ys: !* docking_scores

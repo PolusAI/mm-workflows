@@ -10,28 +10,28 @@ inputs:
     - edam:format_3987
 
 steps:
-# - editconf:
+#   editconf:
 #     in:
 #       input_crd_path: crd_path
 #       #input_crd_path: !* complex_vac.pdb
 #       config: !ii
 #         box_type: cubic
 #         distance_to_molecule: 1.2
-- gmx_editconf:
+  gmx_editconf:
     in:
       input_crd_path: crd_path
       #input_crd_path: !* complex_vac.pdb
       align_principal_axes: !ii 0
       box_type: !ii cubic
       distance_to_molecule: !ii 1.2
-- solvate:
+  solvate:
     in:
       input_top_zip_path: top_zip_path
       #input_top_zip_path: !* complex_vac.zip
     out:
     - output_crd_path: !& solvate.gro
     - output_top_zip_path: !& solvate.zip
-- grompp:
+  grompp:
     in:
       input_crd_path: !* solvate.gro
       input_top_zip_path: !* solvate.zip
@@ -40,7 +40,7 @@ steps:
         maxwarn: 1 # Be careful that this doesn't hide other errors!
         mdp:
           integrator: steep
-- genion:
+  genion:
     in:
       # pH 7.0 = 0.05 concentration, pH 3.6 = 1.50 concentration, pH 2.5 = 4.50 concentration
       # NOTE: At higher salt concentrations, you may need to increase nsteps of
@@ -52,7 +52,7 @@ steps:
     out:
     - output_top_zip_path: !& genion.zip
     - output_crd_path: !& genion.gro
-- gmx_trjconv_str:
+  gmx_trjconv_str:
     in:
       #config: !ii
       #  selection: System

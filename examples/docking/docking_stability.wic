@@ -5,12 +5,12 @@ inputs:
     - edam:format_3814
 
 steps:
-- docking.wic:
+  docking.wic:
     in:
       # NOTE: sdf_path is currently only necessary
       # due to a limitation of the inlineing implementation.
       sdf_path: sdf_path
-- stability.wic:
+  stability.wic:
     in:
       # NOTE: crd_path and top_zip_path are currently only necessary
       # due to a limitation of the inlineing implementation.

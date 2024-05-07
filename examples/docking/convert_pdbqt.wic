@@ -9,23 +9,24 @@ inputs:
     - edam:format_3814
 
 steps:
-- convert_mol2:
-    in:
-      input_path: input_sdf_path
+- id: convert_mol2
+  in:
+    input_path: input_sdf_path
 
-- convert_pdbqt:
-    out:
-    - output_pdb_path: !& mol_prod.pdbqt
+- id: convert_pdbqt
+  out:
+  - output_pdb_path: !& mol_prod.pdbqt
 
-- convert_mol2:
-    in:
-      input_path: input_pdb_path
+- id: convert_mol2
+  in:
+    input_path: input_pdb_path
 
-- convert_pdbqt:
-    in:
-      arg1: !ii -xr # Receptor needs to be rigid
-    out:
-    - output_pdb_path: !& receptor_prod.pdbqt
+- id: convert_pdbqt
+  in:
+    arg1: !ii -xr # Receptor needs to be rigid
+  out:
+  - output_pdb_path: !& receptor_prod.pdbqt
+
 wic:
   graphviz:
     label: Assign Partial\nCharges

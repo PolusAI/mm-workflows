@@ -1,5 +1,5 @@
-steps:        
-  - load_trained_molgan_model:
+steps:
+    load_trained_molgan_model:
       in:
         input_data_path: !ii /MolGAN/data/data.pkl
         input_NP_Score_path: !ii /MolGAN/data/NP_score.pkl.gz
@@ -10,7 +10,7 @@ steps:
 
 wic:
   graphviz:
-    label: MolGAN 
+    label: MolGAN
   steps:
     (1, run_trained_molgan_model):
       wic:

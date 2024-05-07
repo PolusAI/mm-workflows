@@ -1,5 +1,5 @@
 steps:
-  - sander_mdrun:
+    sander_mdrun:
       in:
         input_mdin_path: !ii npt.mdin
 #        input_crd_path: !* min.rst
@@ -7,13 +7,13 @@ steps:
       out:
       - output_log_path: !& amb_npt.log
 #      - output_rst_path: !& amb.rst
-  - process_mdout:
+    process_mdout:
       in:
         input_log_path: !* amb_npt.log
         config: !ii
           terms: [DENSITY]
         output_dat_path: !ii density.dat
-  - cwl_subinterpreter:
+    cwl_subinterpreter:
       in:
         #cachedir_path: /absolute/path/to/cachedir/ (automatically filled in by wic)
         file_pattern: !ii '*amb_npt.log'

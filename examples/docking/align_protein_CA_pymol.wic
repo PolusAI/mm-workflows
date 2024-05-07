@@ -1,5 +1,5 @@
 steps:
-  - pymol_align_protein_ca:
+    pymol_align_protein_ca:
       in:
         input_1_path: !* receptor.xyz
         input_2_path: !* pose_ligand_1.pdb
@@ -9,7 +9,7 @@ steps:
         # pymol only supports saving to pdb format which does not support storing the time of each frame.
       out:
       - output_file_path: !& prod_align_protein_ca.pdb
-  - gmx_rms_nofit:
+    gmx_rms_nofit:
       in:
         input_structure_path: !* npt.gro # prod.tpr ?
         input_traj_path: !* prod_align_protein_ca.pdb
@@ -19,7 +19,7 @@ steps:
         output_xvg_path: !ii rmsd_equil_ligand_notime.txt # Use .txt to avoid plotting
       out:
       - output_xvg_path: !& rmsd_equil_ligand_notime
-  - bash_xvg:
+    bash_xvg:
       in:
         script: !ii /replace_first_column.sh # NOTE: Initial / required
         # But we can recover the time column by copying it from another xvg file.

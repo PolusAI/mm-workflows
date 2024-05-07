@@ -1,21 +1,21 @@
 # NOTE: We're not using the results of the structure_check steps,
 # and they're cluttering up the DAG, so comment out for now.
 steps:
-- download_pdb.wic:
+  download_pdb.wic:
     in:
       pdb_id: !ii 1aki
-#- structure_check:
+#  structure_check:
 #    in:
 #      output_summary_path: !ii structure_check_protein.json
 # Requires modeller license
-#- fix_backbone:
+#  fix_backbone:
 #    in:
 #      output_pdb_path: !ii protein_fix_backbone.pdb
-#- structure_check:
+#  structure_check:
 #    in:
 #      output_summary_path: !ii structure_check_protein_fix_backbone.json
 
-- pdb_fixer:
+  pdb_fixer:
     in:
       input_pdb_path: !* protein.pdb
       output_pdb_path: !ii protein_pdbfixer.pdb
@@ -25,21 +25,21 @@ steps:
       keep_heterogens: !ii none
     out:
     - output_pdb_path: !& protein_pdbfixer.pdb
-- fix_amides:
+  fix_amides:
     in:
       input_pdb_path: !* protein_pdbfixer.pdb
     out:
     - output_pdb_path: !& protein_fix_amides.pdb
-#- structure_check:
+#  structure_check:
 #    in:
 #      output_summary_path: !ii structure_check_protein_fix_amides.json
-# - fix_side_chain:
+#   fix_side_chain:
 #     in:
 #       output_pdb_path: !ii protein_fix_side_chain.pdb
-#- structure_check:
+#  structure_check:
 #    in:
 #      output_summary_path: !ii structure_check_protein_fix_side_chain.json
-- str_check_add_hydrogens:
+  str_check_add_hydrogens:
     in:
       config: !ii
         charges: False # charges = True outputs in pdbqt format
@@ -48,10 +48,10 @@ steps:
         keep_canonical_resnames: False
       input_structure_path: !* protein_fix_amides.pdb
       output_structure_path: !ii protein_hydrogens.pdb
-#- structure_check:
+#  structure_check:
 #    in:
 #      output_summary_path: !ii structure_check_protein_hydrogens.json
-- pdb2gmx:
+  pdb2gmx:
     in:
       config: !ii
         water_type: spce

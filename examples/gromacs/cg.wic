@@ -1,5 +1,5 @@
 steps:
-  - grompp:
+    grompp:
       in:
         config: !ii
           mdp:
@@ -14,7 +14,7 @@ steps:
             emtol: 10
             nstxout: 100
             nstenergy: 1
-  - mdrun:
+    mdrun:
       in:
         nb_terms: !ii cpu  # NOTE: Workaround for a bug in gromacs 2022.2, fixed in 2022.3
         # https://manual.gromacs.org/current/release-notes/2022/2022.3.html#energy-minimization-would-not-converge-with-gpu-and-without-dd
@@ -22,7 +22,7 @@ steps:
         pme_terms: !ii cpu
         pme_fft_terms: !ii cpu
         update_terms: !ii cpu
-  - gmx_energy:
+    gmx_energy:
       in:
         config: !ii
           terms: [Potential]

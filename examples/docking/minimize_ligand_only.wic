@@ -5,7 +5,7 @@ inputs:
     - edam:format_3814
 
 steps:
-  - convert_mol2:
+    convert_mol2:
       in:
         input_path: sdf_path
         #input_path: !* ligand.sdf
@@ -13,7 +13,7 @@ steps:
         # arg1: !ii -p 7.4
       out:
       - output_mol2_path: !& ligand.mol2
-  - obmin:
+    obmin:
       in:
         # Perform an initial minimization (only), i.e. do not search for conformers.
         script: !ii /obminimize.sh # NOTE: Initial / required

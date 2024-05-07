@@ -7,55 +7,55 @@ inputs:
     format: edam:format_1476
 
 steps:
-- python_script:
-    in:
-      script: !ii ../scripts/atomselect.py
-      dockerPull: !ii jakefennick/atomselect
-      selection_string: !ii protein # Extract the protein from the last timestep
-      input_pdb_path: input_pdb_path # !* prod.pdb
+- id: python_script
+  in:
+    script: !ii ../scripts/atomselect.py
+    dockerPull: !ii jakefennick/atomselect
+    selection_string: !ii protein # Extract the protein from the last timestep
+    input_pdb_path: input_pdb_path # !* prod.pdb
 # Assign partial charges (protein)
 # NOTE: Although we only start off with one protein, the final coordinates
 # after doing MD with different ligands will be different; hence scatter
-- convert_mol2:
-- convert_pdbqt:
-    in:
-      arg1: !ii -xr # Receptor needs to be rigid
-    out:
-    - output_pdb_path: !& protein_prod.pdbqt
-- python_script:
-    in:
-      script: !ii ../scripts/atomselect.py
-      dockerPull: !ii jakefennick/atomselect
-      selection_string: !ii resname MOL # Extract the ligand from the last timestep
-      input_pdb_path: input_pdb_path # !* prod.pdb
-    # out:
-    # - output_pdb_path: !& ligand_temp.pdbqt
+- id: convert_mol2
+- id: convert_pdbqt
+  in:
+    arg1: !ii -xr # Receptor needs to be rigid
+  out:
+  - output_pdb_path: !& protein_prod.pdbqt
+- id: python_script
+  in:
+    script: !ii ../scripts/atomselect.py
+    dockerPull: !ii jakefennick/atomselect
+    selection_string: !ii resname MOL # Extract the ligand from the last timestep
+    input_pdb_path: input_pdb_path # !* prod.pdb
+  # out:
+  # - output_pdb_path: !& ligand_temp.pdbqt
 
 # It utilizes a helper PDB file to overwrite the atom element
-# types (last column) of the input PDB file 
+# types (last column) of the input PDB file
 # Input pdb file
 # ATOM   4653  C26 MOL A 286      44.880  26.370  42.560  1.00  0.00           C
 # ATOM   4654  BR  MOL A 286      48.190  27.540  40.260  1.00  0.00           B
 # Input helepr pdb file
 # ATOM     52  C26 MOL Z   1     -18.069 -34.542  22.368  1.00  0.00           C
 # ATOM     53   BR MOL Z   1     -14.786 -32.819  20.524  1.00  0.00          BR
-- fix_pdb_atom_column:
-    in:
-      input_helper_structure_path: input_ligand_pdb_path
+- id: fix_pdb_atom_column
+  in:
+    input_helper_structure_path: input_ligand_pdb_path
 # Assign partial charges (ligand)
-- convert_mol2:
-- convert_pdbqt:
-    out:
-    - output_pdb_path: !& ligand_prod.pdbqt
-- autodock_vina_rescore:
-    in:
-      input_ligand_pdbqt_path: !* ligand_prod.pdbqt
-      input_receptor_pdbqt_path: !* protein_prod.pdbqt
-      score_only: !ii True
-      #local_only: !ii True
-    out:
-    - output_log_path: !& vina_rescore.log
-    - docking_score: !& docking_rescores
+- id: convert_mol2
+- id: convert_pdbqt
+  out:
+  - output_pdb_path: !& ligand_prod.pdbqt
+- id: autodock_vina_rescore
+  in:
+    input_ligand_pdbqt_path: !* ligand_prod.pdbqt
+    input_receptor_pdbqt_path: !* protein_prod.pdbqt
+    score_only: !ii True
+    #local_only: !ii True
+  out:
+  - output_log_path: !& vina_rescore.log
+  - docking_score: !& docking_rescores
 
 wic:
   graphviz:
@@ -81,7 +81,7 @@ wic:
       wic:
         graphviz:
           label: Correct atom\nelement types
-    (6, convert_mol2): 
+    (6, convert_mol2):
       wic:
         graphviz:
           label: Assign Partial\nCharges

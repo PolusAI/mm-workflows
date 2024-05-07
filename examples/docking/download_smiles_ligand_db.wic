@@ -21,10 +21,10 @@ outputs:
     outputSource: download_smiles_ligand_db__step__2__generate_conformers/output_txt_path
 
 steps:
-- wget_xlsx:
+  wget_xlsx:
     in:
       url: path
-- generate_conformers:
+  generate_conformers:
     in:
       #input_excel_path: # inferred
       # query syntax: `column name` 'column value'
