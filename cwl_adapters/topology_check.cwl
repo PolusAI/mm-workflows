@@ -50,6 +50,10 @@ outputs:
       loadContents: true
       outputEval: |
         ${
+          // check if self[0] exists
+          if (!self[0]) {
+            return null;
+          }
           // Read the contents of the file
           const lines = self[0].contents.split("\n");
           // Read boolean value from the first line

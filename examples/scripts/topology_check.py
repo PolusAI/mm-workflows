@@ -100,7 +100,7 @@ def get_properties(atom: Atom) -> dict:
     res_dict = {}
     res = atom.GetPDBResidueInfo()
     res_dict['GetResidueName'] = res.GetResidueName()
-    res_dict['GetResidueNumber'] = res.GetResidueNumber()
+    res_dict['GetResidueNumber'] = str(res.GetResidueNumber())
     res_dict['GetChainId'] = res.GetChainId()
     res_dict['GetName'] = res.GetName()
     prop_dict = {
