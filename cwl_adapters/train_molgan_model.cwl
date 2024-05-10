@@ -11,6 +11,13 @@ hints:
   DockerRequirement:
     dockerPull: ndonyapour/molgan
 
+# Set environment variables for the tool,
+# See: https://www.commonwl.org/user_guide/topics/environment-variables.html
+requirements:
+  EnvVarRequirement:
+    envDef:
+      RDKIT_ERROR_LOGGING: $(inputs.rdkit_error_logging)
+
 inputs:
   input_data_path:
     label: Path to the input data file
@@ -41,7 +48,7 @@ inputs:
     default: NP.gz
     inputBinding:
       prefix: --input_NP_Score_path
- 
+
   input_SA_Score_path:
     label: Output ceout file (AMBER ceout)
     doc: |-
@@ -74,10 +81,10 @@ inputs:
   output_model_dir:
     label: Output directory
     type: string
-    format: 
+    format:
     - edam:format_2330 # 'Textual format'
     inputBinding:
-      prefix: --output_model_dir 
+      prefix: --output_model_dir
     default: output
 
   validation_metrics:
@@ -86,13 +93,13 @@ inputs:
       The metrics are used during validation and testing
     type: string?
     format:
-    - edam:format_2330 
+    - edam:format_2330
     inputBinding:
       prefix: --validation_metrics
     default: 'np,logp,sas,qed,novelty,dc,unique,diversity,validity'
 
   num_epochs:
-    label: The number of training epochs 
+    label: The number of training epochs
     doc: |-
       The number of training epochs
       Type: int
@@ -111,7 +118,18 @@ inputs:
     format:
     - edam:format_2330
     inputBinding:
-      prefix: --save_frequency 
+      prefix: --save_frequency
+
+  rdkit_error_logging:
+    label: Enable or disable RDKit error logging
+    doc: |-
+      Enable or disable RDKit error logging
+    type: string?
+    format:
+    - edam:format_2330
+    # RDKit prints out all errors by default, which can pose issues for CI,
+    # particularly with large databases. It would be more efficient to suppress these errors.
+    default: "ON"
 
 outputs:
 
@@ -129,6 +147,13 @@ outputs:
     outputBinding:
       glob: $(inputs.output_model_dir)
     format: edam:format_2330 # 'Textual format
+
+  stderr:
+    type: File
+    outputBinding:
+      glob: stderr
+
+stderr: stderr
 
 $namespaces:
   edam: https://edamontology.org/
