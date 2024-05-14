@@ -236,15 +236,6 @@ outputs:
       glob: $(inputs.output_trr_path)
     format: edam:format_3910
 
-  output_crd_path:
-    label: Path to the output GROMACS structure GRO file
-    doc: |-
-      Path to the output GROMACS structure GRO file
-    type: File
-    outputBinding:
-      glob: $(inputs.output_crd_path)
-    format: edam:format_2033
-
   output_edr_path:
     label: Path to the output GROMACS portable energy file EDR
     doc: |-
@@ -289,6 +280,20 @@ outputs:
     type: File?
     outputBinding:
       glob: $(inputs.output_dhdl_path)
+    format: edam:format_2033
+
+# output_crd_path should go after output_dhdl_path because they both have the same
+# format: and we want inference to choose output_crd_path for grompp input_crd_path
+# output_crd_path should also go after output_cpt_path because gmx_rms input_structure_path
+# accepts both format_2033 and format_2333 and we want inference to choose output_crd_path
+
+  output_crd_path:
+    label: Path to the output GROMACS structure GRO file
+    doc: |-
+      Path to the output GROMACS structure GRO file
+    type: File
+    outputBinding:
+      glob: $(inputs.output_crd_path)
     format: edam:format_2033
 
 $namespaces:
