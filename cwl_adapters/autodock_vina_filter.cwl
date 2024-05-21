@@ -13,7 +13,7 @@ baseCommand: python3
 
 hints:
   DockerRequirement:
-    dockerPull: jakefennick/autodock_vina_filter
+    dockerPull: ndonyapour/autodock_vina_filter
 
 requirements:
   InlineJavascriptRequirement: {}
@@ -115,7 +115,7 @@ inputs:
     label: Use True if autodock vina was run with --rescore
     doc: |-
       Use True if autodock vina was run with --rescore
-    type: string?
+    type: boolean?
     format:
     - edam:format_2330
     inputBinding:

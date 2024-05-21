@@ -10,7 +10,7 @@ parser.add_argument('--input_txt_path', required=False)  # Experimental data
 parser.add_argument('--docking_score_cutoff', type=float)
 parser.add_argument('--max_num_poses_per_ligand', type=int)
 parser.add_argument('--max_num_poses_total', type=int)
-parser.add_argument('--rescore', type=bool)
+parser.add_argument('--rescore', required=False, action='store_true')
 args = parser.parse_args()
 
 input_log_path = args.input_log_path

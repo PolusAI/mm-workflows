@@ -20,7 +20,7 @@ sudo docker build --no-cache --pull -f Dockerfile_align_protein_ca_mda -t jakefe
 sudo docker build --no-cache --pull -f Dockerfile_align_protein_ca_pymol -t jakefennick/align_protein_ca_pymol .
 sudo docker build --no-cache --pull -f Dockerfile_atomselect -t jakefennick/atomselect .
 sudo docker build --no-cache --pull -f Dockerfile_autodock_vina -t jakefennick/autodock_vina .
-sudo docker build --no-cache --pull -f Dockerfile_autodock_vina_filter -t jakefennick/autodock_vina_filter .
+sudo docker build --no-cache --pull -f Dockerfile_autodock_vina_filter -t ndonyapour/autodock_vina_filter .
 sudo docker build --no-cache --pull -f Dockerfile_bash_scripts -t jakefennick/bash_scripts .
 sudo docker build --no-cache --pull -f Dockerfile_calculate_net_charge -t jakefennick/calculate_net_charge .
 sudo docker build --no-cache --pull -f Dockerfile_mol2_to_pdbqt -t jakefennick/mol2_to_pdbqt .
