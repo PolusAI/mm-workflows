@@ -10,23 +10,35 @@ doc: |-
 
 baseCommand: echo
 
+hints:
+  cwltool:LoadListingRequirement:
+    loadListing:
+      no_listing:
+
 requirements:
   InlineJavascriptRequirement: {}
   InitialWorkDirRequirement:
     listing: |
       ${
         var lst = [];
-        for (var i = 0; i < inputs.data_dir.length; i++) {
-          console.log(inputs.data_dir[i].basename);
+        // console.log("inputs.data_dir");
+        // console.log(inputs.data_dir)
+        console.log("inputs.data_dir.listing.length.toString()");
+        console.log(inputs.data_dir.listing.length.toString());
+        for (var i = 0; i < inputs.data_dir.listing.length; i++) {
+          // console.log(inputs.data_dir.listing[i].basename);
 
-          if (inputs.pdb_ids.includes(inputs.data_dir[i].basename)) {
+          if (inputs.pdb_ids.includes(inputs.data_dir.listing[i].basename)) {
+            // console.log(inputs.data_dir.listing[i]);
             var dict = {
-              "entry": inputs.data_dir[i],
+              "entry": inputs.data_dir.listing[i],
               "writable": true // Important!
             };
             lst.push(dict);
           }
         }
+        console.log("lst.length.toString()");
+        console.log(lst.length.toString());
         return lst;
       }
 
@@ -65,6 +77,7 @@ outputs:
 
 $namespaces:
   edam: https://edamontology.org/
+  cwltool: "http://commonwl.org/cwltool#"
 
 $schemas:
 - https://raw.githubusercontent.com/edamontology/edamontology/master/EDAM_dev.owl
