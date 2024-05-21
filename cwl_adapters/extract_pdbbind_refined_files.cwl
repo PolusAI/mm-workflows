@@ -1,5 +1,5 @@
 #!/usr/bin/env cwl-runner
-cwlVersion: v1.0
+cwlVersion: v1.2
 
 class: CommandLineTool
 
@@ -17,25 +17,23 @@ hints:
 
 requirements:
   InlineJavascriptRequirement: {}
+  InplaceUpdateRequirement:
+    inplaceUpdate: true
   InitialWorkDirRequirement:
     listing: |
       ${
         var lst = [];
         // console.log("inputs.data_dir");
         // console.log(inputs.data_dir)
-        console.log("inputs.data_dir.listing.length.toString()");
-        console.log(inputs.data_dir.listing.length.toString());
-        for (var i = 0; i < inputs.data_dir.listing.length; i++) {
-          // console.log(inputs.data_dir.listing[i].basename);
-
-          if (inputs.pdb_ids.includes(inputs.data_dir.listing[i].basename)) {
-            // console.log(inputs.data_dir.listing[i]);
-            var dict = {
-              "entry": inputs.data_dir.listing[i],
-              "writable": true // Important!
-            };
-            lst.push(dict);
-          }
+        console.log("inputs.pdb_ids.length.toString()");
+        console.log(inputs.pdb_ids.length.toString());
+        for (var i = 0; i < inputs.pdb_ids.length; i++) {
+          // console.log(inputs.pdb_ids[i]);
+          var dict = {
+            "class": "File",
+            "location": inputs.data_dir.location.concat("/", inputs.pdb_ids[i]),
+          };
+          lst.push(dict);
         }
         console.log("lst.length.toString()");
         console.log(lst.length.toString());
