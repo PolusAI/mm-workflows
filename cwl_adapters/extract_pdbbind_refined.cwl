@@ -3,48 +3,38 @@ cwlVersion: v1.0
 
 class: CommandLineTool
 
-label: Download the PDBbind refined database
+label: Determine PDBbind refined database dG and filenames to extract
 
 doc: |-
-  Download the PDBbind refined database
+  Determine PDBbind refined database dG and filenames to extract
 
 baseCommand: python3
 
 hints:
   DockerRequirement:
-    dockerImageId: pdbbind_refined_v2020  # NOTE: no username
-    dockerFile:
-        $include: ../examples/scripts/Dockerfile_pdbbind_refined
+    dockerPull: mrbrandonwalker/pdbbind_refined_v2020
+
 
 requirements:
   InlineJavascriptRequirement: {}
 
 inputs:
+
   script:
     type: string
     inputBinding:
       position: 1
     default: /generate_pdbbind_complex.py
 
-  index_file_name:
-    label: The index file name
-    type: string
-    format:
-    - edam:format_2330
+  index_file_path:
+    label: The index file path
+    type: File
     inputBinding:
-      prefix: --index_file_name
+      prefix: --index_file_path
       position: 2
-    default: INDEX_refined_data.2020
-
-  base_dir:
-    label: The base_dir path
-    type: string
-    format:
-    - edam:format_2330
-    inputBinding:
-      prefix: --base_dir
-      position: 3
-    default: /refined-set
+    default:
+      class: File
+      location: ../../../mm-workflows/examples/scripts/refined-set/index/INDEX_refined_data.2020
 
   query:
     label: query str to search the dataset, Pandas query doesn't support slash(/) in column names please use Kd_Ki instead of Kd/Ki
@@ -58,7 +48,7 @@ inputs:
     - edam:format_2330
     inputBinding:
       prefix: --query
-      position: 4
+      position: 3
 
   output_txt_path:
     label: Path to the text dataset file
@@ -72,7 +62,7 @@ inputs:
     - edam:format_2330
     inputBinding:
       prefix: --output_txt_path
-      position: 5
+      position: 4
     default: system.log
 
   min_row:
@@ -84,7 +74,7 @@ inputs:
     format:
     - edam:format_2330
     inputBinding:
-      position: 6
+      position: 5
       prefix: --min_row
 
   max_row:
@@ -96,7 +86,7 @@ inputs:
     format:
     - edam:format_2330
     inputBinding:
-      position: 7
+      position: 6
       prefix: --max_row
 
   convert_Kd_dG:
@@ -107,9 +97,24 @@ inputs:
     - edam:format_2330
     inputBinding:
       prefix: --convert_Kd_dG
-      position: 8
+      position: 7
     default: False
 
+  experimental_dGs:
+    label: Experimental Free Energies of Binding
+    doc: |-
+      Experimental Free Energies of Binding
+    type: string?
+    format:
+    - edam:format_2330
+
+  pdb_ids:
+    label: The PDBID of proteins
+    doc: |-
+      The PDBID of proteins
+    type: string?
+    format:
+    - edam:format_2330
 outputs:
 
   output_txt_path:
@@ -120,64 +125,6 @@ outputs:
     outputBinding:
       glob: $(inputs.output_txt_path)
     format: edam:format_2330
-
-  output_pdb_paths:
-    label: Path to the input file
-    doc: |-
-      Path to the input file
-      Type: string
-      File type: input
-      Accepted formats: pdb
-    type: File[]
-    outputBinding:
-      # NOTE: Do NOT just use glob: ./*.pdb !!! This will return an array sorted by filenames.
-      # We want the order of output_pdb_paths to match the order of experimental_dGs, etc
-      # Becasue we need to compare experimental ΔGs with predicted values.
-      glob: $(inputs.output_txt_path)
-      loadContents: true
-      outputEval: |
-        ${
-          var lines = self[0].contents.split("\n");
-          var pdbs = [];
-          for (var i = 0; i < lines.length; i++) {
-            var words = lines[i].split(" ");
-            var pdbid = words[0];
-            var pdbfile = {"class": "File", "path": pdbid + "_protein.pdb"};
-            pdbs.push(pdbfile);
-            }
-
-          return pdbs;
-        }
-    format: edam:format_1476
-
-  output_sdf_paths:
-    label: Path to the input file
-    doc: |-
-      Path to the input file
-      Type: string
-      File type: input
-      Accepted formats: sdf
-    type: File[]
-    outputBinding:
-      # NOTE: Do NOT just use glob: ./*.sdf !!! This will return an array sorted by filenames.
-      # We want the order of output_sdf_paths to match the order of experimental_dGs, etc
-      # Because we need to compare experimental ΔGs with predicted values.
-      glob: $(inputs.output_txt_path)
-      loadContents: true
-      outputEval: |
-        ${
-          var lines = self[0].contents.split("\n");
-          var sdfs = [];
-          for (var i = 0; i < lines.length; i++) {
-            var words = lines[i].split(" ");
-            var pdbid = words[0];
-            var sdffile = {"class": "File", "path": pdbid + "_ligand.sdf"};
-            sdfs.push(sdffile);
-            }
-            
-          return sdfs;
-        }
-    format: edam:format_3814
 
   experimental_dGs:
     label: Experimental Free Energies of Binding
@@ -205,7 +152,7 @@ outputs:
             return experimental_dGs;
           }
         }
-        
+
   pdb_ids:
     label: The PDBID of proteins
     doc: |-
@@ -231,6 +178,14 @@ outputs:
             return pdbids;
           }
         }
+
+  stdout:
+    type: File
+    outputBinding:
+      glob: stdout
+
+stdout: stdout
+
 $namespaces:
   edam: https://edamontology.org/
 

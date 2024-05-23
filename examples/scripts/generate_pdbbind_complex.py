@@ -2,9 +2,7 @@
 from collections import defaultdict
 import math
 from typing import List, Dict, Any
-import os.path as osp
 import re
-import subprocess
 import argparse
 
 import pandas as pd
@@ -17,8 +15,7 @@ def parse_arguments() -> argparse.Namespace:
         argparse.Namespace: The command line arguments
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('--index_file_name', type=str)
-    parser.add_argument('--base_dir', type=str)
+    parser.add_argument('--index_file_path', type=str)
     parser.add_argument('--query', type=str)
     parser.add_argument('--output_txt_path', type=str)
     parser.add_argument('--min_row', required=False, type=int, default=1)
@@ -94,13 +91,12 @@ def read_index_file(index_file_path: str) -> pd.DataFrame:
 # pylint: disable=too-many-arguments,too-many-locals
 
 
-def load_data(index_file_name: str, base_dir: str, query: str, output_txt_path: str,
+def load_data(index_file_path: str, query: str, output_txt_path: str,
               min_row: int = 1, max_row: int = -1, convert_Kd_dG: bool = False) -> None:
     """ Filters Kd data beased on a query
 
     Args:
-        index_file_name (str): The PDBbind index file name
-        base_dir (str): The base directory of the dataset
+        index_file_path (str): The PDBbind index file name
         query (str): The Query to perform
         output_txt_path (str): The output text file
         min_row (int, optional): min index of rows. Defaults to 1.
@@ -108,7 +104,6 @@ def load_data(index_file_name: str, base_dir: str, query: str, output_txt_path: 
         convert_Kd_dG (bool, optional): If this set to True, The dG will be calculated. Defaults to False.
     """
 
-    index_file_path = osp.join(base_dir, 'index', index_file_name)
     df = read_index_file(index_file_path)
     print(df.shape)
     print(df.columns)
@@ -139,27 +134,12 @@ def load_data(index_file_name: str, base_dir: str, query: str, output_txt_path: 
     with open(output_txt_path, mode='w', encoding='utf-8') as f:
         f.write('\n'.join(binding_data))
 
-    # copy pdb and sdf files
-    for _, row in df.iterrows():
-        pdbcode = row['PDB_code']
-        source_pdb_path = osp.join(base_dir,
-                                   pdbcode,
-                                   f'{pdbcode}_protein.pdb')
-        dist_pdb_path = f'{pdbcode}_protein.pdb'
-        subprocess.run(["cp", f"{source_pdb_path}", f"{dist_pdb_path}"], check=True)
-        source_sdf_path = osp.join(base_dir,
-                                   pdbcode,
-                                   f'{pdbcode}_ligand.sdf')
-
-        dist_sdf_path = f'{pdbcode}_ligand.sdf'
-        subprocess.run(["cp", f"{source_sdf_path}", f"{dist_sdf_path}"], check=True)
-
 
 def main() -> None:
     """ Reads the command line arguments
     """
     args = parse_arguments()
-    load_data(args.index_file_name, args.base_dir, args.query, args.output_txt_path,
+    load_data(args.index_file_path, args.query, args.output_txt_path,
               min_row=args.min_row, max_row=args.max_row, convert_Kd_dG=args.convert_Kd_dG)
 
 
