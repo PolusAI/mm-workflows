@@ -28,5 +28,6 @@ docker pull mrbrandonwalker/diffdock_gpu
 docker pull mrbrandonwalker/diffdock_cpu
 docker pull ndonyapour/pdbfixer
 docker pull ndonyapour/extract_protein
+docker pull mrbrandonwalker/extract_ligand_protein
 docker pull ndonyapour/fix_pdb_atom_column
 docker pull ndonyapour/generate_conformers
