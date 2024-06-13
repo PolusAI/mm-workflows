@@ -1,0 +1,14 @@
+
+# docker build -f Dockerfile_insert_ligand_pocket -t mrbrandonwalker/insert_ligand_pocket .
+
+FROM condaforge/mambaforge
+
+RUN conda install -c conda-forge rdkit --yes
+
+RUN conda init bash
+
+COPY insert_ligand_pocket.py /
+
+RUN mamba clean --all --yes
+
+ADD Dockerfile_insert_ligand_pocket .

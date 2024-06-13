@@ -1,0 +1,143 @@
+steps:
+
+  - extract_pdbbind_refined:
+      in:
+        # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.query.html
+        # The query() method uses a slightly modified Python syntax by default.
+        # For example, the & and | (bitwise) operators have the precedence of their
+        # boolean cousins, and and or. This is syntactically valid Python, however
+        # the semantics are different.
+        query: '(Kd_Ki == "Kd") and (value < 0.001)'
+        max_row: 10 #25 # Use 1 for CI
+        convert_Kd_dG: True
+        output_txt_path: '&binding_data.txt'
+        output_pdb_paths: '&pdbbind_pdbs'
+        output_sdf_paths: '&pdbbind_sdfs'
+        experimental_dGs: '&exp_dGs'
+        pdb_ids: '&pdbids'
+
+  - config_tag_pdb:
+      scatter: [pdb_id]
+      in:
+        pdb_id: '*pdbids'
+        filter: "False"
+        output_config_string: '&pdb_id_str'
+  - pdb:
+      scatter: [config]
+      in:
+        output_pdb_path: '&rcsb_protein.pdb'
+        config: '*pdb_id_str'
+
+  - pdb_fixer:
+      in:
+        input_pdb_path: '*pdbbind_pdbs'
+        input_helper_pdb_path: '*rcsb_protein.pdb' # Note: PDBFixer utilizes sequence information from this file
+        output_pdb_path: '&pdbbind_pdbfixer.pdb'
+        add_atoms: heavy
+        add_residues: True
+        replace_nonstandard: True
+        keep_heterogens: none
+      scatter: [input_pdb_path, input_helper_pdb_path]
+      scatterMethod: dotproduct
+
+  - extract_protein:
+      scatter: [input_pdb_path]
+      in:
+        input_pdb_path: '*pdbbind_pdbfixer.pdb'
+        output_pdb_path: '&protein.pdb'
+
+  - sanitize_ligand:
+      scatter: [input_small_mol_ligand]
+      in:
+        input_small_mol_ligand: "*pdbbind_sdfs"
+        output_ligand: "&sanitized_sdfs"
+        valid_ligand: "&valid_ligands"
+
+  - filter_array: # remove invalid ligands from sanitized_ligand, avoid using null
+      in:
+        input_array: "*sanitized_sdfs"
+        input_bool_array: "*valid_ligands"
+        output_array: "&final_sanitized_sdfs"
+
+  - filter_array: # remove proteins corresponding to invalid ligands from sanitized_ligand
+      in:
+        input_array: "*protein.pdb"
+        input_bool_array: "*valid_ligands"
+        output_array: "&final_pdbbind_pdbs.pdb"
+
+  - filter_array: # remove dGs corresponding to invalid ligands from sanitized_ligand
+      in:
+        input_array: "*exp_dGs"
+        input_bool_array: "*valid_ligands"
+        output_array: "&final_exp_dGs"
+
+  - p2rank:
+      scatter: [protein_filename]
+      in:
+        protein_filename: '*final_pdbbind_pdbs.pdb'
+        pocket_predictions: "&pocket_predictions"
+
+  - insert_ligand_pocket:
+      scatter: [input_pocket_predictions, protein_filename, ligand_filename]
+      scatterMethod: dotproduct
+      in:
+        protein_filename: '*final_pdbbind_pdbs.pdb'
+        ligand_filename: '*final_sanitized_sdfs'
+        input_pocket_predictions: "*pocket_predictions"
+        top_n_pockets: 1
+        protein_ligand_complexes: "&protein_ligand_complexes"
+
+
+wic:
+  graphviz:
+    label: P2Rank
+
+  steps:
+    (1, extract_pdbbind_refined):
+      wic:
+        graphviz:
+          label: Extract PDBbind Data
+    (2, config_tag_pdb):
+      wic:
+        inlineable: False
+        graphviz:
+          label: Specify PDB Code
+    (3, pdb):
+      wic:
+        inlineable: False
+        graphviz:
+          label: Download PDB File
+    (4, pdbfixer):
+      wic:
+        inlineable: False
+        graphviz:
+          label: Fix Protein Structure
+    (5, extract_protein):
+      wic:
+        inlineable: False
+        graphviz:
+          label: Extract protein
+    (6, sanitize_ligand):
+      wic:
+        graphviz:
+          label: Sanitize Ligands
+    (7, filter_array):
+      wic:
+        graphviz:
+          label: Filter Ligands
+    (8, filter_array):
+      wic:
+        graphviz:
+          label: Filter Proteins
+    (9, filter_array):
+      wic:
+        graphviz:
+          label: Filter dG's
+    (10, p2rank):
+      wic:
+        graphviz:
+          label: Protein Pocket Detection & Ranking
+    (11, insert_ligand_pocket):
+      wic:
+        graphviz:
+          label: Insert Ligand into Pocket
