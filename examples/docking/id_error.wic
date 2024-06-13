@@ -1,0 +1,49 @@
+steps:
+- extract_pdbbind_refined:
+    in:
+      # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.query.html
+      # The query() method uses a slightly modified Python syntax by default.
+      # For example, the & and | (bitwise) operators have the precedence of their
+      # boolean cousins, and and or. This is syntactically valid Python, however
+      # the semantics are different.
+      query: !ii '(Kd_Ki == "Kd") and (value < 0.2)'
+      max_row: !ii 1000 #25 # Use 1 for CI
+      convert_Kd_dG: !ii True
+      output_txt_path: !ii binding_data.txt
+    out:
+    - output_txt_path: !& binding_data.txt
+    - output_pdb_paths: !& pdbbind_pdbs
+    - output_sdf_paths: !& pdbbind_sdfs
+    - experimental_dGs: !& exp_dGs
+    - pdb_ids: !& pdbids
+
+- extract_protein:
+    scatter: [input_pdb_path]
+    in:
+      input_pdb_path: !* pdbbind_pdbs
+      output_pdb_path: !ii pdbbind_protein_openmm.pdb
+    out:
+    - output_pdb_path: !& pdbbind_protein_openmm.pdb
+
+- extract_ligand_protein:
+    scatter: [input_pdb_path]
+    in:
+      input_pdb_path: !* pdbbind_pdbs
+      output_pdb_path: !ii pdbbind_protein_mdanalysis.pdb
+    out:
+    - output_pdb_path: !& pdbbind_protein_mdanalysis.pdb
+
+- topology_check:
+    scatter: [file1,file2]
+    scatterMethod: dotproduct
+    in:
+      file1: !* pdbbind_protein_openmm.pdb
+      file2: !* pdbbind_protein_mdanalysis.pdb
+      topology_changed: !ii test_valid
+    out:
+    - topology_changed: !& test_valid
+
+# - count_results:
+#     in:
+#       ids: !* pdbids
+#       results: !* test_valid
