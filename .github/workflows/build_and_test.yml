@@ -2,6 +2,8 @@ name: Build And Test
 
 on:
   push:
+  pull_request:
+  workflow_dispatch:
 
 defaults:
   run:
@@ -91,8 +93,8 @@ jobs:
         run: cd mm-workflows/docs && make html
 
       - name: MyPy Check Type Annotations
-        if: always()
-        run: cd mm-workflows/ && mypy src/ examples/ cwl_adapters/
+        if: runner.os != 'Windows'
+        run: cd mm-workflows/ && mypy --exclude /home/runner/miniconda3/envs/mm/lib/python3.9/site-packages/ src/ examples/ cwl_adapters/
         # NOTE: Do not use `mypy .` because then mypy will check both src/ and build/ causing:
         # src/wic/__init__.py: error: Duplicate module named "wic" (also at "./build/lib/wic/__init__.py")
 
