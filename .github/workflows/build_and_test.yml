@@ -94,7 +94,7 @@ jobs:
 
       - name: MyPy Check Type Annotations
         if: runner.os != 'Windows'
-        run: cd mm-workflows/ && mypy --exclude $CONDA_PREFIX/lib/python3.9/site-packages/ src/ examples/ cwl_adapters/
+        run: cd mm-workflows/ && mypy --exclude /home/runner/miniconda3/envs/mm/lib/python3.9/site-packages/ src/ examples/ cwl_adapters/
         # NOTE: Do not use `mypy .` because then mypy will check both src/ and build/ causing:
         # src/wic/__init__.py: error: Duplicate module named "wic" (also at "./build/lib/wic/__init__.py")
 
