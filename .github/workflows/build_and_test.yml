@@ -49,7 +49,7 @@ jobs:
         if: always()
         uses: actions/checkout@v3
         with:
-          repository: sameeul/biobb_adapters  # TODO: use check_existence
+          repository: vjaganat90/biobb_adapters  # TODO: use check_existence
           ref: master
           path: biobb_adapters
 
