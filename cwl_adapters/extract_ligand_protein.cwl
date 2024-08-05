@@ -3,16 +3,16 @@ cwlVersion: v1.0
 
 class: CommandLineTool
 
-label: A tool that employs OpenMM to extract protein from a PDB file
+label: A tool that employs OpenMM to extract ligands and protein from a PDB file
 
 doc: |-
-  A tool that employs OpenMM to extract protein from a PDB file
+  A tool that employs OpenMM to extract ligands and protein from a PDB file
 
-baseCommand: ['python', '/extract_protein.py']
+baseCommand: ['python', '/extract_ligand_protein.py']
 
 hints:
   DockerRequirement:
-    dockerPull: ndonyapour/extract_protein
+    dockerPull: mrbrandonwalker/extract_ligand_protein
 
 inputs:
   input_pdb_path:
@@ -44,6 +44,20 @@ inputs:
       prefix: --output_pdb_path
     default: system.pdb
 
+  output_pdb_ligand_path:
+    label: Output pdb ligand file path
+    doc: |-
+      Output pdb ligand file path
+      Type: string
+      File type: output
+      Accepted formats: sdf
+    type: string
+    format:
+    - edam:format_1476
+    inputBinding:
+      prefix: --output_pdb_ligand_path
+    default: ligand_system.pdb
+
 outputs:
   output_pdb_path:
     label: Output pdb file path
@@ -52,6 +66,16 @@ outputs:
     type: File
     outputBinding:
       glob: $(inputs.output_pdb_path)
+    format: edam:format_1476
+
+  output_pdb_ligand_path:
+    label: Output ligand pdb file path
+    doc: |-
+      Output ligand pdb file path
+      Use optional File? since ligand may not exist in complex
+    type: File?
+    outputBinding:
+      glob: $(inputs.output_pdb_ligand_path)
     format: edam:format_1476
 
 $namespaces:
