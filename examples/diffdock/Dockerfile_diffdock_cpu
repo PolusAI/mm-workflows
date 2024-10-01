@@ -1,6 +1,6 @@
 # docker build -f Dockerfile_diffdock_cpu -t mrbrandonwalker/diffdock_cpu .
 
-FROM condaforge/mambaforge
+FROM condaforge/miniforge
 # NOT mambaforge-pypy3 (torch-scatter is incompatible with pypy)
 
 RUN apt-get update && apt-get install -y wget git build-essential

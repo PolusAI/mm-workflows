@@ -1,4 +1,4 @@
-FROM condaforge/mambaforge-pypy3
+FROM condaforge/miniforge-pypy3
 
 # Prevent being prompted for geographical region
 ARG DEBIAN_FRONTEND=noninteractive

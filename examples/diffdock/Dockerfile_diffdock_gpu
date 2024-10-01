@@ -5,12 +5,12 @@ FROM nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04 as devel
 # Install conda / mamba
 RUN apt-get update && apt-get install -y wget git build-essential
 
-RUN CONDA="Mambaforge-Linux-x86_64.sh" && \
+RUN CONDA="Miniforge-Linux-x86_64.sh" && \
     wget --quiet https://github.com/conda-forge/miniforge/releases/latest/download/$CONDA && \
     chmod +x $CONDA && \
-    ./$CONDA -b -p /mambaforge && \
+    ./$CONDA -b -p /miniforge && \
     rm -f $CONDA
-ENV PATH /mambaforge/bin:$PATH
+ENV PATH /miniforge/bin:$PATH
 
 RUN conda install pytorch==1.13.0 pytorch-cuda=11.7 pytorch-cluster -c pytorch -c nvidia -c pyg
 
@@ -50,9 +50,9 @@ RUN mamba clean --all --yes
 FROM nvidia/cuda:11.7.1-cudnn8-runtime-ubuntu20.04 as runtime
 
 COPY --from=devel DiffDock/ DiffDock/
-COPY --from=devel mambaforge/ mambaforge/
+COPY --from=devel miniforge/ miniforge/
 
 # shell file to copy cached files, run diffdock and remove large cached files after execution
 ADD diffdock_cmds.sh /DiffDock/
 
-ENV PATH /mambaforge/bin:$PATH
+ENV PATH /miniforge/bin:$PATH

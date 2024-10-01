@@ -1,4 +1,4 @@
-FROM condaforge/mambaforge
+FROM condaforge/miniforge
 # NOT mambaforge-pypy3 (mdtraj is incompatible with pypy)
 
 RUN mamba install -c conda-forge mdtraj
