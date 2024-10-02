@@ -1,32 +1,39 @@
+inputs:
+  top_zip_path:
+    type: File
+    format:
+    - edam:format_3987
+
 steps:
-    grompp:
-      in:
-        config: !ii
-          mdp:
-            integrator: cg
-            define: -DFLEXIBLE # Defines a flexible water model if it exists in the system
-            # https://manual.gromacs.org/current/reference-manual/algorithms/energy-minimization.html#conjugate-gradient
-            rvdw: 1.4
-            rcoulomb: 1.4
-            #coulombtype: PME
-            nsteps: 1000
-            emstep: 0.01
-            emtol: 10
-            nstxout: 100
-            nstenergy: 1
-    mdrun:
-      in:
-        nb_terms: !ii cpu  # NOTE: Workaround for a bug in gromacs 2022.2, fixed in 2022.3
-        # https://manual.gromacs.org/current/release-notes/2022/2022.3.html#energy-minimization-would-not-converge-with-gpu-and-without-dd
-        bonded_terms: !ii cpu # GPU implementation IS supported for md integrator, is NOT supported for sd integrator, etc.
-        pme_terms: !ii cpu
-        pme_fft_terms: !ii cpu
-        update_terms: !ii cpu
-    gmx_energy:
-      in:
-        config: !ii
-          terms: [Potential]
-        output_xvg_path: !ii energy_min_cg.xvg
+  grompp:
+    in:
+      input_top_zip_path: top_zip_path
+      config: !ii
+        mdp:
+          integrator: cg
+          define: -DFLEXIBLE # Defines a flexible water model if it exists in the system
+          # https://manual.gromacs.org/current/reference-manual/algorithms/energy-minimization.html#conjugate-gradient
+          rvdw: 1.4
+          rcoulomb: 1.4
+          #coulombtype: PME
+          nsteps: 1000
+          emstep: 0.01
+          emtol: 10
+          nstxout: 100
+          nstenergy: 1
+  mdrun:
+    in:
+      nb_terms: !ii cpu  # NOTE: Workaround for a bug in gromacs 2022.2, fixed in 2022.3
+      # https://manual.gromacs.org/current/release-notes/2022/2022.3.html#energy-minimization-would-not-converge-with-gpu-and-without-dd
+      bonded_terms: !ii cpu # GPU implementation IS supported for md integrator, is NOT supported for sd integrator, etc.
+      pme_terms: !ii cpu
+      pme_fft_terms: !ii cpu
+      update_terms: !ii cpu
+  gmx_energy:
+    in:
+      config: !ii
+        terms: [Potential]
+      output_xvg_path: !ii energy_min_cg.xvg
 
 wic:
   graphviz:

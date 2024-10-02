@@ -18,17 +18,18 @@ inputs:
     - edam:format_3987
 
 steps:
-    setup.wic:
-      in:
-        crd_path: crd_path
-        top_zip_path: top_zip_path
-    basic.wic:
-      in:
-        nsteps: nsteps
-        dt: dt
-        ref-t: temperature
-        ref-p: pressure
-    analysis.wic:
+  setup_vac_min.wic:
+    in:
+      crd_path: crd_path
+      top_zip_path: top_zip_path
+  basic.wic:
+    in:
+      top_zip_path: !* genion.zip
+      nsteps: nsteps
+      dt: dt
+      ref-t: temperature
+      ref-p: pressure
+  analysis.wic:
 
 wic:
   graphviz:

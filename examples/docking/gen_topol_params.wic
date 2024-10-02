@@ -78,6 +78,7 @@ steps:
     in:
       input_structure1: input_receptor_xyz_path
       input_structure2: !* pose_ligand.xyz
+      input_top_zip_path: !* complex_vac.zip
     out:
     - output_structure_path: !& complex_vac.pdb
 

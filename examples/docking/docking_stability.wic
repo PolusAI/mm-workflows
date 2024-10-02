@@ -20,6 +20,7 @@ steps:
       dt: !ii 0.002
       temperature: !ii 298.0
       pressure: !ii 1.0
+
 wic:
   graphviz:
     label: Docking + MD Stability Analysis
@@ -31,12 +32,31 @@ wic:
       wic:
         inlineable: False
         steps:
+          (1, setup_vac_min.wic):
+            wic:
+              steps:
+                (3, solv_ion.wic):
+                  wic:
+                    steps:
+                      (4, genion):
+                        out:
+                        - output_top_zip_path: !& genion_complex.zip
           (2, basic.wic):
+            in:
+              top_zip_path: !* genion_complex.zip
             wic:
               steps:
                 (3, prod.wic):
                   wic:
                     steps:
+                      (2, grompp):
+                        in:
+                          input_top_zip_path: !* genion_complex.zip
+                      (3, mdrun):
+                        out:
+                        - output_crd_path: !& prod_complex.gro  # overload prod.gro
+                        - output_trr_path: !& prod.trr
+                        - output_edr_path: !& prod.edr
                       (4, cwl_subinterpreter_analysis.wic):
                         wic:
                           implementation: complex
@@ -46,3 +66,7 @@ wic:
                 (1, analysis_realtime.wic):
                   wic:
                     implementation: complex
+                (2, analysis_final.wic):
+                  wic:
+                    implementation: complex
+
