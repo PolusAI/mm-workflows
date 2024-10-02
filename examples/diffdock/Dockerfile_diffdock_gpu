@@ -5,7 +5,7 @@ FROM nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04 as devel
 # Install conda / mamba
 RUN apt-get update && apt-get install -y wget git build-essential
 
-RUN CONDA="Miniforge-Linux-x86_64.sh" && \
+RUN CONDA="Miniforge3-Linux-x86_64.sh" && \
     wget --quiet https://github.com/conda-forge/miniforge/releases/latest/download/$CONDA && \
     chmod +x $CONDA && \
     ./$CONDA -b -p /miniforge && \
