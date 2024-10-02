@@ -57,7 +57,7 @@ jobs:
         if: runner.os != 'Windows'
         uses: conda-incubator/setup-miniconda@v3.0.1
         with:
-          miniforge-variant: Mambaforge-pypy3
+          miniforge-variant: Miniforge-pypy3
           miniforge-version: latest
           environment-file: mm-workflows/install/system_deps.yml
           activate-environment: mm
@@ -68,7 +68,7 @@ jobs:
         if: runner.os == 'Windows'
         uses: conda-incubator/setup-miniconda@v3.0.1
         with:
-          miniforge-variant: Mambaforge-pypy3
+          miniforge-variant: Miniforge-pypy3
           miniforge-version: latest
           environment-file: mm-workflows/install/system_deps_windows.yml
           activate-environment: mm

@@ -1,4 +1,4 @@
-FROM condaforge/mambaforge-pypy3
+FROM condaforge/miniforge3-pypy3
 
 RUN mamba install -c conda-forge pdbfixer
 
