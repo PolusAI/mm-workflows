@@ -1,4 +1,4 @@
-FROM condaforge/miniforge-pypy3
+FROM condaforge/miniforge3-pypy3
 
 # The latest release version 1.2.3 has several known bugs.
 # See https://github.com/ccsb-scripps/AutoDock-Vina/pull/81

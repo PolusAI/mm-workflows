@@ -1,4 +1,4 @@
-FROM condaforge/miniforge
+FROM condaforge/miniforge3
 # NOT mambaforge-pypy3 (mdanalysis is incompatible with pypy)
 
 RUN mamba install -c conda-forge mdanalysis matplotlib pip

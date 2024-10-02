@@ -1,5 +1,5 @@
 
-FROM condaforge/miniforge
+FROM condaforge/miniforge3
 # NOT mambaforge-pypy3 (rdkit is incompatible with pypy)
 
 # RDKIT logging

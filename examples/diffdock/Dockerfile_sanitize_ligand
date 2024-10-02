@@ -1,7 +1,7 @@
 
 # docker build -f Dockerfile_sanitize_ligand -t mrbrandonwalker/sanitize_ligand .
 
-FROM condaforge/miniforge
+FROM condaforge/miniforge3
 # NOT mambaforge-pypy3 (rdkit is incompatible with pypy)
 
 RUN conda install -c conda-forge rdkit --yes

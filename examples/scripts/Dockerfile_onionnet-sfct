@@ -1,4 +1,4 @@
-FROM condaforge/miniforge
+FROM condaforge/miniforge3
 # NOT mambaforge-pypy3 (pandas & rdkit & mdtraj are incompatible with pypy)
 
 # Install requirements

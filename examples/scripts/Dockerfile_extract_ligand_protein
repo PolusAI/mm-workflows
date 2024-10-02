@@ -1,5 +1,5 @@
 # docker build -f Dockerfile_extract_ligand_protein -t mrbrandonwalker/extract_ligand_protein .
-FROM condaforge/miniforge
+FROM condaforge/miniforge3
 # NOT mambaforge-pypy3 (mdanalysis is incompatible with pypy)
 RUN mamba install mdanalysis
 
