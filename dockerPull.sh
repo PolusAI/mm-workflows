@@ -10,7 +10,7 @@ docker pull jakefennick/biosimspace
 docker pull jakefennick/align_protein_ca_mda
 docker pull jakefennick/align_protein_ca_pymol
 docker pull jakefennick/atomselect
-docker pull jakefennick/autodock_vina
+docker pull ndonyapour/autodock_vina
 docker pull ndonyapour/autodock_vina_filter
 docker pull jakefennick/bash_scripts
 docker pull jakefennick/calculate_net_charge

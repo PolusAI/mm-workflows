@@ -7,6 +7,9 @@ ENV RDKIT_ERROR_LOGGING="OFF"
 
 RUN apt-get update && apt-get install -y wget git
 
+# Install Python 3.10 using Mamba
+RUN mamba install -y python=3.10
+
 # Clone MolGAN
 RUN git clone https://github.com/ndonyapour/MolGAN.git
 
@@ -32,4 +35,4 @@ RUN bash data/download_dataset.sh data/gdb9.sdf data/NP_score.pkl.gz data/SA_sco
 RUN python utils/sparse_molecular_dataset.py --input_sdf_path data/gdb9.sdf --output_data_path data/data.pkl
 
 # Training step
-RUN python example.py --input_data_path data/data.pkl --num_epochs 10 --output_log_path log --input_NP_Score_path data/NP_score.pkl.gz  --input_SA_Score_path data/SA_score.pkl.gz --output_model_dir ./trained_models
+RUN python example.py --input_data_path data/data.pkl --num_epochs 2 --output_log_path log --input_NP_Score_path data/NP_score.pkl.gz  --input_SA_Score_path data/SA_score.pkl.gz --output_model_dir ./trained_models

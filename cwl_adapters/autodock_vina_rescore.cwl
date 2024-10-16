@@ -22,7 +22,7 @@ arguments:
 
 hints:
   DockerRequirement:
-    dockerPull: jakefennick/autodock_vina
+    dockerPull: ndonyapour/autodock_vina
 
 requirements:
   InlineJavascriptRequirement: {}

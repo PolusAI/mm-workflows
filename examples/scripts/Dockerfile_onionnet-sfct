@@ -1,6 +1,8 @@
 FROM condaforge/miniforge3
 # NOT mambaforge-pypy3 (pandas & rdkit & mdtraj are incompatible with pypy)
 
+# Scikit-learn 1.0.2 is only compatible with 3.6 < python < 3.11
+RUN mamba install -y python=3.10
 # Install requirements
 RUN apt-get update && apt-get install -y wget git
 RUN mamba install -c conda-forge openbabel numpy pandas mdtraj biopandas -y
