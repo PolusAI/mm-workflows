@@ -1,9 +1,9 @@
 steps:
-  docking_rescoring.wic:
+  vs_smina_onionnet_sfct.wic:
 
 wic:
   steps:
-    (1, docking_rescoring.wic):
+    (1, vs_smina_onionnet_sfct.wic):
       wic:
         steps:
           (1, extract_pdbbind_refined):

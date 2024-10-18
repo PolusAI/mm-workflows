@@ -22,12 +22,12 @@ steps:
 
 # NOTE: Rename all residues to MOL before calling acpypye. Otherwise, acpype crashes with:
 # "ERROR: more than one residue detected '{'UNL', 'MOL'}'"
-    python3_mol2_to_mol2:
+    rename_residues_mol2:
       in:
-        script: !ii /rename_residues_mol.py # NOTE: Initial / required
-        input_mol2_path: !* ligand_min.mol2
-      out:
-      - output_mol2_path: !& conformer.mol2
+        input_path: '*ligand_min.mol2'
+        output_path: '&conformer.mol2'
+        residue_name: MOL
+        column_index: 7
 
 # NOTE: minimize before calling acpype so 1. tleap complains less about close contacts:
 # /usr/local/bin/teLeap: Warning!
@@ -63,8 +63,10 @@ steps:
       - output_top_zip_path: !& ligand_GMX.zip
 
 # Docking
-    convert_ligand_mol2_to_pdbqt_obabel.wic:
-#    convert_ligand_mol2_to_pdbqt_mdanalysis.wic: # generates ligand_rigid.pdbqt only
+    convert_ligand_mol2_to_pdbqt_obabel.yml:
+      in:
+        input_path: '*conformer.mol2'
+#  - convert_ligand_mol2_to_pdbqt_mdanalysis.yml: # generates ligand_rigid.pdbqt only
 
     autodock_vina_run:
       in:
@@ -107,7 +109,7 @@ wic:
    graphviz:
      label: Cheminformatics + Docking + Initial Topology Setup
    steps:
-     (2, python3_mol2_to_mol2):
+     (2, rename_residues_mol2):
        wic:
          graphviz:
            label: Rename Ligand\nResidues to MOL
