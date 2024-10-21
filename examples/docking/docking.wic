@@ -9,9 +9,9 @@ steps:
 # NOTE: Searching for conformers tends to cause the ligand to curl up into a ball.
 # Although this lowers its energy in isolation, the decreased surface area tends
 # to weaken the binding free energy! (as reported by autodock vina)
-    flc.wic:
-      in:
-        sdf_path: sdf_path
+  flc.wic:
+    in:
+      sdf_path: sdf_path
 #    minimize_ligand_only.wic:
 
 # NOTE: We converted to mol2 format above because it allows explicit charges.
@@ -22,92 +22,96 @@ steps:
 
 # NOTE: Rename all residues to MOL before calling acpypye. Otherwise, acpype crashes with:
 # "ERROR: more than one residue detected '{'UNL', 'MOL'}'"
-    python3_mol2_to_mol2:
-      in:
-        script: !ii /rename_residues_mol.py # NOTE: Initial / required
-        input_mol2_path: !* ligand_min.mol2
-      out:
-      - output_mol2_path: !& conformer.mol2
+  rename_residues_mol2:
+    in:
+      input_path: !* ligand_min.mol2
+      output_path: !ii conformer.mol2
+      residue_name: !ii MOL
+      column_index: !ii 7
+    out:
+    - output_path: !& conformer.mol2
 
 # NOTE: minimize before calling acpype so 1. tleap complains less about close contacts:
 # /usr/local/bin/teLeap: Warning!
 # Close contact of 1.418311 angstroms between .R<UNL 1>.A<CG 8> and .R<UNL 1>.A<HD2 30>
 # and 2. acpype doesn't complain about 'ERROR: Atoms TOO alone (> 3.0 Ang.)'
 # (acpype suggests using --force, but it's better to just minimize.)
-    acpype:
-    # NOTE: We are using our own acpypye CWL adapter (NOT the biobb version) so
-    # we have the choice of using charges from the mol2 file.
-      in:
-        input_path: !* conformer.mol2 # Do NOT use pose_ligand.pdb
-      out:
-      - output_itp_path: !& ligand_GMX.itp
-        # NOTE: Although we don't need the *.itp topology file yet, we
-        # need to use these coordinates with autodock because they are
-        # sorted to agree with the *.itp topology include file.
-        # Otherwise, we will get the grompp atom name warning (see below).
-      - output_gro_path: !& ligand_GMX.gro
-      - output_top_path: !& ligand_GMX.top
-        #charge_method: user # take charges from mol2 file
+  acpype:
+  # NOTE: We are using our own acpypye CWL adapter (NOT the biobb version) so
+  # we have the choice of using charges from the mol2 file.
+    in:
+      input_path: !* conformer.mol2 # Do NOT use pose_ligand.pdb
+    out:
+    - output_itp_path: !& ligand_GMX.itp
+      # NOTE: Although we don't need the *.itp topology file yet, we
+      # need to use these coordinates with autodock because they are
+      # sorted to agree with the *.itp topology include file.
+      # Otherwise, we will get the grompp atom name warning (see below).
+    - output_gro_path: !& ligand_GMX.gro
+    - output_top_path: !& ligand_GMX.top
+      #charge_method: user # take charges from mol2 file
 # NOTE: acpype doesn't add forcefield or water topology #include lines.
-    bash_top:
-      in:
-        script: !ii /gmx_add_topology_includes.sh # NOTE: Initial / required
-        input_top_path: !* ligand_GMX.top
-      out:
-      - output_top_path: !& ligand_GMX_includes.top
-    zip_top:
-      in:
-        input_top_path: !* ligand_GMX_includes.top
-        input_itp_path: !* ligand_GMX.itp
-      out:
-      - output_top_zip_path: !& ligand_GMX.zip
+  bash_top:
+    in:
+      script: !ii /gmx_add_topology_includes.sh # NOTE: Initial / required
+      input_top_path: !* ligand_GMX.top
+    out:
+    - output_top_path: !& ligand_GMX_includes.top
+  zip_top:
+    in:
+      input_top_path: !* ligand_GMX_includes.top
+      input_itp_path: !* ligand_GMX.itp
+    out:
+    - output_top_zip_path: !& ligand_GMX.zip
 
 # Docking
-    convert_ligand_mol2_to_pdbqt_obabel.wic:
-#    convert_ligand_mol2_to_pdbqt_mdanalysis.wic: # generates ligand_rigid.pdbqt only
+  convert_ligand_mol2_to_pdbqt_obabel.wic:
+    in:
+      input_path: !* conformer.mol2
+#  - convert_ligand_mol2_to_pdbqt_mdanalysis.yml: # generates ligand_rigid.pdbqt only
 
-    autodock_vina_run:
-      in:
-        input_ligand_pdbqt_path: !* ligand_flex.pdbqt
-        #input_ligand_pdbqt_path: !* ligand_rigid.pdbqt
-        input_receptor_pdbqt_path: !* pdb.pdbqt
-        input_box_path: !* box.pdb
-      out:
-      - output_pdbqt_path: !& poses_ligand.pdbqt
-      - output_log_path: !& vina.log
-    extract_model_pdbqt:
-      in:
-        input_pdbqt_path: !* poses_ligand.pdbqt
-        output_pdbqt_path: !ii pose_ligand.pdbqt
-        config: !ii
-          model: 1 # NOTE: score, rmsd l.b., rmsd u.b. stored in REMARK lines
-      out:
-      - output_pdbqt_path: !& pose_ligand.pdbqt
-    convert_xyz:
-      in:
-        input_path: !* pose_ligand.pdbqt
-        output_xyz_path: !ii pose_ligand.xyz
-      out:
-      - output_xyz_path: !& pose_ligand.xyz
+  autodock_vina_run:
+    in:
+      input_ligand_pdbqt_path: !* ligand_flex.pdbqt
+      #input_ligand_pdbqt_path: !* ligand_rigid.pdbqt
+      input_receptor_pdbqt_path: !* pdb.pdbqt
+      input_box_path: !* box.pdb
+    out:
+    - output_pdbqt_path: !& poses_ligand.pdbqt
+    - output_log_path: !& vina.log
+  extract_model_pdbqt:
+    in:
+      input_pdbqt_path: !* poses_ligand.pdbqt
+      output_pdbqt_path: !ii pose_ligand.pdbqt
+      config: !ii
+        model: 1 # NOTE: score, rmsd l.b., rmsd u.b. stored in REMARK lines
+    out:
+    - output_pdbqt_path: !& pose_ligand.pdbqt
+  convert_xyz:
+    in:
+      input_path: !* pose_ligand.pdbqt
+      output_xyz_path: !ii pose_ligand.xyz
+    out:
+    - output_xyz_path: !& pose_ligand.xyz
 # Molecular Dynamics combine receptor & ligand
-    append_ligand:
-      in:
-        input_itp_path: !* ligand_GMX.itp
-        input_top_zip_path: !* receptor.zip
-      out:
-      - output_top_zip_path: !& complex_vac.zip
-    combine_structure:
-      in:
-        input_structure1: !* receptor.xyz  # receptor_hydrogens.pdb
-        input_structure2: !* pose_ligand.xyz
-      out:
-      - output_structure_path: !& complex_vac.pdb
+  append_ligand:
+    in:
+      input_itp_path: !* ligand_GMX.itp
+      input_top_zip_path: !* receptor.zip
+    out:
+    - output_top_zip_path: !& complex_vac.zip
+  combine_structure:
+    in:
+      input_structure1: !* receptor.xyz  # receptor_hydrogens.pdb
+      input_structure2: !* pose_ligand.xyz
+    out:
+    - output_structure_path: !& complex_vac.pdb
 
 wic:
    graphviz:
      label: Cheminformatics + Docking + Initial Topology Setup
    steps:
-     (2, python3_mol2_to_mol2):
+     (2, rename_residues_mol2):
        wic:
          graphviz:
            label: Rename Ligand\nResidues to MOL

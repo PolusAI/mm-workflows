@@ -1,7 +1,12 @@
+inputs:
+  input_path:
+    type: File
+    format:
+    - edam:format_3816 
 steps:
   - id: convert_pdbqt
     in:
-      input_path: !* conformer.mol2
+      input_path: input_path
 #    out:
 #    - output_pdb_path: !& ligand_keywords.pdbqt
         # NOTE: There is no way to preserve the order of the atoms. Indeed, the

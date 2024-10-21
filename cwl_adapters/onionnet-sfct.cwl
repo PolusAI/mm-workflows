@@ -9,7 +9,7 @@ baseCommand: ["python", "/OnionNet-SFCT/scorer.py"]
 
 hints:
   DockerRequirement:
-    dockerPull: polusai/onionnet-sfct-tool:1.0.0
+    dockerPull: polusai/onionnet-sfct-tool@sha256:8b51dd5e9d1218a4033cb6126c44aed0ea67a7ad4cfcf49ee4703fce7520c6be
 
 requirements:
   InlineJavascriptRequirement: {}
