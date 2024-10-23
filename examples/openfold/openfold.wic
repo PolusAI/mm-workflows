@@ -1,0 +1,10 @@
+steps:
+
+  - id: openfold
+    in:
+      PARAMS_DIR: !ii '/polus2/OpenFold/openfold/openfold/resources/params'
+      BASE_DATA_DIR: !ii '/polus2/OpenFold/openfold_databases'
+      input_fasta_dir: !ii '/polus2/OpenFold/fasta'
+      template_mmcif_dir: !ii '/polus2/OpenFold/mmcifs/pdb_mmcif/mmcif_files'
+    out:
+    - output_files: !& outputs
