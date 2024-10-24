@@ -71,7 +71,8 @@
         "cwl_subinterpreter_protein",
         // Skip vs_demo_4 and run_diffdock so we don't accidentally DOS pdbbind.org.cn
         "vs_demo_4",
-        "run_diffdock"
+        "run_diffdock",
+        "openfold"
     ],
     // Run computationally intensive stress tests weekly.
     // e.g. these workflows should scatter over much larger input arrays.
