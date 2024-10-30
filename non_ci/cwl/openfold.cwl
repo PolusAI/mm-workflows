@@ -19,11 +19,11 @@ hints:
   DockerRequirement:
     dockerPull: polusai/openfold-tool@sha256:84e1bb34f9d7ccfbd670e76d3f602334960f65ac091f96e9956ceeef985a9ffe
     dockerOutputDirectory: /app
-  
+
 requirements:
   EnvVarRequirement:
     envDef:
-      CONDA_PREFIX: /opt/conda/ 
+      CONDA_PREFIX: /opt/conda/
       # needed because https://github.com/aqlaboratory/openfold/blob/6f63267114435f94ac0604b6d89e82ef45d94484/scripts/utils.py#L9
   InlineJavascriptRequirement: {}
   InitialWorkDirRequirement:
