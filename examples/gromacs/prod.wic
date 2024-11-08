@@ -11,45 +11,45 @@ inputs:
     type: float
 
 steps:
-    config_tag_mdp:
-      in:
-        nsteps: nsteps #10000
-        dt: dt #0.002
-        ref-t: ref-t #298.0
-        ref-p: ref-p #1.0
-        config: !ii
-          mdp:
-            integrator: md  # Use md for performance so we can update coordinates on GPU. Use sd for proper statistical properties.
-            rvdw: 1.0
-            rcoulomb: 1.0
-            coulombtype: PME
-            tc-grps: system
-            tau-t: 2
-            constraints: h-bonds
-            nstxout: 1000
-            nstenergy: 1000
-            pcoupl: Parrinello-Rahman
-            tau-p: 1
-            compressibility: 4.5e-5
-            comm-mode: Linear
-            comm-grps: system
-      out:
-      - output_config_string: !& config_tag_mdp_prod
-    grompp:
-      in:
-        config: !* config_tag_mdp_prod
-        input_top_zip_path: !* genion.zip  # Use the original topology file so
+  config_tag_mdp:
+    in:
+      nsteps: nsteps #10000
+      dt: dt #0.002
+      ref-t: ref-t #298.0
+      ref-p: ref-p #1.0
+      config: !ii
+        mdp:
+          integrator: md  # Use md for performance so we can update coordinates on GPU. Use sd for proper statistical properties.
+          rvdw: 1.0
+          rcoulomb: 1.0
+          coulombtype: PME
+          tc-grps: system
+          tau-t: 2
+          constraints: h-bonds
+          nstxout: 1000
+          nstenergy: 1000
+          pcoupl: Parrinello-Rahman
+          tau-p: 1
+          compressibility: 4.5e-5
+          comm-mode: Linear
+          comm-grps: system
+    out:
+    - output_config_string: !& config_tag_mdp_prod
+  grompp:
+    in:
+      config: !* config_tag_mdp_prod
+      input_top_zip_path: !* genion.zip  # Use the original topology file so
 # we don't have to question whether the topology gets messed up after file format conversions.
 # (In fact, it is not exactly identical!)
-      out:
-      - output_tpr_path: !& prod.tpr
-    mdrun:
-      in:
-        output_trr_path: !ii prod.trr # Explicitly specify for cwl_subinterpreter
-      out:
-      - output_crd_path: !& prod.gro
-      - output_trr_path: !& prod.trr
-      - output_edr_path: !& prod.edr
+    out:
+    - output_tpr_path: !& prod.tpr
+  mdrun:
+    in:
+      output_trr_path: !ii prod.trr # Explicitly specify for cwl_subinterpreter
+    out:
+    - output_crd_path: !& prod.gro
+    - output_trr_path: !& prod.trr
+    - output_edr_path: !& prod.edr
   # - cwl_subinterpreter_analysis.wic:
 
 wic:
