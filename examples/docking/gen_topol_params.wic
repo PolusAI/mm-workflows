@@ -18,12 +18,10 @@ steps:
 #      input_path: !* ligand.pdbqt
 #    out:
 #    - output_mol2_path: !& pose.mol2
-  python3_mol2_to_mol2:
+  rename_residues_mol2:
     in:
-      script: !ii /rename_residues_mol.py # NOTE: Initial / required
-#      input_mol2_path: !* pose.mol2
-#    out:
-#    - output_mol2_path: !& pose_mol.mol2
+      residue_name: !ii MOL
+      column_index: !ii 7
 # NOTE: minimize before calling acpype so 1. tleap complains less about close contacts:
 # /usr/local/bin/teLeap: Warning!
 # Close contact of 1.418311 angstroms between .R<UNL 1>.A<CG 8> and .R<UNL 1>.A<HD2 30>
@@ -89,7 +87,7 @@ wic:
       wic:
         graphviz:
           label: Convert to\nmol2 format
-    (2, python3_mol2_to_mol2):
+    (2, rename_residues_mol2):
       wic:
         graphviz:
           label: Rename Residues\nto MOL

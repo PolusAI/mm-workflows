@@ -1,0 +1,255 @@
+## Protein-ligand docking and docking poses re-ranking
+##
+## input: pdb structures from PDBbind refined dataset
+## output: 
+##    1. Docking  
+##    2. Scoring the best pose using OnionNet
+
+steps:
+  extract_pdbbind_refined:
+    in:
+      # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.query.html
+      # The query() method uses a slightly modified Python syntax by default.
+      # For example, the & and | (bitwise) operators have the precedence of their
+      # boolean cousins, and and or. This is syntactically valid Python, however
+      # the semantics are different.
+      query: !ii '(Kd_Ki == "Kd") and (value < 0.001)'
+      max_row: !ii 1 #25 # Use 1 for CI
+      convert_Kd_dG: !ii True
+      output_txt_path: !ii binding_data.txt
+    out:
+    - output_txt_path: !& binding_data.txt
+    - output_pdb_paths: !& pdbbind_pdbs
+    - output_sdf_paths: !& pdbbind_sdfs
+    - experimental_dGs: !& exp_dGs
+    - pdb_ids: !& pdbids
+  extract_protein:
+    scatter: [input_pdb_path]
+    in:
+      input_pdb_path: !* pdbbind_pdbs
+      output_pdb_path: !ii pdbbind_protein.pdb
+    out:
+    - output_pdb_path: !& pdbbind_protein.pdb
+  config_tag_pdb:
+    scatter: [pdb_id]
+    in:
+      pdb_id: !* pdbids
+      filter: !ii False
+    out: 
+    - output_config_string: !& pdb_id_str
+  pdb:
+    scatter: [config]
+    in:
+      output_pdb_path: !ii rcsb_protein.pdb
+      config: !* pdb_id_str
+    out:
+    - output_pdb_path: !& rcsb_protein.pdb
+  pdb_fixer:
+    in:
+      input_pdb_path: !* pdbbind_protein.pdb
+      input_helper_pdb_path: !* rcsb_protein.pdb # Note: PDBFixer utilizes sequence information from this file
+      output_pdb_path: !ii pdbbind_pdbfixer.pdb
+      add_atoms: !ii heavy
+      add_residues: !ii True
+      replace_nonstandard: !ii True
+      keep_heterogens: !ii none
+    scatter: [input_pdb_path, input_helper_pdb_path]
+    scatterMethod: dotproduct
+    out:
+    - output_pdb_path: !& pdbbind_pdbfixer.pdb
+  setup_pdb.wic:
+    scatter: [input_pdb_path]
+    in:
+      input_pdb_path: !* pdbbind_pdbfixer.pdb
+      pdb_path: !ii pdb.pdbqt
+      box_path: !ii box.pdb
+      box_buffer: !ii 20 # Angstroms
+      water_type: !ii spce
+      forcefield: !ii amber99sb-ildn
+    out:
+    - pdb_path: !& pdb.pdbqt
+    - box_path: !& box.pdb
+
+  # assign partial charges (ligand)
+  convert_mol2:
+    scatter: [input_path]
+    in:
+      input_path: !* pdbbind_sdfs
+
+  rename_residues_mol2:
+    scatter: [input_path]
+    in:
+      output_path: !ii ligand.mol2
+      residue_name: !ii MOL
+      column_index: !ii 7
+    out: 
+    - output_path: !& ligand.mol2
+
+  convert_ligand_mol2_to_pdbqt_obabel.wic:
+    scatter: [input_path]
+  autodock_vina:
+    scatter: [input_ligand_pdbqt_path, input_receptor_pdbqt_path, input_box_path]
+    scatterMethod: dotproduct
+    in:
+      input_ligand_pdbqt_path: !* ligand_rigid.pdbqt
+      input_receptor_pdbqt_path: !* pdb.pdbqt
+      input_box_path: !* box.pdb
+      output_pdbqt_path: !ii  poses_ligand.pdbqt
+      output_log_path: !ii vina.log
+      num_modes: !ii 20
+    out:
+    - output_pdbqt_path: !& poses_ligand.pdbqt
+    - output_log_path: !& vina.log'
+
+  extract_model_pdbqt:
+    scatter: [input_pdbqt_path]
+    in: 
+      input_pdbqt_path: !* poses_ligand.pdbqt
+      output_pdbqt_path: !ii pose_ligand.pdbqt
+      config: !ii
+        model: 1 # NOTE: score, rmsd l.b., rmsd u.b. stored in REMARK lines
+    out:
+    - output_pdbqt_path: !& pose_ligand.pdbqt
+
+  convert_pdb:
+    scatter: [input_path]
+    in:
+      input_path: !* pose_ligand.pdbqt
+      output_pdb_path: !ii pose_ligand.pdb
+    out:
+    - output_pdb_path: !& pose_ligand.pdb
+
+  rename_residues_pdb:
+    scatter: [input_path]
+    in:
+      input_path: !* pose_ligand.pdb
+      output_path: !ii ligand.pdb
+      residue_name: !ii LIG
+      line_start_column_idxs: !ii '{"ATOM": 3, "HETATM": 3, "TER": 2}'
+    out:
+    - output_path: !& ligand.pdb
+
+  combine_pdb:
+    scatter: [input_structure1, input_structure2]
+    scatterMethod: dotproduct
+    in:
+      input_structure1: !* pdbbind_pdbfixer.pdb
+      input_structure2: !* ligand.pdb
+      output_structure_path: !ii complex_pdb.pdb
+    out:
+    - output_structure_path: !& complex_pdb.pdb
+
+  onionnet_featurize:
+    in:
+      pdb_paths: !* complex_pdb.pdb
+      output_feature_file: !ii output_features.csv
+    out:
+    - output_feature_file: !& output_features.csv
+ 
+  onionnet_score:
+    in:
+      input_feature_file: !* output_features.csv
+      output_score_file: !ii predicted_pKa.csv
+      onionnet_score: !ii onionnet_score
+    out:
+    - output_score_file: !& predicted_pKa.csv
+    - onionnet_score: !& onionnet_score
+
+  scatter_plot:
+    in:
+      xs: !* exp_dGs
+      ys: !* onionnet_score
+      output_png_path: !ii dG_exp_wpred.png
+    out:
+    - output_png_path: !& dG_exp_wpred.png
+
+  check_linear_fit:
+    in:
+      xs: !* exp_dGs
+      ys: !* onionnet_score
+      # Use massive tolerances because the re-docking performance of classical scoring functions (Vina) are unreliable.
+      tol_quad: !ii 0.18
+      slope_min: !ii -10
+      slope_max: !ii 10
+
+wic:
+  graphviz:
+    label: Virtual Screening Demo
+  steps:
+    (1, extract_pdbbind_refined):
+      wic:
+        graphviz:
+          label: Extract PDBbind Data
+    (2, extract_protein):
+      wic:
+        inlineable: False
+        graphviz:
+          label: Extract protein
+    (3, config_tag_pdb):
+      wic:
+        inlineable: False
+        graphviz:
+          label: Specify PDB Code
+    (4, pdb):
+      wic:
+        inlineable: False
+        graphviz:
+          label: Download PDB File
+    (5, pdbfixer):
+      wic:
+        inlineable: False
+        graphviz:
+          label: Fix Protein Structure
+    (6, setup_pdb.yml):
+      wic:
+        inlineable: True
+        graphviz:
+          label: Setup PDB
+    (7, convert_mol2):
+      wic:
+        graphviz:
+          label: Convert Ligand\nsdf to mol2
+    (8, rename_residues_mol2):
+      wic:
+         graphviz:
+           label: Rename Ligand\nResidues to MOL
+    (9, convert_ligand_mol2_to_pdbqt_obabel.yml):
+      wic:
+        graphviz:
+          label: Rename Residues\nto MOL
+    (10, autodock_vina):
+      wic:
+        graphviz:
+          label: Docking
+    (11, extract_model_pdbqt):
+       wic:
+         graphviz:
+           label: Extract Best\nDocking Pose
+    (12, convert_pdb):
+      wic:
+        graphviz:
+          label: Convert to\npdb format
+    (13, rename_residues_pdb):
+      wic:
+        graphviz:
+          label: Rename residues to LIG
+    (14, combine_pdb):
+      wic:
+        graphviz:
+          label: Combine Protein & Ligand\nPDB Structures
+    (15, onionnet_featurize):
+      wic:
+        graphviz:
+          label: Generate features for the Docking Poses
+    (16, onionnet_score):
+      wic:
+        graphviz:
+          label: Predict Binding Scores
+    (17, scatter_plot):
+      wic:
+        graphviz:
+          label: Plot Experimental\nvs Predicted Binding
+    (18, check_linear_fit):
+      wic:
+        graphviz:
+          label: True if fitted slope is between slope_min and slope_max

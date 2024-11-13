@@ -1,0 +1,124 @@
+## Protein-ligand dG predcition
+##
+## input: pdb structures from PDBbind refined dataset
+## output: 
+##    1. Predicting protein-ligand pKa using OnionNet 
+
+steps:
+  extract_pdbbind_refined:
+    in:
+      # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.query.html
+      # The query() method uses a slightly modified Python syntax by default.
+      # For example, the & and | (bitwise) operators have the precedence of their
+      # boolean cousins, and and or. This is syntactically valid Python, however
+      # the semantics are different.
+      query: !ii '(Kd_Ki == "Kd") and (value < 0.001)'
+      max_row: !ii 1 #25 # Use 1 for CI
+      convert_Kd_dG: !ii True
+      output_txt_path: !ii binding_data.txt
+    out:
+    - output_txt_path: !& binding_data.txt
+    - output_pdb_paths: !& pdbbind_pdbs
+    - output_sdf_paths: !& pdbbind_sdfs
+    - experimental_dGs: !& exp_dGs
+    - pdb_ids: !& pdbids
+
+  convert_pdb:
+    scatter: [input_path]
+    in:
+      input_path: !* pdbbind_sdfs
+      output_pdb_path: !ii ligand_pdbbind.pdb
+    out:
+    - output_pdb_path: !& ligand_pdbbind.pdb
+
+  rename_residues_pdb:
+    scatter: [input_path]
+    in:
+      input_path: !* ligand_pdbbind.pdb
+      output_path: !ii ligand.pdb
+      residue_name: !ii LIG # Note, the residue name should be three characters
+      # See: https://www.cgl.ucsf.edu/chimera/1.4/docs/UsersGuide/tutorials/pdbintro.html
+      line_start_column_idxs: !ii '{"ATOM": 3, "HETATM": 3, "TER": 2}'
+    out:
+    - output_path: !& ligand.pdb
+        
+  combine_pdb:
+    scatter: [input_structure1, input_structure2]
+    scatterMethod: dotproduct
+    in:
+      input_structure1: !* pdbbind_pdbs 
+      input_structure2: !* ligand.pdb
+      output_structure_path: !ii complex_pdbs.pdb
+    out:
+    - output_structure_path: !& complex_pdbs.pdb
+
+  onionnet_featurize:
+    in:
+      pdb_paths: !* complex_pdbs.pdb
+      output_feature_file: !ii output_features.csv
+    out:
+    - output_feature_file: !& output_features.csv
+
+  onionnet_score:
+    in:
+      input_feature_file: !* output_features.csv
+      output_score_file: !ii predicted_pKa.csv
+      onionnet_score: !ii onionnet_score
+    out:
+    - output_score_file: !& predicted_pKa.csv
+    - onionnet_score: !& onionnet_score
+
+  scatter_plot:
+    in:
+      xs: !* exp_dGs
+      ys: !* onionnet_score
+      output_png_path: !ii dG_exp_wpred.png
+    out:
+    - output_png_path: !& dG_exp_wpred.png
+
+  check_linear_fit:
+    in:
+      xs: !* exp_dGs
+      ys: !* onionnet_score
+      # Use massive tolerances because the re-docking performance of classical scoring functions (Vina) are unreliable.
+      tol_quad: !ii 0.18
+      slope_min: !ii -10
+      slope_max: !ii 10
+
+wic:
+  graphviz:
+    label: Virtual Screening Demo
+  steps:
+    (1, extract_pdbbind_refined):
+      wic:
+        graphviz:
+          label: Extract PDBbind Data
+
+    (2, convert_pdb):
+      wic:
+        graphviz:
+          label: Convert to PDB 
+    (3, rename_residues_pdb):
+      wic:
+        graphviz:
+          label: Rename residues to LIG
+    (4, combine_pdb):
+      wic:
+        graphviz:
+          label: Combine Protein & Ligand\nPDB Structures
+    (5, onionnet_featurize):
+      wic:
+        graphviz:
+          label: Generate features for the Docking Poses
+    (6, onionnet_score):
+      wic:
+        graphviz:
+          label: Predict Binding Scores
+    (7, scatter_plot):
+      wic:
+        graphviz:
+          label: Plot Experimental\nvs Predicted Binding
+    (8, check_linear_fit):
+      wic:
+        graphviz:
+          label: True if fitted slope is between slope_min and slope_max

@@ -1,0 +1,7 @@
+FROM python
+
+RUN apt-get update && apt-get install -y wget
+RUN apt-get clean
+
+Add rename_residues.py .
+Add Dockerfile_rename_residues .
