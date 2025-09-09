@@ -1,0 +1,14 @@
+# docker build -f Dockerfile_topology_check -t mrbrandonwalker/topology_check .
+
+FROM condaforge/mambaforge
+# NOT mambaforge-pypy3 (rdkit is incompatible with pypy)
+
+RUN mamba install -c conda-forge rdkit --yes
+
+RUN mamba init bash
+
+COPY topology_check.py /.
+
+RUN mamba clean --all --yes
+
+ADD Dockerfile_topology_check .

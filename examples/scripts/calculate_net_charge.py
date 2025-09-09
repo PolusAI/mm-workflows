@@ -42,9 +42,7 @@ def get_net_charge(file_path: str, addhydrogens: bool = False) -> Optional[int]:
     if addhydrogens:
         mol = Chem.AddHs(mol)
     try:
-        AllChem.ComputeGasteigerCharges(mol,
-                                        nIter=50,
-                                        throwOnParamFailure=True)
+        AllChem.ComputeGasteigerCharges(mol, nIter=50, throwOnParamFailure=True)  # type: ignore
     except Exception:  # pylint: disable=broad-exception-caught
         return None
 

@@ -157,14 +157,14 @@ def load_data(input_excel_path: str, query: str, smiles_column: str, binding_dat
 
         # See https://www.rdkit.org/docs/GettingStartedInPython.html#working-with-3d-molecules
         mol_2D: rdkit.Chem.rdchem.Mol = Chem.MolFromSmiles(smiles)  # pylint: disable=c-extension-no-member,no-member
-        AllChem.Compute2DCoords(mol_2D)  # pylint: disable=no-member
+        AllChem.Compute2DCoords(mol_2D)  # type: ignore # pylint: disable=no-member
 
         # See https://www.rdkit.org/docs/source/rdkit.Chem.rdmolops.html#rdkit.Chem.rdmolops.AddHs
         # NOTE: "Much of the code assumes that Hs are not included in the molecular topology,
         # so be very careful with the molecule that comes back from this function."
         mol_3D = Chem.AddHs(mol_2D)  # pylint: disable=no-member
-        AllChem.EmbedMolecule(mol_3D)  # pylint: disable=no-member
-        AllChem.MMFFOptimizeMolecule(mol_3D)  # pylint: disable=no-member
+        AllChem.EmbedMolecule(mol_3D)  # type: ignore # pylint: disable=no-member
+        AllChem.MMFFOptimizeMolecule(mol_3D)  # type: ignore # pylint: disable=no-member
 
         filename = f'ligand_{idx}.sdf'  # chemblid is NOT unique!
         writer = Chem.SDWriter(filename)  # pylint: disable=no-member
