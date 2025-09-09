@@ -23,10 +23,11 @@ jobs:
                      calculate_net_charge, generate_conformers,
                      mol2_to_pdbqt, nmr4md, openbabel,
                      remove_terminal_residue_name_prefixes,
-                     rename_residues_mol, combine_structure,
+                     rename_residues, combine_structure,
                      remove_terminal_residue_name_prefixes, molgan,
                      pdbbind_refined, onionnet-sfct, smina, pdbfixer,
-                     fix_pdb_atom_column, extract_protein, extract_ligand_protein, generate_conformers]  # No username for pdbind_refined
+                     fix_pdb_atom_column, extract_protein, extract_ligand_protein, generate_conformers,
+                     onionnet, combine_pdb]  # No username for pdbind_refined
         # skip data/ and cwl_adapters/file_format_conversions/biosimspace/
     runs-on: [ubuntu-latest]
 

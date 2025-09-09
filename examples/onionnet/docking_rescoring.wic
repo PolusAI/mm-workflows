@@ -6,7 +6,6 @@
 ##    2. scoring file (vina score, sfct correction, combined_score for re-ranking docking poses)
 
 steps:
-#
 - id: extract_pdbbind_refined
   in:
     # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.query.html
@@ -15,7 +14,7 @@ steps:
     # This is syntactically valid Python, however the semantics are different."
     query: !ii '(Kd_Ki == "Kd") and ((value < 0.0001) or ((0.08 < value) and ( value < 0.1)) or ((8 < value) and ( value < 10)) or (1000 < value))'
       # to obtain a broader experimental dGs
-    max_row: !ii 500 # first 500 rows selection.
+    max_row: !ii 100 # first 500 rows selection.
     convert_Kd_dG: !ii True
     output_txt_path: !ii binding_data.txt
   out:
