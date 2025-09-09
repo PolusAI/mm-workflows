@@ -1,4 +1,8 @@
 inputs:
+  top_zip_path:
+    type: File
+    format:
+    - edam:format_3987
   nsteps:
     type: int
   dt:
@@ -15,14 +19,16 @@ steps:
 # (i.e. immediately before molecular dynamics) so we can extract &min.tpr
 # to this level and use the following syntax to pass it to only one call site.
 # (Moreover, the former will create multiple definitions of &min.tpr, which is not allowed.)
-    min.wic:
-    equil.wic:
-    prod.wic:
-      in:
-        nsteps: nsteps
-        dt: dt
-        ref-t: ref-t
-        ref-p: ref-p
+  min.wic:
+    in:
+      top_zip_path: top_zip_path
+  equil.wic:
+  prod.wic:
+    in:
+      nsteps: nsteps
+      dt: dt
+      ref-t: ref-t
+      ref-p: ref-p
 
 # Pass the CWL `in` tag as a parameter through BOTH of the yml DSL tags cg.wic and grompp.
 # Use (1-based) indexing to uniquely reference (step_number, step_name).

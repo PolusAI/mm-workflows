@@ -1,15 +1,22 @@
+inputs:
+  crd_path:
+    type: File
+    format:
+    - edam:format_1476
+    - edam:format_2033
+
 steps:
 # We want to perform vacuum minimization first, before solvation and ionization.
 # NOTE: Gromacs no longer supports non-periodic boundary conditions (!!!),
 # so we must emulate a vacuum by using a very large (1000 Angstrom) box.
-    editconf:
-      in:
-        input_crd_path: !* complex_vac.pdb
-        config: !ii
-          box_type: cubic
-          distance_to_molecule: 100.0
-      out:
-      - output_crd_path: !& complex_box.g96
+  editconf:
+    in:
+      input_crd_path: crd_path
+      config: !ii
+        box_type: cubic
+        distance_to_molecule: 100.0
+    out:
+    - output_crd_path: !& complex_box.g96
 
 wic:
   graphviz:

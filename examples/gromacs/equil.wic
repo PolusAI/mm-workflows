@@ -1,6 +1,6 @@
 steps:
-    nvt.wic:
-    npt.wic:
+  nvt.wic:
+  npt.wic:
 
 wic:
   graphviz:

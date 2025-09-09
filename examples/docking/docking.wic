@@ -98,8 +98,9 @@ steps:
       - output_top_zip_path: !& complex_vac.zip
     combine_structure:
       in:
-        input_structure1: !* receptor.xyz  # receptor_hydrogens.pdb
+        input_structure1: !* receptor.xyz #  !* receptor_hydrogens.pdb
         input_structure2: !* pose_ligand.xyz
+        input_top_zip_path: !* complex_vac.zip
       out:
       - output_structure_path: !& complex_vac.pdb
 
