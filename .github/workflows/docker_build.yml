@@ -32,7 +32,7 @@ jobs:
 
     steps:
     - name: Checkout source code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v5
 
     - name: Docker Build scripts/
       run: cd examples/scripts/ && docker build --no-cache --pull -f Dockerfile_${{ matrix.dockerfile }} -t polusai/mm_${{ matrix.dockerfile }} .
