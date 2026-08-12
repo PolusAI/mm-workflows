@@ -11,10 +11,10 @@ jobs:
       - name: Generate a token
         if: always()
         id: generate_token
-        uses: tibdex/github-app-token@b62528385c34dbc9f38e5f4225ac829252d1ea92
+        uses: actions/create-github-app-token@v3.2.0
         with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
       # !!!!!! CRITICAL: PLEASE READ !!!!!!
       # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions- settings-for-a-repository#controlling-changes-from-forks-to-workflows-in-public-repositories
@@ -29,7 +29,7 @@ jobs:
       # always checkout the base branch of the PR to use trustful actions before the identity
       # could be verified.
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
             ref: ${{ github.event.pull_request.base.sha }} # Check out the base to use trustworthy actions
 
@@ -49,7 +49,7 @@ jobs:
       # the commit message directly via the github API.
       # See https://github.com/orgs/community/discussions/28474
       - name: Checkout commit sha (Pull Request only)
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 

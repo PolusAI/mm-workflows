@@ -41,13 +41,13 @@ jobs:
     steps:
       - name: Checkout mm-workflows
         if: always()
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           path: mm-workflows
 
       - name: Checkout biobb_adapters
         if: always()
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           repository: vjaganat90/biobb_adapters  # TODO: use check_existence
           ref: master
